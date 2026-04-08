@@ -6,4 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\Views\About\" />
+    <Folder Include="Resources\Views\Contact\" />
+    <Folder Include="Resources\Views\Portfolio\" />
+  </ItemGroup>
+
 </Project>
