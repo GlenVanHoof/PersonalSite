@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PersoonlijkeSite.Models;
+using System.Diagnostics;
 
 namespace PersoonlijkeSite.Controllers
 {
