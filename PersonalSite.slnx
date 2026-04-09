@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="PersonalSite.Data/PersonalSite.Infrastructure.csproj" Id="350fbfc3-f70a-4386-babb-36dc6f7e9b03" />
-  <Project Path="PersonalSite.Services/PersonalSite.Core.csproj" Id="9e905d93-b1ed-490c-b725-8fe385e099b4" />
-  <Project Path="PersoonlijkeSite/PersonalSite.Web.csproj" />
+  <Project Path="PersonalSite.Infrastructure/PersonalSite.Infrastructure.csproj" Id="350fbfc3-f70a-4386-babb-36dc6f7e9b03" />
+  <Project Path="PersonalSite.Core/PersonalSite.Core.csproj" Id="9e905d93-b1ed-490c-b725-8fe385e099b4" />
+  <Project Path="PersonalSite.Web/PersonalSite.Web.csproj" />
 </Solution>
