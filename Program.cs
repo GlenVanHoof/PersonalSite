@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Interfaces;
 using PersonalSite.Infrastructure.Repositories;
@@ -18,15 +17,12 @@ string connectionString = env switch
     "Production" => builder.Configuration.GetConnectionString("ProductionConnection"),
     "Development" => builder.Configuration.GetConnectionString("DevelopmentConnection"),
     "Remote" => builder.Configuration.GetConnectionString("RemoteConnection"),
-    _ => builder.Configuration.GetConnectionString("DevelopmentConnection") // fallback
+    _ => builder.Configuration.GetConnectionString("DevelopmentConnection")
 } ?? throw new InvalidOperationException($"Connection string not found for environment: {env}");
 
 // Register DbContext
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseNpgsql(connectionString));
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 
 // Add Globalization and Localization services
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -45,7 +41,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 });
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-// Add services to the container.
+// Add services to the container (met localization)
 builder.Services.AddControllersWithViews()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder)
     .AddDataAnnotationsLocalization();
@@ -53,14 +49,12 @@ builder.Services.AddControllersWithViews()
 // Register repositories
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -78,6 +72,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
