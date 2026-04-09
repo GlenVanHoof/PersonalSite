@@ -1,4 +1,4 @@
-html {
+²html {
   font-size: 14px;
 }
 
@@ -32,4 +32,15 @@ body {
 
 .multiline-text {
   white-space: pre-line;
+}
+
+.dropdown-menu form {
+    margin: 0;
+}
+
+.dropdown-menu form button {
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
 }
