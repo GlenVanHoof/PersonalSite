@@ -1,8 +1,27 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using PersonalSite.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Determine environment
+var env = builder.Environment.EnvironmentName;
+
+// Pick the correct connection string
+string connectionString = env switch
+{
+    "Production" => builder.Configuration.GetConnectionString("ProductionConnection"),
+    "Development" => builder.Configuration.GetConnectionString("DevelopmentConnection"),
+    "Remote" => builder.Configuration.GetConnectionString("RemoteConnection"),
+    _ => builder.Configuration.GetConnectionString("DevelopmentConnection") // fallback
+} ?? throw new InvalidOperationException($"Connection string not found for environment: {env}");
+
+// Register DbContext
+builder.Services.AddDbContext<PortfolioDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -12,14 +31,15 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new List<CultureInfo>
     {
-        new CultureInfo("nl-BE"),
-        new CultureInfo("en-US"),
-        new CultureInfo("fr-BE"),
-        new CultureInfo("de-BE")
+        new CultureInfo("en"),
+        new CultureInfo("nl"),
+        new CultureInfo("fr"),
+        new CultureInfo("de")
     };
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
-    options.DefaultRequestCulture = new RequestCulture("en-US");
+    options.DefaultRequestCulture = new RequestCulture("en");
+    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
 });
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -40,13 +60,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRequestLocalization();
+
 app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapStaticAssets();
-
-app.UseRequestLocalization();
 
 app.MapControllerRoute(
     name: "default",
