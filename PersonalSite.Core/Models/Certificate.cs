@@ -4,15 +4,14 @@ using System.Text;
 
 namespace PersonalSite.Core.Models
 {
-    public class Project
+    public class Certificate
     {
         public int Id { get; set; }
-        public string Slug { get; set; } // Unique identifier for URL (ex.: my-project)
-        public string GitUrl { get; set; }
-        public string ImagePath { get; set; }
-        public int OrderIndex { get; set; }
+        public string Name { get; set; }
+        public string? Description { get; set; }
+        public DateOnly AcquiredOn { get; set; }
+        public string? Organisation { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
-
 }
