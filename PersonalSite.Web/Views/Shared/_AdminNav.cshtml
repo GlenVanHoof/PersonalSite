@@ -1,0 +1,59 @@
+@{
+    var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+}
+
+<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+    <div class="position-sticky pt-3">
+        <h5 class="px-3">Admin Panel</h5>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link @(currentAction == "Index" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Index">
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentAction == "Projects" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Projects">
+                    Projects
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentAction == "ProjectTranslations" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="ProjectTranslations">
+                    Project Translations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentAction == "Experiences" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Experiences">
+                    Experiences
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentAction == "Educations" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Educations">
+                    Educations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentAction == "Certificates" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Certificates">
+                    Certificates
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentAction == "Skills" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Skills">
+                    Skills
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentAction == "ContactForms" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="ContactForms">
+                    Contact Forms
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
