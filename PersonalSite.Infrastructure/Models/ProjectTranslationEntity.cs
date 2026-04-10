@@ -14,7 +14,6 @@ namespace PersonalSite.Infrastructure.Models
         public string ShortDescription { get; set; }
         public string LongDescription { get; set; }
         public List<string> Technologies { get; set; }
-
         public ProjectEntity Project { get; set; }
     }
 

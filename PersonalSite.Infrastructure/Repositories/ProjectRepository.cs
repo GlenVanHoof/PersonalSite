@@ -51,8 +51,6 @@ public class ProjectRepository : IProjectRepository
 
     public async Task<ProjectEntity> CreateProjectAsync(ProjectEntity project)
     {
-        project.CreatedAt = DateTime.UtcNow;
-        project.UpdatedAt = DateTime.UtcNow;
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
         return project;
@@ -60,7 +58,6 @@ public class ProjectRepository : IProjectRepository
 
     public async Task UpdateProjectAsync(ProjectEntity project)
     {
-        project.UpdatedAt = DateTime.UtcNow;
         _context.Projects.Update(project);
         await _context.SaveChangesAsync();
     }

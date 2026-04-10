@@ -95,9 +95,9 @@ public class PortfolioDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Description).HasMaxLength(1000);
-            entity.Property(e => e.AcuiredOn).IsRequired();
+            entity.Property(e => e.AcquiredOn).IsRequired();
             entity.Property(e => e.Organisation).HasMaxLength(200);
-            entity.HasIndex(e => e.AcuiredOn);
+            entity.HasIndex(e => e.AcquiredOn);
         });
 
         // ContactEntity configuratie
