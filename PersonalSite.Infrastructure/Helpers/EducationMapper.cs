@@ -7,7 +7,7 @@ public static class EducationMapper
 {
     public static Education ToModel(EducationEntity entity)
     {
-        if (entity == null) return null;
+        if (entity == null) return null!;
 
         return new Education
         {
@@ -25,7 +25,7 @@ public static class EducationMapper
 
     public static EducationEntity ToEntity(Education model)
     {
-        if (model == null) return null;
+        if (model == null) return null!;
 
         return new EducationEntity
         {

@@ -11,8 +11,4 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\PersonalSite.Infrastructure\PersonalSite.Infrastructure.csproj" />
-  </ItemGroup>
-
 </Project>

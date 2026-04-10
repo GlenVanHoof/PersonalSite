@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PersonalSite.Core\PersonalSite.Core.csproj" />
+    <ProjectReference Include="..\PersonalSite.Infrastructure\PersonalSite.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
