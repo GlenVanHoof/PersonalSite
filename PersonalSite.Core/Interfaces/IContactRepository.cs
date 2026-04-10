@@ -1,0 +1,14 @@
+using PersonalSite.Core.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace PersonalSite.Core.Interfaces;
+
+public interface IContactRepository
+{
+    Task<IEnumerable<Contact>> GetAllContactsAsync();
+    Task<Contact?> GetContactByIdAsync(int id);
+    Task<Contact> CreateContactAsync(Contact contact);
+    Task UpdateContactAsync(Contact contact);
+    Task DeleteContactAsync(int id);
+}

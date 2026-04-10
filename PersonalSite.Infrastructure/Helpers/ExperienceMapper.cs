@@ -7,7 +7,7 @@ public static class ExperienceMapper
 {
     public static Experience ToModel(ExperienceEntity entity)
     {
-        if (entity == null) return null;
+        if (entity == null) return null!;
 
         return new Experience
         {
@@ -24,13 +24,13 @@ public static class ExperienceMapper
 
     public static ExperienceEntity ToEntity(Experience model)
     {
-        if (model == null) return null;
+        if (model == null) return null!;
 
         return new ExperienceEntity
         {
             Id = model.Id,
-            Company = model.Company,
-            Position = model.Position,
+            Company = model.Company!,
+            Position = model.Position!,
             StartDate = model.StartDate,
             EndDate = model.EndDate,
             Description = model.Description,

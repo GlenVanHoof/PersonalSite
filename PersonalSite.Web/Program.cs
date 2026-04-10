@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using PersonalSite.Infrastructure.Data;
-using PersonalSite.Infrastructure.Interfaces;
+using PersonalSite.Core.Interfaces;
 using PersonalSite.Infrastructure.Repositories;
 using System.Globalization;
 

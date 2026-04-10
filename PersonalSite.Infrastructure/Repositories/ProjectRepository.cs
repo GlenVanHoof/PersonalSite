@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Core.Models;
+using PersonalSite.Core.Interfaces;
 using PersonalSite.Infrastructure.Data;
-using PersonalSite.Infrastructure.Interfaces;
-using PersonalSite.Infrastructure.Models;
+using PersonalSite.Infrastructure.Helpers;
 
 namespace PersonalSite.Infrastructure.Repositories;
 
@@ -14,7 +15,7 @@ public class ProjectRepository : IProjectRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<ProjectEntity>> GetAllProjectsAsync(string? language = null)
+    public async Task<IEnumerable<Project>> GetAllProjectsAsync(string? language = null)
     {
         var query = _context.Projects
             .Include(p => p.Translations)
@@ -22,43 +23,59 @@ public class ProjectRepository : IProjectRepository
 
         if (!string.IsNullOrEmpty(language))
         {
-            return await query
-                .Select(p => new ProjectEntity
+            var entities = await query
+                .Select(p => new
                 {
-                    Id = p.Id,
-                    Slug = p.Slug,
-                    GithubUrl = p.GithubUrl,
-                    ImagePath = p.ImagePath,
-                    OrderIndex = p.OrderIndex,
-                    CreatedAt = p.CreatedAt,
-                    UpdatedAt = p.UpdatedAt,
+                    p.Id,
+                    p.Slug,
+                    p.GithubUrl,
+                    p.ImagePath,
+                    p.OrderIndex,
+                    p.CreatedAt,
+                    p.UpdatedAt,
                     Translations = p.Translations.Where(t => t.Language == language).ToList()
                 })
                 .ToListAsync();
+
+            return entities.Select(e => ProjectMapper.ToModel(new Models.ProjectEntity
+            {
+                Id = e.Id,
+                Slug = e.Slug,
+                GithubUrl = e.GithubUrl,
+                ImagePath = e.ImagePath,
+                OrderIndex = e.OrderIndex,
+                CreatedAt = e.CreatedAt,
+                UpdatedAt = e.UpdatedAt,
+                Translations = e.Translations
+            }));
         }
 
-        return await query.ToListAsync();
+        var allEntities = await query.ToListAsync();
+        return ProjectMapper.ToModelList(allEntities);
     }
 
-    public async Task<ProjectEntity?> GetProjectBySlugAsync(string slug, string? language = null)
+    public async Task<Project?> GetProjectBySlugAsync(string slug, string? language = null)
     {
         var query = _context.Projects
             .Include(p => p.Translations)
             .Where(p => p.Slug == slug);
 
-        return await query.FirstOrDefaultAsync();
+        var entity = await query.FirstOrDefaultAsync();
+        return entity != null ? ProjectMapper.ToModel(entity) : null;
     }
 
-    public async Task<ProjectEntity> CreateProjectAsync(ProjectEntity project)
+    public async Task<Project> CreateProjectAsync(Project project)
     {
-        _context.Projects.Add(project);
+        var entity = ProjectMapper.ToEntity(project);
+        _context.Projects.Add(entity);
         await _context.SaveChangesAsync();
-        return project;
+        return ProjectMapper.ToModel(entity);
     }
 
-    public async Task UpdateProjectAsync(ProjectEntity project)
+    public async Task UpdateProjectAsync(Project project)
     {
-        _context.Projects.Update(project);
+        var entity = ProjectMapper.ToEntity(project);
+        _context.Projects.Update(entity);
         await _context.SaveChangesAsync();
     }
 

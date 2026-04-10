@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Core.Models;
+using PersonalSite.Core.Interfaces;
 using PersonalSite.Infrastructure.Data;
-using PersonalSite.Infrastructure.Interfaces;
-using PersonalSite.Infrastructure.Models;
+using PersonalSite.Infrastructure.Helpers;
 
 namespace PersonalSite.Infrastructure.Repositories;
 
@@ -14,29 +15,34 @@ public class SkillRepository : ISkillRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<SkillEntity>> GetAllSkillsAsync()
+    public async Task<IEnumerable<Skill>> GetAllSkillsAsync()
     {
-        return await _context.Skills
+        var entities = await _context.Skills
             .OrderBy(s => s.Type)
             .ThenByDescending(s => s.ScoreOutOf100)
             .ToListAsync();
+        
+        return SkillMapper.ToModelList(entities);
     }
 
-    public async Task<SkillEntity?> GetSkillByIdAsync(int id)
+    public async Task<Skill?> GetSkillByIdAsync(int id)
     {
-        return await _context.Skills.FindAsync(id);
+        var entity = await _context.Skills.FindAsync(id);
+        return entity != null ? SkillMapper.ToModel(entity) : null;
     }
 
-    public async Task<SkillEntity> CreateSkillAsync(SkillEntity skill)
+    public async Task<Skill> CreateSkillAsync(Skill skill)
     {
-        _context.Skills.Add(skill);
+        var entity = SkillMapper.ToEntity(skill);
+        _context.Skills.Add(entity);
         await _context.SaveChangesAsync();
-        return skill;
+        return SkillMapper.ToModel(entity);
     }
 
-    public async Task UpdateSkillAsync(SkillEntity skill)
+    public async Task UpdateSkillAsync(Skill skill)
     {
-        _context.Skills.Update(skill);
+        var entity = SkillMapper.ToEntity(skill);
+        _context.Skills.Update(entity);
         await _context.SaveChangesAsync();
     }
 

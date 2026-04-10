@@ -7,7 +7,7 @@ public static class ContactMapper
 {
     public static Contact ToModel(ContactEntity entity)
     {
-        if (entity == null) return null;
+        if (entity == null) return null!;
 
         return new Contact
         {
@@ -22,15 +22,15 @@ public static class ContactMapper
 
     public static ContactEntity ToEntity(Contact model)
     {
-        if (model == null) return null;
+        if (model == null) return null!;
 
         return new ContactEntity
         {
             Id = model.Id,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            Email = model.Email,
-            Message = model.Message,
+            FirstName = model.FirstName!,
+            LastName = model.LastName!,
+            Email = model.Email!,
+            Message = model.Message!,
             CreatedAt = model.CreatedAt
         };
     }

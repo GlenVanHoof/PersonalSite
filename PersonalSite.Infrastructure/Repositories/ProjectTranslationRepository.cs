@@ -1,64 +1,76 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PersonalSite.Core.Models;
+using PersonalSite.Core.Interfaces;
 using PersonalSite.Infrastructure.Data;
-using PersonalSite.Infrastructure.Interfaces;
-using PersonalSite.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using PersonalSite.Infrastructure.Helpers;
 
-namespace PersonalSite.Infrastructure.Repositories
+namespace PersonalSite.Infrastructure.Repositories;
+
+public class ProjectTranslationRepository : IProjectTranslationRepository
 {
-    public class ProjectTranslationRepository : IProjectTranslationRepository
+    private readonly PortfolioDbContext _context;
+
+    public ProjectTranslationRepository(PortfolioDbContext context)
     {
-        private readonly PortfolioDbContext _context;
+        _context = context;
+    }
 
-        public ProjectTranslationRepository(PortfolioDbContext context)
-        {
-            _context = context;
-        }
+    public async Task<IEnumerable<ProjectTranslation>> GetAllTranslationsAsync()
+    {
+        var entities = await _context.ProjectTranslations
+            .OrderBy(t => t.ProjectId)
+            .ThenBy(t => t.Language)
+            .ToListAsync();
+        
+        return ProjectTranslationMapper.ToModelList(entities);
+    }
 
-        public async Task<IEnumerable<ProjectTranslationEntity>> GetAllProjectTranslationsAsync()
-        {
-            return await _context.ProjectTranslations
-                .Include(pt => pt.Project)
-                .ToListAsync();
-        }
+    public async Task<IEnumerable<ProjectTranslation>> GetTranslationsByProjectIdAsync(int projectId)
+    {
+        var entities = await _context.ProjectTranslations
+            .Where(t => t.ProjectId == projectId)
+            .OrderBy(t => t.Language)
+            .ToListAsync();
+        
+        return ProjectTranslationMapper.ToModelList(entities);
+    }
 
-        public async Task<ProjectTranslationEntity?> GetProjectTranslationByIdAsync(int id)
-        {
-            return await _context.ProjectTranslations
-                .Include(pt => pt.Project)
-                .FirstOrDefaultAsync(pt => pt.Id == id);
-        }
+    public async Task<ProjectTranslation?> GetTranslationByIdAsync(int id)
+    {
+        var entity = await _context.ProjectTranslations.FindAsync(id);
+        return entity != null ? ProjectTranslationMapper.ToModel(entity) : null;
+    }
 
-        public async Task<ProjectTranslationEntity?> GetProjectTranslationByProjectIdAndLanguageAsync(int id, string language)
-        {
-            return await _context.ProjectTranslations
-                .Include(pt => pt.Project)
-                .FirstOrDefaultAsync(pt => pt.ProjectId == id && pt.Language == language);
-        }
+    public async Task<ProjectTranslation?> GetTranslationByProjectIdAndLanguageAsync(int projectId, string language)
+    {
+        var entity = await _context.ProjectTranslations
+            .FirstOrDefaultAsync(t => t.ProjectId == projectId && t.Language == language);
+        
+        return entity != null ? ProjectTranslationMapper.ToModel(entity) : null;
+    }
 
-        public async Task<ProjectEntity> CreateProjectTranslationAsync(ProjectTranslationEntity projectTranslation)
+    public async Task<ProjectTranslation> CreateTranslationAsync(ProjectTranslation translation)
+    {
+        var entity = ProjectTranslationMapper.ToEntity(translation);
+        _context.ProjectTranslations.Add(entity);
+        await _context.SaveChangesAsync();
+        return ProjectTranslationMapper.ToModel(entity);
+    }
+
+    public async Task UpdateTranslationAsync(ProjectTranslation translation)
+    {
+        var entity = ProjectTranslationMapper.ToEntity(translation);
+        _context.ProjectTranslations.Update(entity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteTranslationAsync(int id)
+    {
+        var translation = await _context.ProjectTranslations.FindAsync(id);
+        if (translation != null)
         {
-            _context.ProjectTranslations.Add(projectTranslation);
+            _context.ProjectTranslations.Remove(translation);
             await _context.SaveChangesAsync();
-            return projectTranslation.Project;
-        }
-
-        public async Task UpdateProjectAsync(ProjectTranslationEntity projectTranslation)
-        {
-            _context.ProjectTranslations.Update(projectTranslation);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteProjectAsync(int id)
-        {
-            var projectTranslation = await _context.ProjectTranslations.FindAsync(id);
-            if (projectTranslation != null)
-            {
-                _context.ProjectTranslations.Remove(projectTranslation);
-                await _context.SaveChangesAsync();
-            }
         }
     }
 }

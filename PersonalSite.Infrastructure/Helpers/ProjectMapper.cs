@@ -7,12 +7,12 @@ public static class ProjectMapper
 {
     public static Project ToModel(ProjectEntity entity)
     {
-        if (entity == null) return null;
+        if (entity == null) return null!;
 
         return new Project
         {
             Id = entity.Id,
-            Slug = entity.Slug,
+            Slug = entity.Slug!,
             GitUrl = entity.GithubUrl,
             ImagePath = entity.ImagePath,
             OrderIndex = entity.OrderIndex,
@@ -23,14 +23,14 @@ public static class ProjectMapper
 
     public static ProjectEntity ToEntity(Project model)
     {
-        if (model == null) return null;
+        if (model == null) return null!;
 
         return new ProjectEntity
         {
             Id = model.Id,
-            Slug = model.Slug,
-            GithubUrl = model.GitUrl,
-            ImagePath = model.ImagePath,
+            Slug = model.Slug!,
+            GithubUrl = model.GitUrl!,
+            ImagePath = model.ImagePath!,
             OrderIndex = model.OrderIndex,
             CreatedAt = model.CreatedAt,
             UpdatedAt = model.UpdatedAt

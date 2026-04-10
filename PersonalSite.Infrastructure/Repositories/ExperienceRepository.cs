@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Core.Models;
+using PersonalSite.Core.Interfaces;
 using PersonalSite.Infrastructure.Data;
-using PersonalSite.Infrastructure.Interfaces;
-using PersonalSite.Infrastructure.Models;
+using PersonalSite.Infrastructure.Helpers;
 
 namespace PersonalSite.Infrastructure.Repositories;
 
@@ -14,28 +15,33 @@ public class ExperienceRepository : IExperienceRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<ExperienceEntity>> GetAllExperiencesAsync()
+    public async Task<IEnumerable<Experience>> GetAllExperiencesAsync()
     {
-        return await _context.Experiences
+        var entities = await _context.Experiences
             .OrderByDescending(e => e.StartDate)
             .ToListAsync();
+        
+        return ExperienceMapper.ToModelList(entities);
     }
 
-    public async Task<ExperienceEntity?> GetExperienceByIdAsync(int id)
+    public async Task<Experience?> GetExperienceByIdAsync(int id)
     {
-        return await _context.Experiences.FindAsync(id);
+        var entity = await _context.Experiences.FindAsync(id);
+        return entity != null ? ExperienceMapper.ToModel(entity) : null;
     }
 
-    public async Task<ExperienceEntity> CreateExperienceAsync(ExperienceEntity experience)
+    public async Task<Experience> CreateExperienceAsync(Experience experience)
     {
-        _context.Experiences.Add(experience);
+        var entity = ExperienceMapper.ToEntity(experience);
+        _context.Experiences.Add(entity);
         await _context.SaveChangesAsync();
-        return experience;
+        return ExperienceMapper.ToModel(entity);
     }
 
-    public async Task UpdateExperienceAsync(ExperienceEntity experience)
+    public async Task UpdateExperienceAsync(Experience experience)
     {
-        _context.Experiences.Update(experience);
+        var entity = ExperienceMapper.ToEntity(experience);
+        _context.Experiences.Update(entity);
         await _context.SaveChangesAsync();
     }
 

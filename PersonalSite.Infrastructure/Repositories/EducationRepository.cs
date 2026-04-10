@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Core.Models;
+using PersonalSite.Core.Interfaces;
 using PersonalSite.Infrastructure.Data;
-using PersonalSite.Infrastructure.Interfaces;
-using PersonalSite.Infrastructure.Models;
+using PersonalSite.Infrastructure.Helpers;
 
 namespace PersonalSite.Infrastructure.Repositories;
 
@@ -14,28 +15,33 @@ public class EducationRepository : IEducationRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<EducationEntity>> GetAllEducationsAsync()
+    public async Task<IEnumerable<Education>> GetAllEducationsAsync()
     {
-        return await _context.Educations
+        var entities = await _context.Educations
             .OrderByDescending(e => e.StartDate)
             .ToListAsync();
+        
+        return EducationMapper.ToModelList(entities);
     }
 
-    public async Task<EducationEntity?> GetEducationByIdAsync(int id)
+    public async Task<Education?> GetEducationByIdAsync(int id)
     {
-        return await _context.Educations.FindAsync(id);
+        var entity = await _context.Educations.FindAsync(id);
+        return entity != null ? EducationMapper.ToModel(entity) : null;
     }
 
-    public async Task<EducationEntity> CreateEducationAsync(EducationEntity education)
+    public async Task<Education> CreateEducationAsync(Education education)
     {
-        _context.Educations.Add(education);
+        var entity = EducationMapper.ToEntity(education);
+        _context.Educations.Add(entity);
         await _context.SaveChangesAsync();
-        return education;
+        return EducationMapper.ToModel(entity);
     }
 
-    public async Task UpdateEducationAsync(EducationEntity education)
+    public async Task UpdateEducationAsync(Education education)
     {
-        _context.Educations.Update(education);
+        var entity = EducationMapper.ToEntity(education);
+        _context.Educations.Update(entity);
         await _context.SaveChangesAsync();
     }
 

@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Core.Models;
+using PersonalSite.Core.Interfaces;
 using PersonalSite.Infrastructure.Data;
-using PersonalSite.Infrastructure.Interfaces;
-using PersonalSite.Infrastructure.Models;
+using PersonalSite.Infrastructure.Helpers;
 
 namespace PersonalSite.Infrastructure.Repositories;
 
@@ -14,28 +15,33 @@ public class ContactRepository : IContactRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<ContactEntity>> GetAllContactsAsync()
+    public async Task<IEnumerable<Contact>> GetAllContactsAsync()
     {
-        return await _context.Contacts
+        var entities = await _context.Contacts
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
+        
+        return ContactMapper.ToModelList(entities);
     }
 
-    public async Task<ContactEntity?> GetContactByIdAsync(int id)
+    public async Task<Contact?> GetContactByIdAsync(int id)
     {
-        return await _context.Contacts.FindAsync(id);
+        var entity = await _context.Contacts.FindAsync(id);
+        return entity != null ? ContactMapper.ToModel(entity) : null;
     }
 
-    public async Task<ContactEntity> CreateContactAsync(ContactEntity contact)
+    public async Task<Contact> CreateContactAsync(Contact contact)
     {
-        _context.Contacts.Add(contact);
+        var entity = ContactMapper.ToEntity(contact);
+        _context.Contacts.Add(entity);
         await _context.SaveChangesAsync();
-        return contact;
+        return ContactMapper.ToModel(entity);
     }
 
-    public async Task UpdateContactAsync(ContactEntity contact)
+    public async Task UpdateContactAsync(Contact contact)
     {
-        _context.Contacts.Update(contact);
+        var entity = ContactMapper.ToEntity(contact);
+        _context.Contacts.Update(entity);
         await _context.SaveChangesAsync();
     }
 

@@ -7,7 +7,7 @@ public static class CertificateMapper
 {
     public static Certificate ToModel(CertificateEntity entity)
     {
-        if (entity == null) return null;
+        if (entity == null) return null!;
 
         return new Certificate
         {
@@ -23,12 +23,12 @@ public static class CertificateMapper
 
     public static CertificateEntity ToEntity(Certificate model)
     {
-        if (model == null) return null;
+        if (model == null) return null!;
 
         return new CertificateEntity
         {
             Id = model.Id,
-            Name = model.Name,
+            Name = model.Name!,
             Description = model.Description,
             AcquiredOn = model.AcquiredOn,
             Organisation = model.Organisation

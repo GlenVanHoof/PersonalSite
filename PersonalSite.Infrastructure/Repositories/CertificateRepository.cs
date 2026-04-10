@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalSite.Core.Models;
+using PersonalSite.Core.Interfaces;
 using PersonalSite.Infrastructure.Data;
-using PersonalSite.Infrastructure.Interfaces;
-using PersonalSite.Infrastructure.Models;
+using PersonalSite.Infrastructure.Helpers;
 
 namespace PersonalSite.Infrastructure.Repositories;
 
@@ -14,28 +15,33 @@ public class CertificateRepository : ICertificateRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<CertificateEntity>> GetAllCertificatesAsync()
+    public async Task<IEnumerable<Certificate>> GetAllCertificatesAsync()
     {
-        return await _context.Certificates
+        var entities = await _context.Certificates
             .OrderByDescending(c => c.AcquiredOn)
             .ToListAsync();
+        
+        return CertificateMapper.ToModelList(entities);
     }
 
-    public async Task<CertificateEntity?> GetCertificateByIdAsync(int id)
+    public async Task<Certificate?> GetCertificateByIdAsync(int id)
     {
-        return await _context.Certificates.FindAsync(id);
+        var entity = await _context.Certificates.FindAsync(id);
+        return entity != null ? CertificateMapper.ToModel(entity) : null;
     }
 
-    public async Task<CertificateEntity> CreateCertificateAsync(CertificateEntity certificate)
+    public async Task<Certificate> CreateCertificateAsync(Certificate certificate)
     {
-        _context.Certificates.Add(certificate);
+        var entity = CertificateMapper.ToEntity(certificate);
+        _context.Certificates.Add(entity);
         await _context.SaveChangesAsync();
-        return certificate;
+        return CertificateMapper.ToModel(entity);
     }
 
-    public async Task UpdateCertificateAsync(CertificateEntity certificate)
+    public async Task UpdateCertificateAsync(Certificate certificate)
     {
-        _context.Certificates.Update(certificate);
+        var entity = CertificateMapper.ToEntity(certificate);
+        _context.Certificates.Update(entity);
         await _context.SaveChangesAsync();
     }
 
