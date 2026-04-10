@@ -1,0 +1,41 @@
+using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace PersonalSite.Core.Services;
+
+public class EducationService : IEducationService
+{
+    private readonly IEducationRepository _educationRepository;
+
+    public EducationService(IEducationRepository educationRepository)
+    {
+        _educationRepository = educationRepository;
+    }
+
+    public async Task<IEnumerable<Education>> GetAllEducationsAsync()
+    {
+        return await _educationRepository.GetAllEducationsAsync();
+    }
+
+    public async Task<Education?> GetEducationByIdAsync(int id)
+    {
+        return await _educationRepository.GetEducationByIdAsync(id);
+    }
+
+    public async Task<Education> CreateEducationAsync(Education education)
+    {
+        return await _educationRepository.CreateEducationAsync(education);
+    }
+
+    public async Task UpdateEducationAsync(Education education)
+    {
+        await _educationRepository.UpdateEducationAsync(education);
+    }
+
+    public async Task DeleteEducationAsync(int id)
+    {
+        await _educationRepository.DeleteEducationAsync(id);
+    }
+}
