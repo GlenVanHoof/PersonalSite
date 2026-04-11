@@ -5,6 +5,7 @@
     {
         Technical,
         Soft,
-        Language
+        Language,
+        Tool
     }
 }
