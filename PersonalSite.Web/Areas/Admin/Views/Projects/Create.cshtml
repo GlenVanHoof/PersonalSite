@@ -1,0 +1,50 @@
+@model PersonalSite.Core.Models.Project
+
+@{
+    ViewData["Title"] = "Create Project";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Create Project</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="mb-3">
+                <label asp-for="Slug" class="form-label"></label>
+                <input asp-for="Slug" class="form-control" />
+                <span asp-validation-for="Slug" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="GitUrl" class="form-label"></label>
+                <input asp-for="GitUrl" class="form-control" />
+                <span asp-validation-for="GitUrl" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="ImagePath" class="form-label"></label>
+                <input asp-for="ImagePath" class="form-control" />
+                <span asp-validation-for="ImagePath" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="OrderIndex" class="form-label"></label>
+                <input asp-for="OrderIndex" class="form-control" type="number" />
+                <span asp-validation-for="OrderIndex" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

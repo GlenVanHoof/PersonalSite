@@ -1,0 +1,49 @@
+@* @using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager *@
+
+@{
+    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+}
+
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+    <div class="position-sticky pt-3 sidebar-sticky">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Home" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Projects" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="Projects" asp-action="Index">
+                    <i class="bi bi-folder"></i> Projects
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Experiences" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="Experiences" asp-action="Index">
+                    <i class="bi bi-briefcase"></i> Experiences
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Educations" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="Educations" asp-action="Index">
+                    <i class="bi bi-mortarboard"></i> Educations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Certificates" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="Certificates" asp-action="Index">
+                    <i class="bi bi-award"></i> Certificates
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Skills" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="Skills" asp-action="Index">
+                    <i class="bi bi-gear"></i> Skills
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

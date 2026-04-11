@@ -1,0 +1,34 @@
+@model PersonalSite.Core.Models.Certificate
+
+@{
+    ViewData["Title"] = "Delete Certificate";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Delete Certificate</h1>
+
+<h3 class="text-danger">Are you sure you want to delete this certificate?</h3>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+            
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Organisation)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Organisation)</dd>
+            
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AcquiredOn)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.AcquiredOn)</dd>
+            
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Description)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Description)</dd>
+        </dl>
+        
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </form>
+    </div>
+</div>

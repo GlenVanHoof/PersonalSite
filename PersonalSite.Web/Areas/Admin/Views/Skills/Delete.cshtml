@@ -1,0 +1,31 @@
+@model PersonalSite.Core.Models.Skill
+
+@{
+    ViewData["Title"] = "Delete Skill";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Delete Skill</h1>
+
+<h3 class="text-danger">Are you sure you want to delete this skill?</h3>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+            
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Type)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Type)</dd>
+            
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ScoreOutOf100)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.ScoreOutOf100)</dd>
+        </dl>
+        
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </form>
+    </div>
+</div>

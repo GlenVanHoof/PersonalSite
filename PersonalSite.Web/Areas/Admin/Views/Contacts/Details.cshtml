@@ -1,0 +1,37 @@
+@model PersonalSite.Core.Models.Contact
+
+@{
+    ViewData["Title"] = "Contact Message Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Contact Message Details</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FirstName)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.FirstName)</dd>
+            
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.LastName)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.LastName)</dd>
+            
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
+            <dd class="col-sm-9">
+                <a href="mailto:@Model.Email">@Model.Email</a>
+            </dd>
+            
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Message)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Message)</dd>
+            
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedAt)</dd>
+        </dl>
+        
+        <div class="mb-3">
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
