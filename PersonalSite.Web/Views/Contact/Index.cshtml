@@ -1,7 +1,98 @@
-﻿@{
+﻿@model PersonalSite.Web.Models.ContactViewModel
+@{
     ViewData["Title"] = "Contact";
 }
-<div class="text-md-start">
-    <h1 class="display-4">Contact</h1>
-    <p>This will be the contact page of the website.</p>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="display-4 mb-4">Neem Contact Op</h1>
+            
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <p class="lead mb-4">
+                        Heb je een vraag of wil je samenwerken? Vul het onderstaande formulier in en ik neem zo snel mogelijk contact met je op.
+                    </p>
+
+                    <form asp-action="Index" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FirstName" class="form-label">Voornaam</label>
+                                <input asp-for="FirstName" class="form-control" placeholder="Jouw voornaam" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LastName" class="form-label">Achternaam</label>
+                                <input asp-for="LastName" class="form-control" placeholder="Jouw achternaam" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">E-mailadres</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="jouw@email.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Message" class="form-label">Bericht</label>
+                            <textarea asp-for="Message" class="form-control" rows="6" placeholder="Jouw bericht..."></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send me-2"></i>Verstuur Bericht
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Contact Info Section (Optional) -->
+            <div class="row mt-5">
+                <div class="col-md-4 text-center mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-envelope fs-1 text-primary mb-3"></i>
+                            <h5 class="card-title">Email</h5>
+                            <p class="card-text text-muted">contact@example.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-geo-alt fs-1 text-primary mb-3"></i>
+                            <h5 class="card-title">Locatie</h5>
+                            <p class="card-text text-muted">België</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-linkedin fs-1 text-primary mb-3"></i>
+                            <h5 class="card-title">LinkedIn</h5>
+                            <p class="card-text text-muted">
+                                <a href="#" target="_blank" class="text-decoration-none">Profiel bezoeken</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
