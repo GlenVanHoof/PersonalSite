@@ -13,7 +13,7 @@
         public string? GitUrl { get; set; }
         public string? ImagePath { get; set; }
         public int OrderIndex { get; set; }
-        
+
         // Translation fields
         public string? Title { get; set; }
         public string? ShortDescription { get; set; }

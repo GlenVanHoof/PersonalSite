@@ -10,14 +10,14 @@ namespace PersoonlijkeSite.Controllers
         private readonly IProjectService _projectService;
         private readonly IProjectTranslationService _projectTranslationService;
 
-        public PortfolioController(ILogger<PortfolioController> logger, 
+        public PortfolioController(ILogger<PortfolioController> logger,
             IProjectService projectService, IProjectTranslationService projectTranslationService)
         {
             _logger = logger;
             _projectService = projectService;
             _projectTranslationService = projectTranslationService;
         }
-        
+
         public async Task<IActionResult> Index(string lang = "en")
         {
             var projects = await _projectService.GetAllProjectsAsync();
