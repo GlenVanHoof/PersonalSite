@@ -5,8 +5,12 @@
     var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
 }
 
-<nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-light sidebar position-fixed" style="height: calc(100vh - 70px); top: 70px; left: 0; overflow-y: auto;">
-    <div class="pt-3">
+<nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-light sidebar position-fixed offcanvas-md offcanvas-start" style="height: calc(100vh - 70px); top: 70px; left: 0; overflow-y: auto;" tabindex="-1">
+    <div class="offcanvas-header d-md-none">
+        <h5 class="offcanvas-title">Menu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-md-block pt-3 p-0">
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link @(currentController == "Home" ? "active" : "")" 
