@@ -64,6 +64,14 @@ public class ProjectRepository : IProjectRepository
         return entity != null ? ProjectMapper.ToModel(entity) : null;
     }
 
+    public async Task<Project?> GetProjectByIdAsync(int id)
+    {
+        var entity = await _context.Projects
+            .Include(p => p.Translations)
+            .FirstOrDefaultAsync(p => p.Id == id);
+        return entity != null ? ProjectMapper.ToModel(entity) : null;
+    }
+
     public async Task<Project> CreateProjectAsync(Project project)
     {
         var entity = ProjectMapper.ToEntity(project);
