@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using PersonalSite.Core.Models;
+﻿using PersonalSite.Core.Models;
 
 namespace PersonalSite.Core.Interfaces
 {

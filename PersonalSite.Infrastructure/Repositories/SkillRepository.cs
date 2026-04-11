@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Models;
 using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;
 
@@ -21,7 +21,7 @@ public class SkillRepository : ISkillRepository
             .OrderBy(s => s.Type)
             .ThenByDescending(s => s.ScoreOutOf100)
             .ToListAsync();
-        
+
         return SkillMapper.ToModelList(entities);
     }
 

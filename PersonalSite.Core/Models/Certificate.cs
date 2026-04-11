@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PersonalSite.Core.Models
+﻿namespace PersonalSite.Core.Models
 {
     public class Certificate
     {

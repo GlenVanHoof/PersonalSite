@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Models;
 using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;
 
@@ -20,7 +20,7 @@ public class CertificateRepository : ICertificateRepository
         var entities = await _context.Certificates
             .OrderByDescending(c => c.AcquiredOn)
             .ToListAsync();
-        
+
         return CertificateMapper.ToModelList(entities);
     }
 

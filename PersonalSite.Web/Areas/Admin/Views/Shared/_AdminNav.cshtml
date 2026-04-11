@@ -5,8 +5,8 @@
     var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
 }
 
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-    <div class="position-sticky pt-3 sidebar-sticky">
+<nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-light sidebar position-fixed" style="height: calc(100vh - 70px); top: 70px; left: 0; overflow-y: auto;">
+    <div class="pt-3">
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link @(currentController == "Home" ? "active" : "")" 
@@ -42,6 +42,12 @@
                 <a class="nav-link @(currentController == "Skills" ? "active" : "")" 
                    asp-area="Admin" asp-controller="Skills" asp-action="Index">
                     <i class="bi bi-gear"></i> Skills
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentController == "Contacts" ? "active" : "")" 
+                   asp-area="Admin" asp-controller="Contacts" asp-action="Index">
+                    <i class="bi bi-envelope"></i> Contactberichten
                 </a>
             </li>
         </ul>

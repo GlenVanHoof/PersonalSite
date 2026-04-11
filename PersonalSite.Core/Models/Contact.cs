@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PersonalSite.Core.Models
+﻿namespace PersonalSite.Core.Models
 {
     public class Contact
     {
@@ -10,7 +6,7 @@ namespace PersonalSite.Core.Models
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
-        public string? Message { get; set; } 
+        public string? Message { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

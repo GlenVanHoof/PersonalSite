@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Models;
 using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;
 
@@ -21,7 +21,7 @@ public class ProjectTranslationRepository : IProjectTranslationRepository
             .OrderBy(t => t.ProjectId)
             .ThenBy(t => t.Language)
             .ToListAsync();
-        
+
         return ProjectTranslationMapper.ToModelList(entities);
     }
 
@@ -31,7 +31,7 @@ public class ProjectTranslationRepository : IProjectTranslationRepository
             .Where(t => t.ProjectId == projectId)
             .OrderBy(t => t.Language)
             .ToListAsync();
-        
+
         return ProjectTranslationMapper.ToModelList(entities);
     }
 
@@ -45,7 +45,7 @@ public class ProjectTranslationRepository : IProjectTranslationRepository
     {
         var entity = await _context.ProjectTranslations
             .FirstOrDefaultAsync(t => t.ProjectId == projectId && t.Language == language);
-        
+
         return entity != null ? ProjectTranslationMapper.ToModel(entity) : null;
     }
 

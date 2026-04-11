@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Models;
 using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;
 

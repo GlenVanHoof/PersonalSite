@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Models;
 using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;
 
@@ -20,7 +20,7 @@ public class EducationRepository : IEducationRepository
         var entities = await _context.Educations
             .OrderByDescending(e => e.StartDate)
             .ToListAsync();
-        
+
         return EducationMapper.ToModelList(entities);
     }
 

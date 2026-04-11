@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Models;
 using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;
 
@@ -20,7 +20,7 @@ public class ContactRepository : IContactRepository
         var entities = await _context.Contacts
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
-        
+
         return ContactMapper.ToModelList(entities);
     }
 

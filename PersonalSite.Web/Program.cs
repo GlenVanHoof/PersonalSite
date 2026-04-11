@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
-using PersonalSite.Infrastructure.Data;
 using PersonalSite.Core.Interfaces;
 using PersonalSite.Core.Services;
+using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Repositories;
 using System.Globalization;
 

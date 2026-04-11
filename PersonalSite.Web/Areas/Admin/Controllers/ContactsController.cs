@@ -16,7 +16,9 @@ namespace PersonalSite.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var contacts = await _contactService.GetAllContactsAsync();
-            return View(contacts);
+            // Sorteer op CreatedAt, recentste eerst
+            var sortedContacts = contacts.OrderByDescending(c => c.CreatedAt);
+            return View(sortedContacts);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -44,7 +46,7 @@ namespace PersonalSite.Web.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _contactService.DeleteContactAsync(id);
-            TempData["SuccessMessage"] = "Contact message successfully deleted!";
+            TempData["SuccessMessage"] = "Contactbericht succesvol verwijderd!";
             return RedirectToAction(nameof(Index));
         }
     }

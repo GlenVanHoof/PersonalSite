@@ -1,37 +1,50 @@
 @model PersonalSite.Core.Models.Contact
 
 @{
-    ViewData["Title"] = "Delete Contact Message";
+    ViewData["Title"] = "Contactbericht Verwijderen";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Delete Contact Message</h1>
+<h1 class="text-danger">
+    <i class="bi bi-exclamation-triangle me-2"></i>Contactbericht Verwijderen
+</h1>
 
-<h3 class="text-danger">Are you sure you want to delete this contact message?</h3>
-<hr />
-<div class="row">
-    <div class="col-md-8">
+<div class="alert alert-danger mt-4">
+    <h5><i class="bi bi-exclamation-circle me-2"></i>Waarschuwing</h5>
+    <p class="mb-0">Weet je zeker dat je dit contactbericht wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.</p>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">Bericht Details</h5>
+    </div>
+    <div class="card-body">
         <dl class="row">
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FirstName)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.FirstName)</dd>
+            <dt class="col-sm-3">Naam</dt>
+            <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
             
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.LastName)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.LastName)</dd>
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
             
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Email)</dd>
+            <dt class="col-sm-3">Ontvangen op</dt>
+            <dd class="col-sm-9">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
             
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Message)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Message)</dd>
-            
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedAt)</dd>
+            <dt class="col-sm-3">Bericht</dt>
+            <dd class="col-sm-9">
+                <div class="alert alert-light border">
+                    <p class="mb-0" style="white-space: pre-wrap;">@Model.Message</p>
+                </div>
+            </dd>
         </dl>
-        
-        <form asp-action="Delete" method="post">
-            <input type="hidden" asp-for="Id" />
-            <button type="submit" class="btn btn-danger">Delete</button>
-            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-        </form>
     </div>
 </div>
+
+<form asp-action="Delete" method="post" class="mt-4">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">
+        <i class="bi bi-trash me-2"></i>Ja, verwijder dit bericht
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-x-circle me-2"></i>Annuleren
+    </a>
+</form>

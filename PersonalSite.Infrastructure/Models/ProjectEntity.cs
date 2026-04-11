@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PersonalSite.Infrastructure.Models
+﻿namespace PersonalSite.Infrastructure.Models
 {
     public class ProjectEntity
     {
@@ -17,4 +13,3 @@ namespace PersonalSite.Infrastructure.Models
         public ICollection<ProjectTranslationEntity> Translations { get; set; } = new List<ProjectTranslationEntity>();
     }
 }
- 
