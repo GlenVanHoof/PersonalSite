@@ -31,7 +31,7 @@ namespace PersonalSite.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _experienceService.AddExperienceAsync(experience);
+                await _experienceService.CreateExperienceAsync(experience);
                 TempData["SuccessMessage"] = "Experience successfully created!";
                 return RedirectToAction(nameof(Index));
             }

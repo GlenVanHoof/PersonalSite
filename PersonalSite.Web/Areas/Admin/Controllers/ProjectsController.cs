@@ -31,7 +31,7 @@ namespace PersonalSite.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _projectService.AddProjectAsync(project);
+                await _projectService.CreateProjectAsync(project);
                 TempData["SuccessMessage"] = "Project successfully created!";
                 return RedirectToAction(nameof(Index));
             }

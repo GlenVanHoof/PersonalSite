@@ -31,7 +31,7 @@ namespace PersonalSite.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _certificateService.AddCertificateAsync(certificate);
+                await _certificateService.CreateCertificateAsync(certificate);
                 TempData["SuccessMessage"] = "Certificate successfully created!";
                 return RedirectToAction(nameof(Index));
             }

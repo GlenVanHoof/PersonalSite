@@ -31,7 +31,7 @@ namespace PersonalSite.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _educationService.AddEducationAsync(education);
+                await _educationService.CreateEducationAsync(education);
                 TempData["SuccessMessage"] = "Education successfully created!";
                 return RedirectToAction(nameof(Index));
             }

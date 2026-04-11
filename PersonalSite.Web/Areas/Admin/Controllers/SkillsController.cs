@@ -31,7 +31,7 @@ namespace PersonalSite.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _skillService.AddSkillAsync(skill);
+                await _skillService.CreateSkillAsync(skill);
                 TempData["SuccessMessage"] = "Skill successfully created!";
                 return RedirectToAction(nameof(Index));
             }
