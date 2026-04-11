@@ -1,0 +1,80 @@
+@model PersonalSite.Core.Models.ProjectTranslation
+@{
+    ViewData["Title"] = "Create Translation";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var project = ViewBag.Project as PersonalSite.Core.Models.Project;
+}
+
+<h1>Create Translation</h1>
+<h4>For Project: @project?.Slug</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="CreateTranslation" method="post">
+            <input type="hidden" asp-for="ProjectId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="mb-3">
+                <label asp-for="Language" class="form-label"></label>
+                <input asp-for="Language" class="form-control" placeholder="e.g., en, nl, fr" />
+                <span asp-validation-for="Language" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ShortDescription" class="form-label"></label>
+                <textarea asp-for="ShortDescription" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="ShortDescription" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LongDescription" class="form-label"></label>
+                <textarea asp-for="LongDescription" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="LongDescription" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Technologies (comma-separated)</label>
+                <input type="text" id="technologies-input" class="form-control" placeholder="e.g., C#, ASP.NET Core, SQL Server" />
+                <input type="hidden" asp-for="Technologies" id="technologies-hidden" />
+                <span asp-validation-for="Technologies" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Details" asp-route-id="@Model.ProjectId" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Handle technologies array conversion
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const technologiesInput = document.getElementById('technologies-input').value;
+            const technologiesArray = technologiesInput.split(',').map(t => t.trim()).filter(t => t.length > 0);
+            document.getElementById('technologies-hidden').value = JSON.stringify(technologiesArray);
+        });
+
+        // Load existing technologies if any
+        window.addEventListener('DOMContentLoaded', function() {
+            const technologiesHidden = document.getElementById('technologies-hidden').value;
+            if (technologiesHidden) {
+                try {
+                    const technologies = JSON.parse(technologiesHidden);
+                    document.getElementById('technologies-input').value = technologies.join(', ');
+                } catch (e) {
+                    console.error('Error parsing technologies:', e);
+                }
+            }
+        });
+    </script>
+}
