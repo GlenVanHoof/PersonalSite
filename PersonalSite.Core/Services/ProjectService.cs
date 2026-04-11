@@ -26,6 +26,11 @@ namespace PersonalSite.Core.Services
             return await _projectRepository.GetProjectBySlugAsync(slug, language);
         }
 
+        public async Task<Project?> GetProjectByIdAsync(int id)
+        {
+            return await _projectRepository.GetProjectByIdAsync(id);
+        }
+
         public async Task<Project> CreateProjectAsync(Project project)
         {
             return await _projectRepository.CreateProjectAsync(project);
