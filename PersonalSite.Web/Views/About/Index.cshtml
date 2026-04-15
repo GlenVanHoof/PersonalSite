@@ -4,45 +4,133 @@
 }
 
 <div class="container py-5">
-    <!-- Profile Header -->
-    <div class="row mb-5">
-        <div class="col-md-3 text-center">
-            @if (!string.IsNullOrEmpty(Model.PictureURL))
-            {
-                <img src="~/@Model.PictureURL" alt="Profile Picture" class="img-fluid rounded-circle mb-3" style="max-width: 250px;" />
-            }
-        </div>
-        <div class="col-md-9">
-            <h1 class="display-4 mb-3">Glen Van Hoof</h1>
-            <p class="lead">Full-Stack .NET Developer</p>
-        </div>
-    </div>
-
-    <!-- Skills Section -->
-    @if (Model.Skills.Any())
-    {
-        <div class="mb-5">
-            <h2 class="border-bottom pb-2 mb-4">
-                <i class="bi bi-tools me-2"></i>Skills
-            </h2>
-            @{
-                var skillGroups = Model.Skills.GroupBy(s => s.Type);
-            }
-            @foreach (var group in skillGroups)
-            {
-                <div class="mb-4 card p-4">
-                    <h4 class="mb-3">@group.Key</h4>
-                    <div class="row">
-                        @foreach (var skill in group)
+    <div class="row">
+        <!-- Left Column - Profile Header -->
+        <div class="col-md-4 mx-3">
+            <div class="sticky-top about-picture-title">
+                <div class="text-center" style="margin-right: 1em">
+                    @if (!string.IsNullOrEmpty(Model.PictureURL))
+                    {
+                        <img src="~/@Model.PictureURL" alt="Profile Picture" class="img-fluid rounded-circle mb-3" style="max-width: 100%;" />
+                    }
+                    <h1 class="h3 mb-2">Glen Van Hoof</h1>
+                    <p class="text-muted">Full-Stack .NET Developer</p>
+                </div>
+                
+                <!-- Description Section -->
+                <div class="text-center">
+                    <p class="text">
+                        @if (!string.IsNullOrEmpty(Model.Description))
                         {
-                            <div class="col-md-4 mb-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1">
-                                        <strong>@skill.Name</strong>
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar" role="progressbar" style="width: @skill.ScoreOutOf100%"
-                                                 aria-valuenow="@skill.ScoreOutOf100" aria-valuemin="0" aria-valuemax="100">
+                            @Model.Description
+                        }
+                        else
+                        {
+                            <!-- Add your description text here -->
+                            <text>Passionate developer with expertise in .NET technologies, building modern web applications and solving complex problems.</text>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - All Sections -->
+        <div class="col-md-7">
+            <!-- Skills Section -->
+            @if (Model.Skills.Any())
+            {
+                <div class="mb-5">
+                    <h2 class="border-bottom pb-2 mb-4">
+                        <i class="bi bi-tools me-2"></i>Skills
+                    </h2>
+                    @{
+                        var skillGroups = Model.Skills.GroupBy(s => s.Type);
+                    }
+                    @foreach (var group in skillGroups)
+                    {
+                        <div class="mb-4 card p-4">
+                            <h4 class="mb-3">@group.Key</h4>
+                            <div class="row">
+                                @foreach (var skill in group)
+                                {
+                                    <div class="col-md-4 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1">
+                                                <strong>@skill.Name</strong>
+                                                <div class="progress" style="height: 8px;">
+                                                    <div class="progress-bar" role="progressbar" style="width: @skill.ScoreOutOf100%;"
+                                                         aria-valuenow="@skill.ScoreOutOf100" aria-valuemin="0" aria-valuemax="100">
+                                                    </div>
+                                                </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- Education Section -->
+            @if (Model.Educations.Any())
+            {
+                <div class="mb-5">
+                    <h2 class="border-bottom pb-2 mb-4">
+                        <i class="bi bi-mortarboard me-2"></i>Education
+                    </h2>
+                    @foreach (var education in Model.Educations.OrderByDescending(e => e.StartDate))
+                    {
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <small class="text-muted">
+                                            @education.StartDate.ToString("yyyy") -
+                                            @(education.EndDate.HasValue? education.EndDate.Value.ToString("yyyy") : "Present")
+                                        </small>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <h5 class="card-title">@education.FieldOfStudy - <span class="text-muted">@education.Degree</span></h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">@education.Institution</h6>
+                                        @if (!string.IsNullOrEmpty(education.Description))
+                                        {
+                                            <p class="card-text">@education.Description</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- Experience Section -->
+            @if (Model.Experiences.Any())
+            {
+                <div class="mb-5">
+                    <h2 class="border-bottom pb-2 mb-4">
+                        <i class="bi bi-briefcase me-2"></i>Experience
+                    </h2>
+                    <div class="timeline">
+                        @foreach (var experience in Model.Experiences.OrderByDescending(e => e.StartDate))
+                        {
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <small class="text-muted">
+                                                @experience.StartDate.ToString("yyyy") - 
+                                                @(experience.EndDate.HasValue ? experience.EndDate.Value.ToString("yyyy") : "Present")
+                                            </small>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <h5 class="card-title">@experience.Position</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">@experience.Company</h6>
+                                            @if (!string.IsNullOrEmpty(experience.Description))
+                                            {
+                                                <p class="card-text">@experience.Description</p>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -51,103 +139,34 @@
                     </div>
                 </div>
             }
-        </div>
-    }
 
-
-    <!-- Education Section -->
-    @if (Model.Educations.Any())
-    {
-        <div class="mb-5">
-            <h2 class="border-bottom pb-2 mb-4">
-                <i class="bi bi-mortarboard me-2"></i>Education
-            </h2>
-            @foreach (var education in Model.Educations.OrderByDescending(e => e.StartDate))
+            <!-- Certificates Section -->
+            @if (Model.Certificates.Any())
             {
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <small class="text-muted">
-                                    @education.StartDate.ToString("yyyy") -
-                                    @(education.EndDate.HasValue? education.EndDate.Value.ToString("yyyy") : "Present")
-                                </small>
+                <div class="mb-5">
+                    <h2 class="border-bottom pb-2 mb-4">
+                        <i class="bi bi-award me-2"></i>Certificates & Achievements
+                    </h2>
+                    <div class="row">
+                        @foreach (var certificate in Model.Certificates.OrderByDescending(c => c.AcquiredOn))
+                        {
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@certificate.Name</h5>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                <strong>Organisation:</strong> @certificate.Organisation<br />
+                                                <strong>Date:</strong> @certificate.AcquiredOn.ToString("yyyy")
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                <h5 class="card-title">@education.Degree</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">@education.Institution</h6>
-                                @if (!string.IsNullOrEmpty(education.Description))
-                                {
-                                    <p class="card-text">@education.Description</p>
-                                }
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
             }
         </div>
-    }
-
-    <!-- Experience Section -->
-    @if (Model.Experiences.Any())
-    {
-        <div class="mb-5">
-            <h2 class="border-bottom pb-2 mb-4">
-                <i class="bi bi-briefcase me-2"></i>Experience
-            </h2>
-            <div class="timeline">
-                @foreach (var experience in Model.Experiences.OrderByDescending(e => e.StartDate))
-                {
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <small class="text-muted">
-                                        @experience.StartDate.ToString("yyyy") - 
-                                        @(experience.EndDate.HasValue ? experience.EndDate.Value.ToString("yyyy") : "Present")
-                                    </small>
-                                </div>
-                                <div class="col-md-9">
-                                    <h5 class="card-title">@experience.Position</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">@experience.Company</h6>
-                                    @if (!string.IsNullOrEmpty(experience.Description))
-                                    {
-                                        <p class="card-text">@experience.Description</p>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-    }
-
-    <!-- Certificates Section -->
-    @if (Model.Certificates.Any())
-    {
-        <div class="mb-5">
-            <h2 class="border-bottom pb-2 mb-4">
-                <i class="bi bi-award me-2"></i>Certificates & Achievements
-            </h2>
-            <div class="row">
-                @foreach (var certificate in Model.Certificates.OrderByDescending(c => c.AcquiredOn))
-                {
-                    <div class="col-md-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">@certificate.Name</h5>
-                                <p class="card-text">
-                                    <small class="text-muted">
-                                        <strong>Organisation:</strong> @certificate.Organisation<br />
-                                        <strong>Date:</strong> @certificate.AcquiredOn.ToString("yyyy")
-                                    </small>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-    }
+    </div>
 </div>

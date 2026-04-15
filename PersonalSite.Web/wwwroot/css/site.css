@@ -247,6 +247,34 @@ body {
     color: white !important;
 }
 
+/*===================== - About Me - =========================*/
+
+.about-picture-title {
+    top: 140px;
+    z-index: 1040;
+    margin-bottom: 1em;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+}
+
+/* Custom scrollbar for the sticky section */
+.about-picture-title::-webkit-scrollbar {
+    width: 6px;
+}
+
+.about-picture-title::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.about-picture-title::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+}
+
+.about-picture-title::-webkit-scrollbar-thumb:hover {
+    background: rgba(37, 140, 251, 0.5);
+}
+
 /*===================== - Responsive Design - =========================*/
 @media (max-width: 768px) {
     .container main {
