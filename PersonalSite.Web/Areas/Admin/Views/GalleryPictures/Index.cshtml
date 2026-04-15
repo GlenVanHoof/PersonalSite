@@ -1,0 +1,50 @@
+@model IEnumerable<PersonalSite.Core.Models.GalleryPicture>
+@{
+    ViewData["Title"] = "Gallery Pictures";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Homepage Gallery</h1>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Add to Gallery
+    </a>
+</div>
+
+<div class="alert alert-info">
+    <strong>Note:</strong> Drag and drop rows to reorder the gallery. Lower positions appear first.
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @if (Model?.Any() == true)
+    {
+        @foreach (var galleryPicture in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    @if (galleryPicture.Picture != null)
+                    {
+                        <img src="@galleryPicture.Picture.Source" class="card-img-top" alt="Gallery picture" style="height: 200px; object-fit: cover;" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">Position: @galleryPicture.Position</h5>
+                        <p class="card-text">
+                            <small class="text-muted">Picture ID: @galleryPicture.PictureId</small>
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group w-100" role="group">
+                            <a asp-action="Edit" asp-route-id="@galleryPicture.Id" class="btn btn-sm btn-warning">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@galleryPicture.Id" class="btn btn-sm btn-danger">Remove</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <p class="text-center text-muted">No pictures in gallery. Add some to showcase on the homepage!</p>
+        </div>
+    }
+</div>

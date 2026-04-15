@@ -36,4 +36,10 @@ public class CertificateService : ICertificateService
     {
         await _certificateRepository.DeleteCertificateAsync(id);
     }
+
+    public async Task<IEnumerable<Certificate>> GetCertificatesOrderedByDateAsync()
+    {
+        var certificates = await _certificateRepository.GetAllCertificatesAsync();
+        return certificates.OrderByDescending(c => c.AcquiredOn);
+    }
 }

@@ -9,4 +9,5 @@ public interface IExperienceService
     Task<Experience> CreateExperienceAsync(Experience experience);
     Task UpdateExperienceAsync(Experience experience);
     Task DeleteExperienceAsync(int id);
+    Task<IEnumerable<Experience>> GetExperiencesOrderedByDateAsync();
 }

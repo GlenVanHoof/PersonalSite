@@ -5,47 +5,42 @@ namespace PersonalSite.Infrastructure.Helpers;
 
 public static class ExperienceMapper
 {
-    public static Experience ToModel(ExperienceEntity entity)
+    public static async Task<Experience> ToDomainAsync(ExperienceEntity entity, TranslationHelper translationHelper)
     {
-        if (entity == null) return null!;
+        var translations = await translationHelper.GetAllTranslationsAsync("Experience", entity.Id);
 
         return new Experience
         {
             Id = entity.Id,
-            Company = entity.Company,
-            Position = entity.Position,
             StartDate = entity.StartDate,
             EndDate = entity.EndDate,
-            Description = entity.Description,
-            CreatedAt = entity.CreatedAt,
-            UpdatedAt = entity.UpdatedAt
+            CreatedOn = entity.CreatedOn,
+            UpdatedOn = entity.UpdatedOn,
+            Company = translations.GetValueOrDefault("Company") ?? new Dictionary<string, string>(),
+            Position = translations.GetValueOrDefault("Position") ?? new Dictionary<string, string>(),
+            Description = translations.GetValueOrDefault("Description") ?? new Dictionary<string, string>()
         };
     }
 
-    public static ExperienceEntity ToEntity(Experience model)
+    public static ExperienceEntity ToEntity(Experience domain)
     {
-        if (model == null) return null!;
-
         return new ExperienceEntity
         {
-            Id = model.Id,
-            Company = model.Company!,
-            Position = model.Position!,
-            StartDate = model.StartDate,
-            EndDate = model.EndDate,
-            Description = model.Description,
-            CreatedAt = model.CreatedAt,
-            UpdatedAt = model.UpdatedAt
+            Id = domain.Id,
+            StartDate = domain.StartDate,
+            EndDate = domain.EndDate,
+            CreatedOn = domain.CreatedOn,
+            UpdatedOn = domain.UpdatedOn
         };
     }
 
-    public static IEnumerable<Experience> ToModelList(IEnumerable<ExperienceEntity> entities)
+    public static Dictionary<string, Dictionary<string, string>> ExtractTranslations(Experience domain)
     {
-        return entities?.Select(ToModel) ?? Enumerable.Empty<Experience>();
-    }
-
-    public static IEnumerable<ExperienceEntity> ToEntityList(IEnumerable<Experience> models)
-    {
-        return models?.Select(ToEntity) ?? Enumerable.Empty<ExperienceEntity>();
+        return new Dictionary<string, Dictionary<string, string>>
+        {
+            ["Company"] = domain.Company,
+            ["Position"] = domain.Position,
+            ["Description"] = domain.Description
+        };
     }
 }

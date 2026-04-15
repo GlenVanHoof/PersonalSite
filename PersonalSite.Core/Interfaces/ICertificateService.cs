@@ -9,4 +9,5 @@ public interface ICertificateService
     Task<Certificate> CreateCertificateAsync(Certificate certificate);
     Task UpdateCertificateAsync(Certificate certificate);
     Task DeleteCertificateAsync(int id);
+    Task<IEnumerable<Certificate>> GetCertificatesOrderedByDateAsync();
 }

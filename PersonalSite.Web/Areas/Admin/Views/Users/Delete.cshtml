@@ -1,0 +1,39 @@
+@model PersonalSite.Core.Models.User
+@{
+    ViewData["Title"] = "Delete User";
+}
+
+<h1 class="text-danger">Delete User</h1>
+<hr />
+
+<div class="alert alert-danger">
+    <h4>Are you sure you want to delete this user?</h4>
+    <p>This action cannot be undone.</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>@Model.Username (@Model.Role)</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Username</dt>
+            <dd class="col-sm-9">@Model.Username</dd>
+            
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+            
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+            
+            <dt class="col-sm-3">Role</dt>
+            <dd class="col-sm-9"><span class="badge bg-@(Model.Role == "SuperAdmin" ? "danger" : "primary")">@Model.Role</span></dd>
+        </dl>
+        
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Yes, Delete User</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

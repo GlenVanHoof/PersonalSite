@@ -1,0 +1,72 @@
+@model PictureEditViewModel
+@{
+    ViewData["Title"] = "Upload Picture";
+}
+
+<h1>Upload Picture</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            
+            <div class="mb-3">
+                <label asp-for="Source" class="form-label"></label>
+                <input asp-for="Source" class="form-control" />
+                <span asp-validation-for="Source" class="text-danger"></span>
+                <small class="form-text text-muted">Enter the full URL or path to the image</small>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="ProjectId" class="form-label"></label>
+                <select asp-for="ProjectId" class="form-select">
+                    <option value="">-- None --</option>
+                    @foreach (var project in Model.AvailableProjects)
+                    {
+                        <option value="@project.Id">@project.Slug</option>
+                    }
+                </select>
+                <span asp-validation-for="ProjectId" class="text-danger"></span>
+                <small class="form-text text-muted">Optional: Link this picture to a project</small>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Image Preview</h5>
+            </div>
+            <div class="card-body text-center">
+                <img id="imagePreview" src="" alt="Preview" class="img-fluid" style="display: none; max-height: 300px;" />
+                <p id="noPreview" class="text-muted">Enter an image URL to see preview</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('Source').addEventListener('input', function(e) {
+            var preview = document.getElementById('imagePreview');
+            var noPreview = document.getElementById('noPreview');
+            var url = e.target.value;
+            
+            if (url) {
+                preview.src = url;
+                preview.style.display = 'block';
+                noPreview.style.display = 'none';
+            } else {
+                preview.style.display = 'none';
+                noPreview.style.display = 'block';
+            }
+        });
+    </script>
+}

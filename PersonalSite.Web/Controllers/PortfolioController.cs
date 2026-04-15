@@ -2,50 +2,42 @@
 using PersonalSite.Core.Interfaces;
 using PersonalSite.Web.Models;
 
-namespace PersoonlijkeSite.Controllers
+namespace PersonalSite.Web.Controllers;
+
+public class PortfolioController : Controller
 {
-    public class PortfolioController : Controller
+    private readonly IProjectService _projectService;
+    private readonly ICurrentLanguageService _languageService;
+
+    public PortfolioController(
+        IProjectService projectService,
+        ICurrentLanguageService languageService)
     {
-        private readonly ILogger<PortfolioController> _logger;
-        private readonly IProjectService _projectService;
-        private readonly IProjectTranslationService _projectTranslationService;
+        _projectService = projectService;
+        _languageService = languageService;
+    }
 
-        public PortfolioController(ILogger<PortfolioController> logger,
-            IProjectService projectService, IProjectTranslationService projectTranslationService)
+    public async Task<IActionResult> Index()
+    {
+        var projects = await _projectService.GetProjectsOrderedAsync();
+
+        var viewModel = new PortfolioViewModel
         {
-            _logger = logger;
-            _projectService = projectService;
-            _projectTranslationService = projectTranslationService;
-        }
-
-        public async Task<IActionResult> Index(string lang = "en")
-        {
-            var projects = await _projectService.GetAllProjectsAsync();
-            var viewModel = new PortfolioViewModel
+            CurrentLanguage = _languageService.GetCurrentLanguageCode(),
+            Projects = projects.Select(p => new PortfolioProjectViewModel
             {
-                CurrentLanguage = lang
-            };
+                Id = p.Id,
+                Slug = p.Slug,
+                GitUrl = p.GithubUrl,
+                ImagePath = p.ImagePath,
+                OrderIndex = p.OrderIndex,
+                Title = _languageService.GetTranslation(p.Title),
+                ShortDescription = _languageService.GetTranslation(p.ShortDescription),
+                LongDescription = _languageService.GetTranslation(p.Description),
+                Technologies = null // TODO: Add technologies field if needed
+            }).ToList()
+        };
 
-            foreach (var project in projects.OrderBy(p => p.OrderIndex))
-            {
-                var translation = await _projectTranslationService.GetTranslationByProjectIdAndLanguageAsync(project.Id, lang)
-                    ?? await _projectTranslationService.GetTranslationByProjectIdAndLanguageAsync(project.Id, "en");
-
-                viewModel.Projects.Add(new PortfolioProjectViewModel
-                {
-                    Id = project.Id,
-                    Slug = project.Slug,
-                    GitUrl = project.GitUrl,
-                    ImagePath = project.ImagePath,
-                    OrderIndex = project.OrderIndex,
-                    Title = translation?.Title,
-                    ShortDescription = translation?.ShortDescription,
-                    LongDescription = translation?.LongDescription,
-                    Technologies = translation?.Technologies
-                });
-            }
-
-            return View(viewModel);
-        }
+        return View(viewModel);
     }
 }

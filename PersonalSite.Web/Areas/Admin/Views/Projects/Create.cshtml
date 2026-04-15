@@ -1,50 +1,113 @@
-@model PersonalSite.Core.Models.Project
-
+@model ProjectEditViewModel
 @{
     ViewData["Title"] = "Create Project";
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h1>Create Project</h1>
-
 <hr />
+
 <div class="row">
     <div class="col-md-8">
         <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             
-            <div class="mb-3">
-                <label asp-for="Slug" class="form-label"></label>
-                <input asp-for="Slug" class="form-control" />
-                <span asp-validation-for="Slug" class="text-danger"></span>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Slug" class="form-label"></label>
+                        <input asp-for="Slug" class="form-control" />
+                        <span asp-validation-for="Slug" class="text-danger"></span>
+                        <small class="form-text text-muted">URL-friendly identifier (e.g., "my-awesome-project")</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="ImagePath" class="form-label"></label>
+                        <input asp-for="ImagePath" class="form-control" />
+                        <span asp-validation-for="ImagePath" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="GithubUrl" class="form-label"></label>
+                        <input asp-for="GithubUrl" class="form-control" />
+                        <span asp-validation-for="GithubUrl" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="OrderIndex" class="form-label"></label>
+                        <input asp-for="OrderIndex" class="form-control" type="number" />
+                        <span asp-validation-for="OrderIndex" class="text-danger"></span>
+                        <small class="form-text text-muted">Lower numbers appear first</small>
+                    </div>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label asp-for="GitUrl" class="form-label"></label>
-                <input asp-for="GitUrl" class="form-control" />
-                <span asp-validation-for="GitUrl" class="text-danger"></span>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Translations</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @for (int i = 0; i < Model.Languages.Count; i++)
+                        {
+                            var lang = Model.Languages[i];
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(i == 0 ? "active" : "")" 
+                                        id="@lang.Code-tab" 
+                                        data-bs-toggle="tab" 
+                                        data-bs-target="#@lang.Code-content" 
+                                        type="button" 
+                                        role="tab">
+                                    @lang.Name (@lang.Code.ToUpper())
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                    
+                    <div class="tab-content pt-3">
+                        @for (int i = 0; i < Model.Languages.Count; i++)
+                        {
+                            var lang = Model.Languages[i];
+                            <div class="tab-pane fade @(i == 0 ? "show active" : "")" 
+                                 id="@lang.Code-content" 
+                                 role="tabpanel">
+                                
+                                <input type="hidden" name="Titles[@i].LanguageCode" value="@lang.Code" />
+                                <input type="hidden" name="Titles[@i].LanguageName" value="@lang.Name" />
+                                <div class="mb-3">
+                                    <label class="form-label">Title (@lang.Name)</label>
+                                    <input type="text" name="Titles[@i].Text" class="form-control" />
+                                </div>
+                                
+                                <input type="hidden" name="ShortDescriptions[@i].LanguageCode" value="@lang.Code" />
+                                <input type="hidden" name="ShortDescriptions[@i].LanguageName" value="@lang.Name" />
+                                <div class="mb-3">
+                                    <label class="form-label">Short Description (@lang.Name)</label>
+                                    <textarea name="ShortDescriptions[@i].Text" class="form-control" rows="2"></textarea>
+                                </div>
+                                
+                                <input type="hidden" name="Descriptions[@i].LanguageCode" value="@lang.Code" />
+                                <input type="hidden" name="Descriptions[@i].LanguageName" value="@lang.Name" />
+                                <div class="mb-3">
+                                    <label class="form-label">Description (@lang.Name)</label>
+                                    <textarea name="Descriptions[@i].Text" class="form-control" rows="5"></textarea>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label asp-for="ImagePath" class="form-label"></label>
-                <input asp-for="ImagePath" class="form-control" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
-            </div>
-            
-            <div class="mb-3">
-                <label asp-for="OrderIndex" class="form-label"></label>
-                <input asp-for="OrderIndex" class="form-control" type="number" />
-                <span asp-validation-for="OrderIndex" class="text-danger"></span>
-            </div>
-            
+
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Create</button>
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

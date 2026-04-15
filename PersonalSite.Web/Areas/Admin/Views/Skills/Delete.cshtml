@@ -5,27 +5,34 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Delete Skill</h1>
-
-<h3 class="text-danger">Are you sure you want to delete this skill?</h3>
+<h1 class="text-danger">Delete Skill</h1>
 <hr />
-<div class="row">
-    <div class="col-md-8">
+
+<div class="alert alert-danger">
+    <h4>Are you sure you want to delete this skill?</h4>
+    <p>This action cannot be undone.</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>@Model.Name.GetValueOrDefault("en", "Skill")</h5>
+    </div>
+    <div class="card-body">
         <dl class="row">
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+            <dt class="col-sm-3">Name (EN)</dt>
+            <dd class="col-sm-9">@Model.Name.GetValueOrDefault("en", "N/A")</dd>
             
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Type)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Type)</dd>
+            <dt class="col-sm-3">Type</dt>
+            <dd class="col-sm-9">@Model.Type</dd>
             
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ScoreOutOf100)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.ScoreOutOf100)</dd>
+            <dt class="col-sm-3">Score</dt>
+            <dd class="col-sm-9">@Model.ScoreOutOf100%</dd>
         </dl>
         
         <form asp-action="Delete" method="post">
             <input type="hidden" asp-for="Id" />
-            <button type="submit" class="btn btn-danger">Delete</button>
-            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            <button type="submit" class="btn btn-danger">Yes, Delete Skill</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>

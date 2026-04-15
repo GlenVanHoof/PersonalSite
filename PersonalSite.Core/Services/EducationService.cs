@@ -36,4 +36,10 @@ public class EducationService : IEducationService
     {
         await _educationRepository.DeleteEducationAsync(id);
     }
+
+    public async Task<IEnumerable<Education>> GetEducationsOrderedByDateAsync()
+    {
+        var educations = await _educationRepository.GetAllEducationsAsync();
+        return educations.OrderByDescending(e => e.StartDate);
+    }
 }

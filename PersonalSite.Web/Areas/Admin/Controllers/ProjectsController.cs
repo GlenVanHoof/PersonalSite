@@ -1,196 +1,167 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalSite.Core.Interfaces;
-using PersonalSite.Core.Models;
+using PersonalSite.Web.Areas.Admin.Models;
 
-namespace PersonalSite.Web.Areas.Admin.Controllers
+namespace PersonalSite.Web.Areas.Admin.Controllers;
+
+[Area("Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
+public class ProjectsController : Controller
 {
-    [Area("Admin")]
-    public class ProjectsController : Controller
+    private readonly IProjectService _projectService;
+    private readonly ILanguageService _languageService;
+
+    public ProjectsController(IProjectService projectService, ILanguageService languageService)
     {
-        private readonly IProjectService _projectService;
-        private readonly IProjectTranslationService _projectTranslationService;
+        _projectService = projectService;
+        _languageService = languageService;
+    }
 
-        public ProjectsController(IProjectService projectService, IProjectTranslationService projectTranslationService)
+    public async Task<IActionResult> Index()
+    {
+        var projects = await _projectService.GetProjectsOrderedAsync();
+        return View(projects);
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var project = await _projectService.GetProjectByIdAsync(id);
+        if (project == null)
         {
-            _projectService = projectService;
-            _projectTranslationService = projectTranslationService;
+            return NotFound();
         }
 
-        public async Task<IActionResult> Index()
+        return View(project);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        var languages = await _languageService.GetAllLanguagesAsync();
+        var viewModel = new ProjectEditViewModel
         {
-            var projects = await _projectService.GetAllProjectsAsync();
-            return View(projects);
+            Languages = languages.ToList()
+        };
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(ProjectEditViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
+            return View(model);
         }
 
-        public async Task<IActionResult> Details(int id)
+        var project = new Core.Models.Project
         {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
+            Slug = model.Slug,
+            ImagePath = model.ImagePath,
+            GithubUrl = model.GithubUrl,
+            OrderIndex = model.OrderIndex,
+            Title = model.Titles.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text),
+            ShortDescription = model.ShortDescriptions.ToDictionary(t => t.LanguageCode, t => t.Text)
+        };
+
+        await _projectService.CreateProjectAsync(project);
+        TempData["SuccessMessage"] = "Project successfully created!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var project = await _projectService.GetProjectByIdAsync(id);
+        if (project == null)
+        {
+            return NotFound();
+        }
+
+        var languages = await _languageService.GetAllLanguagesAsync();
+        var viewModel = new ProjectEditViewModel
+        {
+            Id = project.Id,
+            Slug = project.Slug,
+            ImagePath = project.ImagePath,
+            GithubUrl = project.GithubUrl,
+            OrderIndex = project.OrderIndex,
+            Languages = languages.ToList(),
+            Titles = languages.Select(l => new TranslationInputViewModel
             {
-                return NotFound();
-            }
-
-            var translations = await _projectTranslationService.GetTranslationsByProjectIdAsync(id);
-            ViewBag.Translations = translations;
-            return View(project);
-        }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Project project)
-        {
-            if (ModelState.IsValid)
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = project.Title.GetValueOrDefault(l.Code, string.Empty)
+            }).ToList(),
+            Descriptions = languages.Select(l => new TranslationInputViewModel
             {
-                await _projectService.CreateProjectAsync(project);
-                TempData["SuccessMessage"] = "Project successfully created!";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(project);
-        }
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = project.Description.GetValueOrDefault(l.Code, string.Empty)
+            }).ToList(),
+            ShortDescriptions = languages.Select(l => new TranslationInputViewModel
+            {
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = project.ShortDescription.GetValueOrDefault(l.Code, string.Empty)
+            }).ToList()
+        };
 
-        public async Task<IActionResult> Edit(int id)
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, ProjectEditViewModel model)
+    {
+        if (id != model.Id)
         {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-            return View(project);
+            return NotFound();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Project project)
+        if (!ModelState.IsValid)
         {
-            if (id != project.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _projectService.UpdateProjectAsync(project);
-                TempData["SuccessMessage"] = "Project successfully updated!";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(project);
+            model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
+            return View(model);
         }
 
-        public async Task<IActionResult> Delete(int id)
+        var project = new Core.Models.Project
         {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-            return View(project);
-        }
+            Id = model.Id,
+            Slug = model.Slug,
+            ImagePath = model.ImagePath,
+            GithubUrl = model.GithubUrl,
+            OrderIndex = model.OrderIndex,
+            Title = model.Titles.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text),
+            ShortDescription = model.ShortDescriptions.ToDictionary(t => t.LanguageCode, t => t.Text)
+        };
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        await _projectService.UpdateProjectAsync(project);
+        TempData["SuccessMessage"] = "Project successfully updated!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var project = await _projectService.GetProjectByIdAsync(id);
+        if (project == null)
         {
-            await _projectService.DeleteProjectAsync(id);
-            TempData["SuccessMessage"] = "Project successfully deleted!";
-            return RedirectToAction(nameof(Index));
+            return NotFound();
         }
+        return View(project);
+    }
 
-        // Translation Management Actions
-        public async Task<IActionResult> CreateTranslation(int projectId)
-        {
-            var project = await _projectService.GetProjectByIdAsync(projectId);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            var translation = new ProjectTranslation { ProjectId = projectId };
-            ViewBag.Project = project;
-            return View(translation);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateTranslation(ProjectTranslation translation)
-        {
-            if (ModelState.IsValid)
-            {
-                await _projectTranslationService.CreateTranslationAsync(translation);
-                TempData["SuccessMessage"] = "Translation successfully created!";
-                return RedirectToAction(nameof(Details), new { id = translation.ProjectId });
-            }
-
-            var project = await _projectService.GetProjectByIdAsync(translation.ProjectId);
-            ViewBag.Project = project;
-            return View(translation);
-        }
-
-        public async Task<IActionResult> EditTranslation(int id)
-        {
-            var translation = await _projectTranslationService.GetTranslationByIdAsync(id);
-            if (translation == null)
-            {
-                return NotFound();
-            }
-
-            var project = await _projectService.GetProjectByIdAsync(translation.ProjectId);
-            ViewBag.Project = project;
-            return View(translation);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditTranslation(int id, ProjectTranslation translation)
-        {
-            if (id != translation.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _projectTranslationService.UpdateTranslationAsync(translation);
-                TempData["SuccessMessage"] = "Translation successfully updated!";
-                return RedirectToAction(nameof(Details), new { id = translation.ProjectId });
-            }
-
-            var project = await _projectService.GetProjectByIdAsync(translation.ProjectId);
-            ViewBag.Project = project;
-            return View(translation);
-        }
-
-        public async Task<IActionResult> DeleteTranslation(int id)
-        {
-            var translation = await _projectTranslationService.GetTranslationByIdAsync(id);
-            if (translation == null)
-            {
-                return NotFound();
-            }
-
-            var project = await _projectService.GetProjectByIdAsync(translation.ProjectId);
-            ViewBag.Project = project;
-            return View(translation);
-        }
-
-        [HttpPost, ActionName("DeleteTranslation")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteTranslationConfirmed(int id)
-        {
-            var translation = await _projectTranslationService.GetTranslationByIdAsync(id);
-            if (translation == null)
-            {
-                return NotFound();
-            }
-
-            var projectId = translation.ProjectId;
-            await _projectTranslationService.DeleteTranslationAsync(id);
-            TempData["SuccessMessage"] = "Translation successfully deleted!";
-            return RedirectToAction(nameof(Details), new { id = projectId });
-        }
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        await _projectService.DeleteProjectAsync(id);
+        TempData["SuccessMessage"] = "Project successfully deleted!";
+        return RedirectToAction(nameof(Index));
     }
 }

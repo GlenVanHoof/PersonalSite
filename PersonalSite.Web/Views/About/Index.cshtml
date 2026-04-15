@@ -1,4 +1,5 @@
-﻿@model PersonalSite.Web.Models.AboutViewModel
+﻿@using System.Globalization
+@model PersonalSite.Web.Models.AboutViewModel
 @{
     ViewData["Title"] = "About Me";
 }
@@ -86,8 +87,8 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <small class="text-muted">
-                                            @education.StartDate.ToString("yyyy") -
-                                            @(education.EndDate.HasValue? education.EndDate.Value.ToString("yyyy") : "Present")
+                                            @education.StartDate.Year -
+                                            @(education.EndDate.HasValue ? education.EndDate.Value.Year.ToString() : "Present")
                                         </small>
                                     </div>
                                     <div class="col-md-9">
@@ -120,8 +121,8 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <small class="text-muted">
-                                                @experience.StartDate.ToString("yyyy") - 
-                                                @(experience.EndDate.HasValue ? experience.EndDate.Value.ToString("yyyy") : "Present")
+                                                @experience.StartDate.Year - 
+                                                @(experience.EndDate.HasValue ? experience.EndDate.Value.Year.ToString() : "Present")
                                             </small>
                                         </div>
                                         <div class="col-md-9">
@@ -157,7 +158,7 @@
                                         <p class="card-text">
                                             <small class="text-muted">
                                                 <strong>Organisation:</strong> @certificate.Organisation<br />
-                                                <strong>Date:</strong> @certificate.AcquiredOn.ToString("yyyy")
+                                                <strong>Date:</strong> @(certificate.AcquiredOn.HasValue ? certificate.AcquiredOn.Value.Year.ToString() : "N/A")
                                             </small>
                                         </p>
                                     </div>

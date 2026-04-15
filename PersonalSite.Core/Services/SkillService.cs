@@ -22,6 +22,11 @@ public class SkillService : ISkillService
         return await _skillRepository.GetSkillByIdAsync(id);
     }
 
+    public async Task<IEnumerable<Skill>> GetSkillsByTypeAsync(string type)
+    {
+        return await _skillRepository.GetSkillsByTypeAsync(type);
+    }
+
     public async Task<Skill> CreateSkillAsync(Skill skill)
     {
         return await _skillRepository.CreateSkillAsync(skill);
@@ -35,5 +40,11 @@ public class SkillService : ISkillService
     public async Task DeleteSkillAsync(int id)
     {
         await _skillRepository.DeleteSkillAsync(id);
+    }
+
+    public async Task<IEnumerable<Skill>> GetSkillsOrderedByScoreAsync()
+    {
+        var skills = await _skillRepository.GetAllSkillsAsync();
+        return skills.OrderByDescending(s => s.ScoreOutOf100);
     }
 }

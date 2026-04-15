@@ -9,4 +9,5 @@ public interface IEducationService
     Task<Education> CreateEducationAsync(Education education);
     Task UpdateEducationAsync(Education education);
     Task DeleteEducationAsync(int id);
+    Task<IEnumerable<Education>> GetEducationsOrderedByDateAsync();
 }

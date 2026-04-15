@@ -3,46 +3,51 @@ using PersonalSite.Core.Interfaces;
 using PersonalSite.Core.Models;
 using PersonalSite.Web.Models;
 
-namespace PersoonlijkeSite.Controllers
+namespace PersonalSite.Web.Controllers;
+
+public class ContactController : Controller
 {
-    public class ContactController : Controller
+    private readonly IContactFormService _contactFormService;
+
+    public ContactController(IContactFormService contactFormService)
     {
-        private readonly IContactService _contactService;
+        _contactFormService = contactFormService;
+    }
 
-        public ContactController(IContactService contactService)
+    [HttpGet]
+    public IActionResult Index()
+    {
+        return View(new ContactViewModel());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Index(ContactViewModel model)
+    {
+        if (!ModelState.IsValid)
         {
-            _contactService = contactService;
+            return View(model);
         }
 
-        [HttpGet]
-        public IActionResult Index()
+        try
         {
-            return View(new ContactViewModel());
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ContactViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             var contact = new Contact
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
-                Message = model.Message,
-                CreatedAt = DateTime.UtcNow
+                Message = model.Message
             };
 
-            await _contactService.CreateContactAsync(contact);
+            await _contactFormService.SubmitContactFormAsync(contact);
 
-            TempData["SuccessMessage"] = "Bedankt voor je bericht! Ik neem zo spoedig mogelijk contact met je op.";
-
+            TempData["SuccessMessage"] = "Your message has been sent successfully!";
             return RedirectToAction(nameof(Index));
+        }
+        catch (Exception)
+        {
+            ModelState.AddModelError(string.Empty, "An error occurred while sending your message. Please try again.");
+            return View(model);
         }
     }
 }

@@ -1,14 +1,17 @@
 ﻿using PersonalSite.Core.Models;
 
-namespace PersonalSite.Core.Interfaces
+namespace PersonalSite.Core.Interfaces;
+
+public interface IProjectService
 {
-    public interface IProjectService
-    {
-        Task<IEnumerable<Project>> GetAllProjectsAsync(string? language = null);
-        Task<Project?> GetProjectBySlugAsync(string slug, string? language = null);
-        Task<Project?> GetProjectByIdAsync(int id);
-        Task<Project> CreateProjectAsync(Project project);
-        Task UpdateProjectAsync(Project project);
-        Task DeleteProjectAsync(int id);
-    }
+    Task<IEnumerable<Project>> GetAllProjectsAsync();
+    Task<Project?> GetProjectByIdAsync(int id);
+    Task<Project?> GetProjectBySlugAsync(string slug);
+    Task<Project> CreateProjectAsync(Project project);
+    Task UpdateProjectAsync(Project project);
+    Task DeleteProjectAsync(int id);
+    
+    // Helper methods
+    Task<IEnumerable<Project>> GetProjectsOrderedAsync();
+    Task<Project?> GetProjectWithPicturesAsync(int id);
 }

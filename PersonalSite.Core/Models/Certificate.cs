@@ -1,13 +1,14 @@
-﻿namespace PersonalSite.Core.Models
+﻿namespace PersonalSite.Core.Models;
+
+public class Certificate
 {
-    public class Certificate
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public DateOnly AcquiredOn { get; set; }
-        public string? Organisation { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
+    public int Id { get; set; }
+    public DateTime AcquiredOn { get; set; }
+    public required string Organisation { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
+
+    // Multi-language fields
+    public Dictionary<string, string> Name { get; set; } = new();
+    public Dictionary<string, string> Description { get; set; } = new();
 }

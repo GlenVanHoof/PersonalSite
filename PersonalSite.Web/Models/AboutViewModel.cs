@@ -5,10 +5,10 @@ namespace PersonalSite.Web.Models
     public class AboutViewModel
     {
         public string? PictureURL { get; set; }
-        public List<Skill> Skills { get; set; } = new List<Skill>();
-        public List<Education> Educations { get; set; } = new List<Education>();
-        public List<Experience> Experiences { get; set; } = new List<Experience>();
-        public List<Certificate> Certificates { get; set; } = new List<Certificate>();
+        public List<SkillDisplayViewModel> Skills { get; set; } = new();
+        public List<EducationDisplayViewModel> Educations { get; set; } = new();
+        public List<ExperienceDisplayViewModel> Experiences { get; set; } = new();
+        public List<CertificateDisplayViewModel> Certificates { get; set; } = new();
         public string? Description { get; set; }    
     }
 }

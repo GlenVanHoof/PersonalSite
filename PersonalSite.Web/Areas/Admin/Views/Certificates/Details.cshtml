@@ -1,0 +1,49 @@
+@model PersonalSite.Core.Models.Certificate
+
+@{
+    ViewData["Title"] = "Certificate Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Certificate Details</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Basic Information</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Organisation</dt>
+            <dd class="col-sm-9">@(Model.Organisation ?? "N/A")</dd>
+            
+            <dt class="col-sm-3">Acquired On</dt>
+            <dd class="col-sm-9">@Model.AcquiredOn.ToString("MMMM yyyy")</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Translations</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            @foreach (var name in Model.Name)
+            {
+                <dt class="col-sm-3">Name (@name.Key.ToUpper())</dt>
+                <dd class="col-sm-9">@name.Value</dd>
+            }
+            
+            @foreach (var desc in Model.Description)
+            {
+                <dt class="col-sm-3">Description (@desc.Key.ToUpper())</dt>
+                <dd class="col-sm-9">@(string.IsNullOrEmpty(desc.Value) ? "N/A" : desc.Value)</dd>
+            }
+        </dl>
+    </div>
+</div>

@@ -1,88 +1,142 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalSite.Core.Interfaces;
-using PersonalSite.Core.Models;
+using PersonalSite.Web.Areas.Admin.Models;
 
-namespace PersonalSite.Web.Areas.Admin.Controllers
+namespace PersonalSite.Web.Areas.Admin.Controllers;
+
+[Area("Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
+public class CertificatesController : Controller
 {
-    [Area("Admin")]
-    public class CertificatesController : Controller
+    private readonly ICertificateService _certificateService;
+    private readonly ILanguageService _languageService;
+
+    public CertificatesController(ICertificateService certificateService, ILanguageService languageService)
     {
-        private readonly ICertificateService _certificateService;
+        _certificateService = certificateService;
+        _languageService = languageService;
+    }
 
-        public CertificatesController(ICertificateService certificateService)
+    public async Task<IActionResult> Index()
+    {
+        var certificates = await _certificateService.GetAllCertificatesAsync();
+        return View(certificates);
+    }
+
+    public async Task<IActionResult> Create()
+    {
+        var languages = await _languageService.GetAllLanguagesAsync();
+        var model = new CertificateEditViewModel
         {
-            _certificateService = certificateService;
+            Languages = languages.ToList(),
+            Names = languages.Select(l => new TranslationInputViewModel { LanguageCode = l.Code, LanguageName = l.Name }).ToList(),
+            Descriptions = languages.Select(l => new TranslationInputViewModel { LanguageCode = l.Code, LanguageName = l.Name }).ToList()
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(CertificateEditViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
+            return View(model);
         }
 
-        public async Task<IActionResult> Index()
+        var certificate = new Core.Models.Certificate
         {
-            var certificates = await _certificateService.GetAllCertificatesAsync();
-            return View(certificates);
-        }
+            Organisation = model.Organisation ?? string.Empty,
+            AcquiredOn = model.AcquiredOn ?? DateTime.UtcNow,
+            Name = model.Names.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text)
+        };
 
-        public IActionResult Create()
-        {
-            return View();
-        }
+        await _certificateService.CreateCertificateAsync(certificate);
+        TempData["SuccessMessage"] = "Certificate successfully created!";
+        return RedirectToAction(nameof(Index));
+    }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Certificate certificate)
+    public async Task<IActionResult> Edit(int id)
+    {
+        var certificate = await _certificateService.GetCertificateByIdAsync(id);
+        if (certificate == null)
+            return NotFound();
+
+        var languages = await _languageService.GetAllLanguagesAsync();
+        var model = new CertificateEditViewModel
         {
-            if (ModelState.IsValid)
+            Id = certificate.Id,
+            Organisation = certificate.Organisation,
+            AcquiredOn = certificate.AcquiredOn,
+            Languages = languages.ToList(),
+            Names = languages.Select(l => new TranslationInputViewModel
             {
-                await _certificateService.CreateCertificateAsync(certificate);
-                TempData["SuccessMessage"] = "Certificate successfully created!";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(certificate);
-        }
-
-        public async Task<IActionResult> Edit(int id)
-        {
-            var certificate = await _certificateService.GetCertificateByIdAsync(id);
-            if (certificate == null)
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = certificate.Name.TryGetValue(l.Code, out var name) ? name : string.Empty
+            }).ToList(),
+            Descriptions = languages.Select(l => new TranslationInputViewModel
             {
-                return NotFound();
-            }
-            return View(certificate);
-        }
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = certificate.Description.TryGetValue(l.Code, out var desc) ? desc : string.Empty
+            }).ToList()
+        };
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Certificate certificate)
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(CertificateEditViewModel model)
+    {
+        if (!ModelState.IsValid)
         {
-            if (id != certificate.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _certificateService.UpdateCertificateAsync(certificate);
-                TempData["SuccessMessage"] = "Certificate successfully updated!";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(certificate);
+            model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
+            return View(model);
         }
 
-        public async Task<IActionResult> Delete(int id)
+        var certificate = new Core.Models.Certificate
         {
-            var certificate = await _certificateService.GetCertificateByIdAsync(id);
-            if (certificate == null)
-            {
-                return NotFound();
-            }
-            return View(certificate);
-        }
+            Id = model.Id,
+            Organisation = model.Organisation ?? string.Empty,
+            AcquiredOn = model.AcquiredOn ?? DateTime.UtcNow,
+            Name = model.Names.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text)
+        };
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await _certificateService.DeleteCertificateAsync(id);
-            TempData["SuccessMessage"] = "Certificate successfully deleted!";
-            return RedirectToAction(nameof(Index));
-        }
+        await _certificateService.UpdateCertificateAsync(certificate);
+        TempData["SuccessMessage"] = "Certificate successfully updated!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var certificate = await _certificateService.GetCertificateByIdAsync(id);
+        if (certificate == null)
+            return NotFound();
+
+        return View(certificate);
+    }
+
+    public async Task<IActionResult> Delete(int id)
+    {
+        var certificate = await _certificateService.GetCertificateByIdAsync(id);
+        if (certificate == null)
+            return NotFound();
+
+        return View(certificate);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        await _certificateService.DeleteCertificateAsync(id);
+        TempData["SuccessMessage"] = "Certificate successfully deleted!";
+        return RedirectToAction(nameof(Index));
     }
 }

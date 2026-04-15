@@ -36,4 +36,10 @@ public class ExperienceService : IExperienceService
     {
         await _experienceRepository.DeleteExperienceAsync(id);
     }
+
+    public async Task<IEnumerable<Experience>> GetExperiencesOrderedByDateAsync()
+    {
+        var experiences = await _experienceRepository.GetAllExperiencesAsync();
+        return experiences.OrderByDescending(e => e.StartDate);
+    }
 }

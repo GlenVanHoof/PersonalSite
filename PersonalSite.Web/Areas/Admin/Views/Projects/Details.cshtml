@@ -1,101 +1,130 @@
 @model PersonalSite.Core.Models.Project
 @{
     ViewData["Title"] = "Project Details";
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
-    var translations = ViewBag.Translations as IEnumerable<PersonalSite.Core.Models.ProjectTranslation>;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Project Details</h1>
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Project</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </div>
 </div>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<div class="card mb-4">
-    <div class="card-header">
-        <h3>Project Information</h3>
-    </div>
-    <div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Id)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Id)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Slug)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Slug)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.GitUrl)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.GitUrl)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ImagePath)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.ImagePath)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.OrderIndex)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.OrderIndex)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedAt)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.UpdatedAt)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.UpdatedAt)</dd>
-        </dl>
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h3>Translations</h3>
-        <a asp-action="CreateTranslation" asp-route-projectId="@Model.Id" class="btn btn-primary">Add Translation</a>
-    </div>
-    <div class="card-body">
-        @if (translations != null && translations.Any())
-        {
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Language</th>
-                            <th>Title</th>
-                            <th>Short Description</th>
-                            <th>Technologies</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var translation in translations)
-                        {
-                            <tr>
-                                <td>@translation.Language</td>
-                                <td>@translation.Title</td>
-                                <td>@translation.ShortDescription</td>
-                                <td>
-                                    @if (translation.Technologies != null && translation.Technologies.Any())
-                                    {
-                                        <span>@string.Join(", ", translation.Technologies)</span>
-                                    }
-                                </td>
-                                <td>
-                                    <a asp-action="EditTranslation" asp-route-id="@translation.Id" class="btn btn-sm btn-warning">Edit</a>
-                                    <a asp-action="DeleteTranslation" asp-route-id="@translation.Id" class="btn btn-sm btn-danger">Delete</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Basic Information</h5>
             </div>
-        }
-        else
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Slug</dt>
+                    <dd class="col-sm-9">@Model.Slug</dd>
+                    
+                    <dt class="col-sm-3">Order Index</dt>
+                    <dd class="col-sm-9">@Model.OrderIndex</dd>
+                    
+                    <dt class="col-sm-3">Image Path</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrEmpty(Model.ImagePath))
+                        {
+                            <div>@Model.ImagePath</div>
+                            <img src="@Model.ImagePath" alt="@Model.Slug" class="img-thumbnail mt-2" style="max-width: 300px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">No image</span>
+                        }
+                    </dd>
+                    
+                    <dt class="col-sm-3">GitHub URL</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrEmpty(Model.GithubUrl))
+                        {
+                            <a href="@Model.GithubUrl" target="_blank">@Model.GithubUrl</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No GitHub URL</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Translations</h5>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    @{
+                        int tabIndex = 0;
+                        foreach (var langCode in Model.Title.Keys)
+                        {
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(tabIndex == 0 ? "active" : "")" 
+                                        id="@langCode-tab" 
+                                        data-bs-toggle="tab" 
+                                        data-bs-target="#@langCode-content" 
+                                        type="button" 
+                                        role="tab">
+                                    @langCode.ToUpper()
+                                </button>
+                            </li>
+                            tabIndex++;
+                        }
+                    }
+                </ul>
+                
+                <div class="tab-content pt-3">
+                    @{
+                        tabIndex = 0;
+                        foreach (var langCode in Model.Title.Keys)
+                        {
+                            <div class="tab-pane fade @(tabIndex == 0 ? "show active" : "")" 
+                                 id="@langCode-content" 
+                                 role="tabpanel">
+                                <dl class="row">
+                                    <dt class="col-sm-3">Title</dt>
+                                    <dd class="col-sm-9">@Model.Title.GetValueOrDefault(langCode, "N/A")</dd>
+                                    
+                                    <dt class="col-sm-3">Short Description</dt>
+                                    <dd class="col-sm-9">@Model.ShortDescription.GetValueOrDefault(langCode, "N/A")</dd>
+                                    
+                                    <dt class="col-sm-3">Description</dt>
+                                    <dd class="col-sm-9">
+                                        <div class="border p-2">
+                                            @Html.Raw(Model.Description.GetValueOrDefault(langCode, "N/A").Replace("\n", "<br>"))
+                                        </div>
+                                    </dd>
+                                </dl>
+                            </div>
+                            tabIndex++;
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Pictures?.Any() == true)
         {
-            <p class="text-muted">No translations available for this project.</p>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Project Pictures</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        @foreach (var picture in Model.Pictures)
+                        {
+                            <div class="col-md-3">
+                                <img src="@picture.Source" alt="Project picture" class="img-thumbnail" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         }
     </div>
 </div>
