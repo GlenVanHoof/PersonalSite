@@ -1,71 +1,188 @@
 @model GalleryPictureEditViewModel
 @{
-    ViewData["Title"] = "Add to Gallery";
+    ViewData["Title"] = "Add Gallery Picture";
 }
 
-<h1>Add Picture to Gallery</h1>
+<h1>Add Gallery Picture</h1>
 <hr />
 
 <div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create" method="post">
+    <div class="col-md-8">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             
-            <div class="mb-3">
-                <label asp-for="PictureId" class="form-label"></label>
-                <select asp-for="PictureId" class="form-select" id="pictureSelect">
-                    <option value="">-- Select a picture --</option>
-                    @foreach (var picture in Model.AvailablePictures)
-                    {
-                        <option value="@picture.Id" data-src="@picture.Source">Picture #@picture.Id (@picture.Source)</option>
-                    }
-                </select>
-                <span asp-validation-for="PictureId" class="text-danger"></span>
+            <!-- Mode selection -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Choose Option</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="mode" id="uploadMode" value="upload" checked>
+                        <label class="form-check-label" for="uploadMode">
+                            <strong>Upload New Image</strong>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mode" id="existingMode" value="existing">
+                        <label class="form-check-label" for="existingMode">
+                            <strong>Use Existing Picture</strong>
+                        </label>
+                    </div>
+                </div>
             </div>
+
+            <!-- Upload section -->
+            <div id="uploadSection">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Upload Image File</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="UploadedFile" class="form-label"></label>
+                            <input asp-for="UploadedFile" type="file" class="form-control" accept="image/*" id="fileInput" />
+                            <span asp-validation-for="UploadedFile" class="text-danger"></span>
+                            <small class="form-text text-muted">Accepted formats: jpg, jpeg, png, gif, webp (max 5MB)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Or Enter External URL</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Source" class="form-label"></label>
+                            <input asp-for="Source" class="form-control" placeholder="https://example.com/image.jpg" />
+                            <span asp-validation-for="Source" class="text-danger"></span>
+                            <small class="form-text text-muted">Alternative: Enter an external image URL</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing picture section -->
+            <div id="existingSection" style="display: none;">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Select Existing Picture</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="PictureId" class="form-label">Choose Picture</label>
+                            <select asp-for="PictureId" class="form-select" id="pictureSelect">
+                                <option value="">-- Select Picture --</option>
+                                @foreach (var picture in Model.AvailablePictures)
+                                {
+                                    <option value="@picture.Id" data-src="@picture.Source">
+                                        Picture #@picture.Id - @picture.Source
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="PictureId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" asp-for="UseExistingPicture" id="useExistingPicture" value="false" />
             
             <div class="mb-3">
                 <label asp-for="Position" class="form-label"></label>
-                <input asp-for="Position" class="form-control" type="number" min="0" />
+                <input asp-for="Position" type="number" class="form-control" min="1" />
                 <span asp-validation-for="Position" class="text-danger"></span>
-                <small class="form-text text-muted">Lower numbers appear first (0, 1, 2...)</small>
+                <small class="form-text text-muted">Display order in the gallery (lower numbers appear first)</small>
             </div>
 
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Add to Gallery</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add to Gallery
+                </button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
     
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="card">
             <div class="card-header">
                 <h5>Preview</h5>
             </div>
             <div class="card-body text-center">
-                <img id="preview" src="" alt="Preview" class="img-fluid" style="display: none; max-height: 300px;" />
-                <p id="noPreview" class="text-muted">Select a picture to preview</p>
+                <img id="imagePreview" src="" alt="Preview" class="img-fluid rounded" style="display: none; max-height: 400px;" />
+                <p id="noPreview" class="text-muted">
+                    <i class="bi bi-image fs-1 d-block mb-2"></i>
+                    Upload a file, enter URL, or select picture to see preview
+                </p>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script>
-        document.getElementById('pictureSelect').addEventListener('change', function(e) {
-            var selected = e.target.options[e.target.selectedIndex];
-            var preview = document.getElementById('preview');
-            var noPreview = document.getElementById('noPreview');
-            var src = selected.getAttribute('data-src');
+        // Mode switching
+        document.querySelectorAll('input[name="mode"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const uploadSection = document.getElementById('uploadSection');
+                const existingSection = document.getElementById('existingSection');
+                const useExistingInput = document.getElementById('useExistingPicture');
+                
+                if (this.value === 'upload') {
+                    uploadSection.style.display = 'block';
+                    existingSection.style.display = 'none';
+                    useExistingInput.value = 'false';
+                } else {
+                    uploadSection.style.display = 'none';
+                    existingSection.style.display = 'block';
+                    useExistingInput.value = 'true';
+                }
+            });
+        });
+
+        // Preview uploaded file
+        document.getElementById('fileInput')?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    document.getElementById('noPreview').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+                
+                // Clear URL input when file is selected
+                document.querySelector('input[name="Source"]').value = '';
+            }
+        });
+
+        // Preview URL
+        document.querySelector('input[name="Source"]')?.addEventListener('input', function(e) {
+            if (e.target.value) {
+                document.getElementById('imagePreview').src = e.target.value;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('noPreview').style.display = 'none';
+                
+                // Clear file input when URL is entered
+                document.getElementById('fileInput').value = '';
+            }
+        });
+
+        // Preview existing picture selection
+        document.getElementById('pictureSelect')?.addEventListener('change', function(e) {
+            const selectedOption = e.target.options[e.target.selectedIndex];
+            const src = selectedOption.getAttribute('data-src');
             
             if (src) {
-                preview.src = src;
-                preview.style.display = 'block';
-                noPreview.style.display = 'none';
+                document.getElementById('imagePreview').src = src;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('noPreview').style.display = 'none';
             } else {
-                preview.style.display = 'none';
-                noPreview.style.display = 'block';
+                document.getElementById('imagePreview').style.display = 'none';
+                document.getElementById('noPreview').style.display = 'block';
             }
         });
     </script>

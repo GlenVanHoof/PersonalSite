@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PersoonlijkeSite.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
     <header class="floating-navbar">
@@ -32,11 +33,6 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Contact" asp-action="Index">Contact</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-gear-fill"></i> Admin
-                            </a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
@@ -77,6 +73,11 @@
                                     </form>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-sm btn-outline-secondary" asp-area="Admin" asp-controller="Auth" asp-action="Login">
+                                <i class="bi bi-box-arrow-in-right"></i> Sign In
+                            </a>
                         </li>
                     </ul>
                 </div>

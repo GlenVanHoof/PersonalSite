@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using PersonalSite.Core.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,14 +8,19 @@ public class PictureEditViewModel
 {
     public int Id { get; set; }
 
-    [Required]
+    [Display(Name = "Upload Image")]
+    public IFormFile? UploadedFile { get; set; }
+
+    [Display(Name = "Or Enter Image URL")]
     [StringLength(500)]
-    [Display(Name = "Image Source (URL or Path)")]
-    public string Source { get; set; } = string.Empty;
+    public string? Source { get; set; }
 
     [Display(Name = "Project (Optional)")]
     public int? ProjectId { get; set; }
 
     // Helper for view
     public List<Project> AvailableProjects { get; set; } = new();
+    
+    // For edit mode - show existing image
+    public string? ExistingSource { get; set; }
 }

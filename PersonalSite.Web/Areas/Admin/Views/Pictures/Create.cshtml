@@ -8,14 +8,35 @@
 
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             
-            <div class="mb-3">
-                <label asp-for="Source" class="form-label"></label>
-                <input asp-for="Source" class="form-control" />
-                <span asp-validation-for="Source" class="text-danger"></span>
-                <small class="form-text text-muted">Enter the full URL or path to the image</small>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Upload Image File</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="UploadedFile" class="form-label"></label>
+                        <input asp-for="UploadedFile" type="file" class="form-control" accept="image/*" id="fileInput" />
+                        <span asp-validation-for="UploadedFile" class="text-danger"></span>
+                        <small class="form-text text-muted">Accepted formats: jpg, jpeg, png, gif, webp (max 5MB)</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Or Enter External URL</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Source" class="form-label"></label>
+                        <input asp-for="Source" class="form-control" placeholder="https://example.com/image.jpg" />
+                        <span asp-validation-for="Source" class="text-danger"></span>
+                        <small class="form-text text-muted">Alternative: Enter an external image URL</small>
+                    </div>
+                </div>
             </div>
             
             <div class="mb-3">
@@ -32,7 +53,9 @@
             </div>
 
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-upload"></i> Upload
+                </button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
@@ -44,28 +67,44 @@
                 <h5>Image Preview</h5>
             </div>
             <div class="card-body text-center">
-                <img id="imagePreview" src="" alt="Preview" class="img-fluid" style="display: none; max-height: 300px;" />
-                <p id="noPreview" class="text-muted">Enter an image URL to see preview</p>
+                <img id="imagePreview" src="" alt="Preview" class="img-fluid rounded" style="display: none; max-height: 400px;" />
+                <p id="noPreview" class="text-muted">
+                    <i class="bi bi-image fs-1 d-block mb-2"></i>
+                    Upload a file or enter URL to see preview
+                </p>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script>
-        document.getElementById('Source').addEventListener('input', function(e) {
-            var preview = document.getElementById('imagePreview');
-            var noPreview = document.getElementById('noPreview');
-            var url = e.target.value;
-            
-            if (url) {
-                preview.src = url;
-                preview.style.display = 'block';
-                noPreview.style.display = 'none';
-            } else {
-                preview.style.display = 'none';
-                noPreview.style.display = 'block';
+        // Preview uploaded file
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    document.getElementById('noPreview').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+                
+                // Clear URL input when file is selected
+                document.querySelector('input[name="Source"]').value = '';
+            }
+        });
+
+        // Preview URL
+        document.querySelector('input[name="Source"]').addEventListener('input', function(e) {
+            if (e.target.value) {
+                document.getElementById('imagePreview').src = e.target.value;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('noPreview').style.display = 'none';
+                
+                // Clear file input when URL is entered
+                document.getElementById('fileInput').value = '';
             }
         });
     </script>

@@ -8,14 +8,43 @@
 
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="Id" />
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             
-            <div class="mb-3">
-                <label asp-for="Source" class="form-label"></label>
-                <input asp-for="Source" class="form-control" />
-                <span asp-validation-for="Source" class="text-danger"></span>
+            @if (!string.IsNullOrEmpty(Model.ExistingSource))
+            {
+                <div class="alert alert-info">
+                    <strong>Current Image:</strong> @Model.ExistingSource
+                </div>
+            }
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Upload New Image File</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="UploadedFile" class="form-label"></label>
+                        <input asp-for="UploadedFile" type="file" class="form-control" accept="image/*" id="fileInput" />
+                        <span asp-validation-for="UploadedFile" class="text-danger"></span>
+                        <small class="form-text text-muted">Leave empty to keep existing image. Accepted formats: jpg, jpeg, png, gif, webp (max 5MB)</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Or Change to External URL</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Source" class="form-label"></label>
+                        <input asp-for="Source" class="form-control" placeholder="https://example.com/image.jpg" />
+                        <span asp-validation-for="Source" class="text-danger"></span>
+                        <small class="form-text text-muted">Alternative: Enter an external image URL</small>
+                    </div>
+                </div>
             </div>
             
             <div class="mb-3">
@@ -31,8 +60,10 @@
             </div>
 
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-save"></i> Update
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
@@ -43,12 +74,61 @@
                 <h5>Current Image</h5>
             </div>
             <div class="card-body text-center">
-                <img src="@Model.Source" alt="Current" class="img-fluid" style="max-height: 300px;" />
+                @if (!string.IsNullOrEmpty(Model.ExistingSource))
+                {
+                    <img src="@Model.ExistingSource" alt="Current" class="img-fluid rounded mb-3" style="max-height: 400px;" />
+                }
+                else
+                {
+                    <p class="text-muted">No image</p>
+                }
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>New Preview</h5>
+            </div>
+            <div class="card-body text-center">
+                <img id="imagePreview" src="" alt="Preview" class="img-fluid rounded" style="display: none; max-height: 400px;" />
+                <p id="noPreview" class="text-muted">
+                    <i class="bi bi-image fs-1 d-block mb-2"></i>
+                    Upload a file or enter URL to see preview
+                </p>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Preview uploaded file
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                    document.getElementById('noPreview').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+                
+                // Clear URL input when file is selected
+                document.querySelector('input[name="Source"]').value = '';
+            }
+        });
+
+        // Preview URL
+        document.querySelector('input[name="Source"]').addEventListener('input', function(e) {
+            if (e.target.value) {
+                document.getElementById('imagePreview').src = e.target.value;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('noPreview').style.display = 'none';
+                
+                // Clear file input when URL is entered
+                document.getElementById('fileInput').value = '';
+            }
+        });
+    </script>
 }
