@@ -18,7 +18,11 @@ public class SkillRepository : ISkillRepository
     public async Task<IEnumerable<Skill>> GetAllSkillsAsync()
     {
         var entities = await _context.Skills
-            .OrderBy(s => s.Type)
+            .OrderBy(s =>
+                s.Type == "Technical" ? 1 :
+                s.Type == "Tool" ? 2 :
+                s.Type == "Soft" ? 3 :
+                s.Type == "Language" ? 4 : 5)
             .ThenByDescending(s => s.ScoreOutOf100)
             .ToListAsync();
 

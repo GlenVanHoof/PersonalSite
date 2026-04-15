@@ -31,7 +31,14 @@ namespace PersoonlijkeSite.Controllers
                 Skills = (await _skillService.GetAllSkillsAsync()).ToList(),
                 Educations = (await _educationService.GetAllEducationsAsync()).ToList(),
                 Experiences = (await _experienceService.GetAllExperiencesAsync()).ToList(),
-                Certificates = (await _certificateService.GetAllCertificatesAsync()).ToList()
+                Certificates = (await _certificateService.GetAllCertificatesAsync()).ToList(),
+                Description =
+                "Ik ben Glen, een full‑stack .NET‑developer met een passie voor helder " +
+                "gestructureerde code en praktische oplossingen. Dankzij mijn wetenschappelijke " +
+                "opleiding en jarenlange ervaring in de logistiek kijk ik met een scherp analytisch" + 
+                " oog naar processen en vertaal ik complexe problemen naar efficiënte software. " +
+                "Ik bouw graag moderne, onderhoudbare applicaties in .NET en voel me thuis in teams" +
+                " waar kwaliteit, samenwerking en continu leren centraal staan."
             };
 
             return View(viewModel);

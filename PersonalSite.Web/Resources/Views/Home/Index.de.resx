@@ -121,13 +121,11 @@
     <value>Willkommen</value>
   </data>
   <data name="WelkomstTekst" xml:space="preserve">
-    <value>Willkommen auf meinem Portfolio. Ich bin Glen und arbeite wie Full‑Stack‑.NET‑Entwickler. Ich habe einen Hintergrund in den pharmazeutischen Wissenschaften und acht Jahre Erfahrung im Logistiksektor. Diese Kombination mag ungewöhnlich wirken, doch sie bildet genau die Grundlage meiner Arbeitsweise: analytisch, strukturiert, präzise und stets mit Blick auf das große Ganze.
+    <value>illkommen in meinem Portfolio. Ich bin Glen, Full‑Stack‑.NET‑Entwickler mit einem Hintergrund in Pharmawissenschaften und mehreren Jahren Erfahrung in der Logistik. Eine eher ungewöhnliche Kombination, die mich aber gelehrt hat, analytisch zu denken, strukturiert zu arbeiten und stets das große Ganze im Blick zu behalten.
 
-Diese Website ist meine digitale Werkstatt, ein Ort, an dem ich zeige, wie ich lerne, entwickle und mich in der Softwarewelt weiterentwickle. Hier finden Sie Projekte aus meiner Ausbildung und meiner Freizeit, Experimente mit neuen Technologien sowie Einblicke in meinen Weg als Entwickler. Ich glaube fest an Clean Code, durchdachte Architektur und Lösungen, die nicht nur funktionieren, sondern auch verständlich, wartbar und skalierbar sind.
+Diese Website ist meine digitale Werkstatt — ein Ort, an dem ich zeige, woran ich arbeite, was ich lerne und wie ich mich als Entwickler weiterentwickle. Hier findest du Projekte, Experimente mit neuen Technologien und Dinge, die ich unterwegs aufschnappe. Mein Fokus liegt auf C#, .NET, APIs, SQL und modernen Webtechnologien, immer mit sauberem Code und klarer Architektur als Grundlage.
 
-Mein Schwerpunkt liegt auf C#, .NET, API‑Entwicklung, SQL und modernen Webtechnologien. Ebenso wichtig ist meine Art, Probleme anzugehen: Schritt für Schritt, mit viel Liebe zum Detail und dem Anspruch, etwas zu schaffen, das besser ist als gestern. Technologie entwickelt sich schnell weiter, und ich lerne gerne jeden Tag ein Stück mit.
-
-Ob Sie als Recruiter, Entwickler, potenzieller Auftraggeber oder einfach aus Interesse hier sind, vielen Dank für Ihren Besuch. Schauen Sie sich gerne meine Projekte an. Jedes davon zeigt ein Stück meiner Denkweise, meines Wachstums und meiner Leidenschaft für Softwareentwicklung. Wenn Sie Fragen haben oder zusammenarbeiten möchten, freue ich mich auf Ihre Nachricht.</value>
+Schön, dass du hier bist. Schau dich gerne in meinen Projekten um; sie zeigen am besten, wie ich denke und arbeite.</value>
     <comment>Welkomsttekst</comment>
   </data>
 </root>

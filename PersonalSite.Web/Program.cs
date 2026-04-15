@@ -7,6 +7,8 @@ using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Repositories;
 using System.Globalization;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Determine environment
@@ -79,7 +81,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+Console.WriteLine("ENVIRONMENT = " + env);
+Console.WriteLine("CONNECTION STRING = " + connectionString);
+Console.WriteLine($"CONNECTION STRING = {connectionString}");
+
+// Only redirect HTTPS when not in Remote environment (Tailscale doesn't use HTTPS)
+if (env != "Remote")
+{
+    app.UseHttpsRedirection();
+}
+
+// Add static files middleware for remote access
+app.UseStaticFiles();
 
 app.UseRequestLocalization();
 

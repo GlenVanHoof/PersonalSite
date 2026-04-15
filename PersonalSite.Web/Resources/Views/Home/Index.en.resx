@@ -121,13 +121,11 @@
     <value>Welcome</value>
   </data>
   <data name="WelkomstTekst" xml:space="preserve">
-    <value>Welcome to my portfolio. My name is Glen, and I am a full‑stack .NET developer with a background in pharmaceutical sciences and eight years of experience in the logistics sector. It may seem like an unusual combination, but for me it forms the foundation of how I work: analytical, structured, precise and always focused on the bigger picture.
+    <value>Welcome to my portfolio. I’m Glen, a full‑stack .NET developer with a background in pharmaceutical sciences and several years of experience in logistics. It’s not the most common mix, but it taught me to think analytically, work in a structured way and always keep the bigger picture in mind.
 
-This website is my digital workspace, a place where I show how I learn, build and grow within software development. Here you will find projects I created during my training and in my free time, experiments in which I explore new technologies, and reflections on my journey as a developer. I strongly believe in clean code, thoughtful architecture and solutions that are not only functional but also understandable, maintainable and scalable.
+This site is my digital workspace — a place where I share what I’m building, learning and exploring as a developer. You’ll find projects, experiments with new technologies and things I pick up along the way. My main focus is C#, .NET, APIs, SQL and modern web technologies, with clean code and clear architecture as the foundation.
 
-My main focus is on C#, .NET, API development, SQL and modern web technologies. Just as important is the way I approach problems: step by step, with attention to detail and with the ambition to create something better than what existed yesterday. Technology evolves quickly, and I enjoy learning along with it every single day.
-
-Whether you are here as a recruiter, fellow developer, potential client or simply out of curiosity, thank you for visiting. Feel free to explore my projects. Each one reflects my way of thinking, my growth and my passion for software development. If you have any questions or would like to collaborate, I would be happy to hear from you.</value>
+Thanks for stopping by. Feel free to browse through my projects; they say the most about how I think and work.</value>
     <comment>Welkomsttekst</comment>
   </data>
 </root>

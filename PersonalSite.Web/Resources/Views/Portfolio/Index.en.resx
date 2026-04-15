@@ -117,15 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Welkom" xml:space="preserve">
-    <value>Bienvenue</value>
-  </data>
-  <data name="WelkomstTekst" xml:space="preserve">
-    <value>Bienvenue sur mon portfolio. Je m’appelle Glen, développeur .NET full‑stack avec une formation en sciences pharmaceutiques et plusieurs années d’expérience dans la logistique. Une combinaison peu courante, mais qui m’a appris à analyser avec précision, à travailler de manière structurée et à garder une vue d’ensemble.
-
-Ce site est mon espace de travail numérique : j’y partage ce que je développe, ce que j’apprends et comment j’évolue dans le domaine du software. Vous y trouverez des projets, des expérimentations avec de nouvelles technologies et des idées que je découvre en cours de route. Je me concentre principalement sur C#, .NET, les API, SQL et les technologies web modernes, avec un souci constant de code propre et d’architecture claire.
-
-Merci de votre visite. N’hésitez pas à parcourir mes projets — ils reflètent le mieux ma manière de penser et de travailler.</value>
-    <comment>Welkomsttekst</comment>
+  <data name="Portfolio Intro" xml:space="preserve">
+    <value>On this page, you’ll find the projects I’m most proud of. Each one reflects my growth as a full‑stack .NET developer and my focus on clean code, efficiency, and thoughtful architecture. I enjoy building solutions that are not only technically solid, but also clear, maintainable, and ready for the future.</value>
   </data>
 </root>

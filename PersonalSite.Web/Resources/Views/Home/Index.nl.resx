@@ -122,13 +122,11 @@
     <comment>Welkomsttitel</comment>
   </data>
   <data name="WelkomstTekst" xml:space="preserve">
-    <value>Welkom op mijn portfolio. Ik ben Glen, een full‑stack .NET developer met een achtergrond in farmaceutische wetenschappen en acht jaar ervaring in de logistieke sector. Die combinatie lijkt misschien ongewoon, maar voor mij vormt ze precies de basis van hoe ik werk: analytisch, gestructureerd, nauwkeurig en altijd met oog voor het grotere geheel.
+    <value>Welkom op mijn portfolio. Ik ben Glen, full‑stack .NET‑developer met een achtergrond in farmaceutische wetenschappen en een stevige portie logistieke ervaring. Geen alledaagse combinatie, maar precies die mix heeft me geleerd om scherp te analyseren, gestructureerd te werken en altijd het grotere geheel mee te nemen.
 
-Deze website is mijn digitale werkplaats, een plek waar ik toon hoe ik leer, bouw en groei binnen softwareontwikkeling. Je vindt hier projecten die ik heb uitgewerkt tijdens mijn opleiding en in mijn vrije tijd, experimenten waarin ik nieuwe technologieën verken en reflecties over mijn traject richting een carrière als developer. Ik geloof sterk in clean code, doordachte architectuur en oplossingen die niet alleen werken, maar ook begrijpelijk, onderhoudbaar en schaalbaar zijn.
+Deze site is mijn digitale werkplaats: een plek waar ik laat zien waar ik aan bouw, wat ik leer en hoe ik groei als developer. Je vindt hier projecten, experimenten met nieuwe technologieën en dingen die ik onderweg oppik. Mijn focus ligt vooral op C#, .NET, API’s, SQL en moderne webtechnologieën, met clean code en duidelijke architectuur als rode draad.
 
-Mijn focus ligt op C#, .NET, API‑ontwikkeling, SQL en moderne webtechnologieën. Minstens even belangrijk vind ik de manier waarop ik problemen aanpak: stap voor stap, met oog voor detail en altijd met de ambitie om iets te maken dat beter is dan wat er gisteren stond. Technologie verandert snel en ik leer graag mee, elke dag een beetje meer.
-
-Of je nu hier bent als recruiter, collega‑developer, opdrachtgever of gewoon uit nieuwsgierigheid, bedankt om langs te komen. Neem gerust de tijd om door mijn projecten te bladeren. Elk project vertelt iets over mijn manier van denken, mijn groei en mijn passie voor softwareontwikkeling. Mocht je vragen hebben of willen samenwerken, dan hoor ik graag van je.</value>
+Fijn dat je hier bent. Blader gerust door mijn projecten; ze vertellen het meest over hoe ik denk en werk.</value>
     <comment>Welkomsttekst</comment>
   </data>
 </root>
