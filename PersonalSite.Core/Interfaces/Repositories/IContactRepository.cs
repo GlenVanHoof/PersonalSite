@@ -1,8 +1,8 @@
 using PersonalSite.Core.Models;
 
-namespace PersonalSite.Core.Interfaces;
+namespace PersonalSite.Core.Interfaces.Repositories;
 
-public interface IContactService
+public interface IContactRepository
 {
     Task<IEnumerable<Contact>> GetAllContactsAsync();
     Task<Contact?> GetContactByIdAsync(int id);

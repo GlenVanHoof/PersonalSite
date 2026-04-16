@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Core.Models;
 using PersonalSite.Web.Models;
 

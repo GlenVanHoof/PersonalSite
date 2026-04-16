@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Repositories;
 using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;
@@ -11,10 +11,10 @@ public class ProjectRepository : IProjectRepository
     private readonly PortfolioDbContext _context;
     private readonly TranslationHelper _translationHelper;
 
-    public ProjectRepository(PortfolioDbContext context)
+    public ProjectRepository(PortfolioDbContext context, TranslationHelper translationHelper)
     {
         _context = context;
-        _translationHelper = new TranslationHelper(context);
+        _translationHelper = translationHelper;
     }
 
     public async Task<IEnumerable<Project>> GetAllProjectsAsync()
@@ -54,7 +54,7 @@ public class ProjectRepository : IProjectRepository
     public async Task<Project> CreateProjectAsync(Project project)
     {
         var entity = ProjectMapper.ToEntity(project);
-        
+
         _context.Projects.Add(entity);
         await _context.SaveChangesAsync();
 
@@ -92,7 +92,7 @@ public class ProjectRepository : IProjectRepository
         {
             // Delete translations first
             await _translationHelper.DeleteTranslationsAsync("Project", id);
-            
+
             _context.Projects.Remove(entity);
             await _context.SaveChangesAsync();
         }

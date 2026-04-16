@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Repositories;
 using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;
@@ -11,22 +11,22 @@ public class CertificateRepository : ICertificateRepository
     private readonly PortfolioDbContext _context;
     private readonly TranslationHelper _translationHelper;
 
-    public CertificateRepository(PortfolioDbContext context)
+    public CertificateRepository(PortfolioDbContext context, TranslationHelper translationHelper)
     {
         _context = context;
-        _translationHelper = new TranslationHelper(context);
+        _translationHelper = translationHelper;
     }
 
     public async Task<IEnumerable<Certificate>> GetAllCertificatesAsync()
     {
         var entities = await _context.Certificates.OrderByDescending(c => c.AcquiredOn).ToListAsync();
         var certificates = new List<Certificate>();
-        
+
         foreach (var entity in entities)
         {
             certificates.Add(await CertificateMapper.ToDomainAsync(entity, _translationHelper));
         }
-        
+
         return certificates;
     }
 

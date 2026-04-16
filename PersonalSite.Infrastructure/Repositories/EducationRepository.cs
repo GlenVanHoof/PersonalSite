@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Repositories;
 using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;
@@ -11,22 +11,22 @@ public class EducationRepository : IEducationRepository
     private readonly PortfolioDbContext _context;
     private readonly TranslationHelper _translationHelper;
 
-    public EducationRepository(PortfolioDbContext context)
+    public EducationRepository(PortfolioDbContext context, TranslationHelper translationHelper)
     {
         _context = context;
-        _translationHelper = new TranslationHelper(context);
+        _translationHelper = translationHelper;
     }
 
     public async Task<IEnumerable<Education>> GetAllEducationsAsync()
     {
         var entities = await _context.Educations.OrderByDescending(e => e.StartDate).ToListAsync();
         var educations = new List<Education>();
-        
+
         foreach (var entity in entities)
         {
             educations.Add(await EducationMapper.ToDomainAsync(entity, _translationHelper));
         }
-        
+
         return educations;
     }
 

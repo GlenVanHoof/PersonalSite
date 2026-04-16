@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Services;
 
 namespace PersonalSite.Web.Areas.Admin.Controllers;
 

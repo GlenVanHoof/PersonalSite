@@ -1,3 +1,4 @@
+using PersonalSite.Core.Enums;
 using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Models;
 
@@ -12,7 +13,7 @@ public static class SkillMapper
         return new Skill
         {
             Id = entity.Id,
-            Type = entity.Type,
+            Type = Enum.Parse<SkillType>(entity.Type, true),
             ScoreOutOf100 = entity.ScoreOutOf100,
             CreatedOn = entity.CreatedOn,
             UpdatedOn = entity.UpdatedOn,
@@ -26,7 +27,7 @@ public static class SkillMapper
         return new SkillEntity
         {
             Id = domain.Id,
-            Type = domain.Type,
+            Type = domain.Type.ToString().ToLower(),
             ScoreOutOf100 = domain.ScoreOutOf100,
             CreatedOn = domain.CreatedOn,
             UpdatedOn = domain.UpdatedOn

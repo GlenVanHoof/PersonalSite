@@ -1,3 +1,4 @@
+using PersonalSite.Core.Enums;
 using PersonalSite.Core.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,8 +9,8 @@ public class SkillEditViewModel
     public int Id { get; set; }
 
     [Required]
-    [StringLength(100)]
-    public string Type { get; set; } = string.Empty;
+    [Display(Name = "Skill Type")]
+    public SkillType Type { get; set; }
 
     [Required]
     [Range(0, 100)]

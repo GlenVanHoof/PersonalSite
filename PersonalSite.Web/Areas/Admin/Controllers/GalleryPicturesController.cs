@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PersonalSite.Core.Interfaces;
 using PersonalSite.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using PersonalSite.Core.Interfaces.Services;
 
 namespace PersonalSite.Web.Areas.Admin.Controllers;
 

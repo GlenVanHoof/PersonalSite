@@ -1,4 +1,5 @@
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Repositories;
+using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Core.Models;
 using System.Globalization;
 

@@ -1,4 +1,4 @@
-namespace PersonalSite.Core.Interfaces;
+namespace PersonalSite.Core.Interfaces.Services;
 
 public interface ICurrentLanguageService
 {

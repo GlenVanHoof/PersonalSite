@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Repositories;
 using PersonalSite.Core.Models;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Helpers;

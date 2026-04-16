@@ -1,4 +1,6 @@
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Enums;
+using PersonalSite.Core.Interfaces.Repositories;
+using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Core.Models;
 
 namespace PersonalSite.Core.Services;
@@ -22,7 +24,7 @@ public class SkillService : ISkillService
         return await _skillRepository.GetSkillByIdAsync(id);
     }
 
-    public async Task<IEnumerable<Skill>> GetSkillsByTypeAsync(string type)
+    public async Task<IEnumerable<Skill>> GetSkillsByTypeAsync(SkillType type)
     {
         return await _skillRepository.GetSkillsByTypeAsync(type);
     }

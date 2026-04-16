@@ -1,6 +1,6 @@
 using PersonalSite.Core.Models;
 
-namespace PersonalSite.Core.Interfaces;
+namespace PersonalSite.Core.Interfaces.Services;
 
 public interface IGalleryPictureService
 {

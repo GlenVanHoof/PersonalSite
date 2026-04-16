@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Web.Models;
 
 namespace PersonalSite.Web.Controllers;
@@ -41,7 +41,7 @@ public class AboutController : Controller
                 Id = s.Id,
                 Name = _languageService.GetTranslation(s.Name),
                 Description = _languageService.GetTranslation(s.Description),
-                Type = s.Type,
+                Type = s.Type.ToString(),
                 ScoreOutOf100 = s.ScoreOutOf100
             }).ToList(),
             Educations = educations.Select(e => new EducationDisplayViewModel
