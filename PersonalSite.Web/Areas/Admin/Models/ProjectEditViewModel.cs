@@ -12,15 +12,23 @@ public class ProjectEditViewModel
     public string Slug { get; set; } = string.Empty;
 
     [StringLength(500)]
-    [Display(Name = "Image Path")]
-    public string? ImagePath { get; set; }
-
-    [StringLength(500)]
     [Display(Name = "GitHub URL")]
     public string? GithubUrl { get; set; }
 
     [Display(Name = "Order Index")]
     public int OrderIndex { get; set; }
+
+    // Image upload
+    [Display(Name = "Upload Images")]
+    public List<IFormFile>? UploadedImages { get; set; }
+
+    // For managing existing images
+    public List<Picture> ExistingPictures { get; set; } = new();
+
+    [Display(Name = "Card Image")]
+    public string? SelectedCardImagePath { get; set; }
+
+    public List<int>? PicturesToDelete { get; set; }
 
     // Translations
     public List<TranslationInputViewModel> Titles { get; set; } = new();

@@ -1,9 +1,10 @@
 @model PersonalSite.Core.Models.Project
+
 @{
     ViewData["Title"] = "Project Details";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Project Details</h1>
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
@@ -11,120 +12,133 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card mb-3">
-            <div class="card-header">
-                <h5>Basic Information</h5>
-            </div>
-            <div class="card-body">
-                <dl class="row">
-                    <dt class="col-sm-3">Slug</dt>
-                    <dd class="col-sm-9">@Model.Slug</dd>
-                    
-                    <dt class="col-sm-3">Order Index</dt>
-                    <dd class="col-sm-9">@Model.OrderIndex</dd>
-                    
-                    <dt class="col-sm-3">Image Path</dt>
-                    <dd class="col-sm-9">
-                        @if (!string.IsNullOrEmpty(Model.ImagePath))
-                        {
-                            <div>@Model.ImagePath</div>
-                            <img src="@Model.ImagePath" alt="@Model.Slug" class="img-thumbnail mt-2" style="max-width: 300px;" />
-                        }
-                        else
-                        {
-                            <span class="text-muted">No image</span>
-                        }
-                    </dd>
-                    
-                    <dt class="col-sm-3">GitHub URL</dt>
-                    <dd class="col-sm-9">
-                        @if (!string.IsNullOrEmpty(Model.GithubUrl))
-                        {
-                            <a href="@Model.GithubUrl" target="_blank">@Model.GithubUrl</a>
-                        }
-                        else
-                        {
-                            <span class="text-muted">No GitHub URL</span>
-                        }
-                    </dd>
-                </dl>
-            </div>
-        </div>
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Basic Information</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Slug</dt>
+            <dd class="col-sm-9">@Model.Slug</dd>
+            
+            <dt class="col-sm-3">GitHub URL</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrEmpty(Model.GithubUrl))
+                {
+                    <a href="@Model.GithubUrl" target="_blank">@Model.GithubUrl</a>
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+            </dd>
+            
+            <dt class="col-sm-3">Order Index</dt>
+            <dd class="col-sm-9">@Model.OrderIndex</dd>
+            
+            <dt class="col-sm-3">Created On</dt>
+            <dd class="col-sm-9">@Model.CreatedOn.ToString("MMMM dd, yyyy")</dd>
+            
+            <dt class="col-sm-3">Updated On</dt>
+            <dd class="col-sm-9">@Model.UpdatedOn.ToString("MMMM dd, yyyy")</dd>
+        </dl>
+    </div>
+</div>
 
-        <div class="card mb-3">
-            <div class="card-header">
-                <h5>Translations</h5>
-            </div>
-            <div class="card-body">
-                <ul class="nav nav-tabs" role="tablist">
-                    @{
-                        int tabIndex = 0;
-                        foreach (var langCode in Model.Title.Keys)
-                        {
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link @(tabIndex == 0 ? "active" : "")" 
-                                        id="@langCode-tab" 
-                                        data-bs-toggle="tab" 
-                                        data-bs-target="#@langCode-content" 
-                                        type="button" 
-                                        role="tab">
-                                    @langCode.ToUpper()
-                                </button>
-                            </li>
-                            tabIndex++;
-                        }
-                    }
-                </ul>
-                
-                <div class="tab-content pt-3">
-                    @{
-                        tabIndex = 0;
-                        foreach (var langCode in Model.Title.Keys)
-                        {
-                            <div class="tab-pane fade @(tabIndex == 0 ? "show active" : "")" 
-                                 id="@langCode-content" 
-                                 role="tabpanel">
-                                <dl class="row">
-                                    <dt class="col-sm-3">Title</dt>
-                                    <dd class="col-sm-9">@Model.Title.GetValueOrDefault(langCode, "N/A")</dd>
-                                    
-                                    <dt class="col-sm-3">Short Description</dt>
-                                    <dd class="col-sm-9">@Model.ShortDescription.GetValueOrDefault(langCode, "N/A")</dd>
-                                    
-                                    <dt class="col-sm-3">Description</dt>
-                                    <dd class="col-sm-9">
-                                        <div class="border p-2">
-                                            @Html.Raw(Model.Description.GetValueOrDefault(langCode, "N/A").Replace("\n", "<br>"))
-                                        </div>
-                                    </dd>
-                                </dl>
-                            </div>
-                            tabIndex++;
-                        }
-                    }
-                </div>
-            </div>
-        </div>
-
-        @if (Model.Pictures?.Any() == true)
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Images</h5>
+    </div>
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
         {
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5>Project Pictures</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-2">
-                        @foreach (var picture in Model.Pictures)
-                        {
-                            <div class="col-md-3">
-                                <img src="@picture.Source" alt="Project picture" class="img-thumbnail" />
-                            </div>
-                        }
-                    </div>
+            <div class="mb-3">
+                <h6>Card Image</h6>
+                <div class="text-center">
+                    <img src="@Model.ImagePath" class="img-fluid rounded" style="max-height: 400px; object-fit: contain;" alt="Project card image" />
                 </div>
             </div>
+        }
+        
+        @if (Model.Pictures.Any())
+        {
+            <hr />
+            <h6>All Project Images (@Model.Pictures.Count)</h6>
+            <div class="row g-3 mt-2">
+                @foreach (var picture in Model.Pictures)
+                {
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="@picture.Source" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Project image" />
+                            <div class="card-body p-2">
+                                @if (Model.ImagePath == picture.Source)
+                                {
+                                    <span class="badge bg-primary">Card Image</span>
+                                }
+                                <small class="text-muted d-block">Added: @picture.CreatedOn.ToString("MMM dd, yyyy")</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">No images uploaded for this project.</p>
+        }
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Translations</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Title.Any())
+        {
+            <h6 class="mb-3">Titles</h6>
+            <dl class="row">
+                @foreach (var title in Model.Title.OrderBy(t => t.Key))
+                {
+                    <dt class="col-sm-3">@title.Key.ToUpper()</dt>
+                    <dd class="col-sm-9">@(string.IsNullOrEmpty(title.Value) ? "N/A" : title.Value)</dd>
+                }
+            </dl>
+            <hr />
+        }
+        
+        @if (Model.ShortDescription.Any())
+        {
+            <h6 class="mb-3">Short Descriptions</h6>
+            <dl class="row">
+                @foreach (var desc in Model.ShortDescription.OrderBy(d => d.Key))
+                {
+                    <dt class="col-sm-3">@desc.Key.ToUpper()</dt>
+                    <dd class="col-sm-9">@(string.IsNullOrEmpty(desc.Value) ? "N/A" : desc.Value)</dd>
+                }
+            </dl>
+            <hr />
+        }
+        
+        @if (Model.Description.Any())
+        {
+            <h6 class="mb-3">Descriptions</h6>
+            <dl class="row">
+                @foreach (var desc in Model.Description.OrderBy(d => d.Key))
+                {
+                    <dt class="col-sm-3">@desc.Key.ToUpper()</dt>
+                    <dd class="col-sm-9">
+                        @if (string.IsNullOrEmpty(desc.Value))
+                        {
+                            <span>N/A</span>
+                        }
+                        else
+                        {
+                            <div style="white-space: pre-wrap;">@desc.Value</div>
+                        }
+                    </dd>
+                }
+            </dl>
         }
     </div>
 </div>
