@@ -1,4 +1,4 @@
-@model IEnumerable<PersonalSite.Core.Models.GalleryPicture>
+﻿@model IEnumerable<PersonalSite.Core.Models.GalleryPicture>
 @{
     ViewData["Title"] = "Gallery Pictures";
 }
@@ -14,37 +14,35 @@
     <strong>Note:</strong> Drag and drop rows to reorder the gallery. Lower positions appear first.
 </div>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    @if (Model?.Any() == true)
+<table class="table">
+    <thead>
+        <tr>
+            <th>Position</th>
+            <th>Picture</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
     {
-        @foreach (var galleryPicture in Model)
-        {
-            <div class="col">
-                <div class="card h-100">
-                    @if (galleryPicture.Picture != null)
-                    {
-                        <img src="@galleryPicture.Picture.Source" class="card-img-top" alt="Gallery picture" style="height: 200px; object-fit: cover;" />
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title">Position: @galleryPicture.Position</h5>
-                        <p class="card-text">
-                            <small class="text-muted">Picture ID: @galleryPicture.PictureId</small>
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="btn-group w-100" role="group">
-                            <a asp-action="Edit" asp-route-id="@galleryPicture.Id" class="btn btn-sm btn-warning">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@galleryPicture.Id" class="btn btn-sm btn-danger">Remove</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
+        <tr>
+            <td>@item.Position</td>
+            <td>
+                <img src="@item.Picture?.Source" alt="Gallery Image" style="max-width:100px;" />
+            </td>
+            <td>
+                <a asp-action="Reorder"
+                   asp-route-pictureId="@item.PictureId"
+                   asp-route-direction="up"
+                   class="btn btn-sm btn-secondary">&#8593; Up</a>
+                <a asp-action="Reorder"
+                   asp-route-pictureId="@item.PictureId"
+                   asp-route-direction="down"
+                   class="btn btn-sm btn-secondary">&#8595; Down</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
     }
-    else
-    {
-        <div class="col-12">
-            <p class="text-center text-muted">No pictures in gallery. Add some to showcase on the homepage!</p>
-        </div>
-    }
-</div>
+    </tbody>
+</table>

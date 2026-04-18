@@ -10,5 +10,5 @@ public interface IGalleryPictureService
     Task<GalleryPicture> CreateGalleryPictureAsync(GalleryPicture galleryPicture);
     Task UpdateGalleryPictureAsync(GalleryPicture galleryPicture);
     Task DeleteGalleryPictureAsync(int id);
-    Task ReorderGalleryPicturesAsync(List<int> orderedIds); // For drag & drop reordering
+    Task ReorderGalleryPicturesAsync(int id, string direction, int amount = 1);
 }

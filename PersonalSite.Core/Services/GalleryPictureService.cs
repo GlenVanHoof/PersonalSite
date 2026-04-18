@@ -1,6 +1,7 @@
 using PersonalSite.Core.Interfaces.Repositories;
 using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Core.Models;
+using System.Data;
 
 namespace PersonalSite.Core.Services;
 
@@ -31,6 +32,7 @@ public class GalleryPictureService : IGalleryPictureService
 
     public async Task<GalleryPicture> CreateGalleryPictureAsync(GalleryPicture galleryPicture)
     {
+        galleryPicture.Position = (await _galleryPictureRepository.GetGalleryPictureCountAsync()) + 1;
         return await _galleryPictureRepository.CreateGalleryPictureAsync(galleryPicture);
     }
 
@@ -44,18 +46,38 @@ public class GalleryPictureService : IGalleryPictureService
         await _galleryPictureRepository.DeleteGalleryPictureAsync(id);
     }
 
-    public async Task ReorderGalleryPicturesAsync(List<int> orderedIds)
+    public async Task ReorderGalleryPicturesAsync(int id, string direction, int amount = 1)
     {
-        var pictures = await _galleryPictureRepository.GetAllGalleryPicturesAsync();
-        var pictureDict = pictures.ToDictionary(p => p.Id);
+        if (direction.ToLower() != "up" && direction.ToLower() != "down")
+            throw new ArgumentException("Direction must be either 'up' or 'down'.");
 
-        for (int i = 0; i < orderedIds.Count; i++)
+        var picture = await _galleryPictureRepository.GetGalleryPictureByIdAsync(id);
+        if (picture == null)
+            throw new KeyNotFoundException($"GalleryPicture with id = {id} not found.");
+        var allPictures = await _galleryPictureRepository.GetAllGalleryPicturesAsync();
+
+        int currentPosition = picture.Position;
+        int newPosition = direction.ToLower() == "up" ? currentPosition - amount : currentPosition + amount;
+        if (newPosition < 1)
+            newPosition = 1;
+        if (newPosition > allPictures.Count())
+            newPosition = allPictures.Count();
+
+        // Update the positions of the affected pictures
+        if (newPosition != currentPosition)
         {
-            if (pictureDict.TryGetValue(orderedIds[i], out var picture))
+            var affectedPictures = allPictures
+                .Where(p => p.Position >= Math.Min(currentPosition, newPosition)
+                         && p.Position <= Math.Max(currentPosition, newPosition));
+
+            foreach (var affectedPicture in affectedPictures)
             {
-                picture.Position = i;
-                await _galleryPictureRepository.UpdateGalleryPictureAsync(picture);
+                affectedPicture.Position += (newPosition > currentPosition) ? -1 : 1;
+                await _galleryPictureRepository.UpdateGalleryPictureAsync(affectedPicture);
             }
         }
+
+        picture.Position = newPosition;
+        await _galleryPictureRepository.UpdateGalleryPictureAsync(picture);
     }
 }

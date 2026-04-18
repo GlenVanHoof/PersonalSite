@@ -17,54 +17,23 @@
                     <h5>Choose Option</h5>
                 </div>
                 <div class="card-body">
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" name="mode" id="uploadMode" value="upload" checked>
-                        <label class="form-check-label" for="uploadMode">
-                            <strong>Upload New Image</strong>
-                        </label>
-                    </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="mode" id="existingMode" value="existing">
+                        <input class="form-check-input" type="radio" name="mode" id="existingMode" value="existing" checked>
                         <label class="form-check-label" for="existingMode">
                             <strong>Use Existing Picture</strong>
                         </label>
                     </div>
-                </div>
-            </div>
-
-            <!-- Upload section -->
-            <div id="uploadSection">
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <h5>Upload Image File</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label asp-for="UploadedFile" class="form-label"></label>
-                            <input asp-for="UploadedFile" type="file" class="form-control" accept="image/*" id="fileInput" />
-                            <span asp-validation-for="UploadedFile" class="text-danger"></span>
-                            <small class="form-text text-muted">Accepted formats: jpg, jpeg, png, gif, webp (max 5MB)</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <h5>Or Enter External URL</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label asp-for="Source" class="form-label"></label>
-                            <input asp-for="Source" class="form-control" placeholder="https://example.com/image.jpg" />
-                            <span asp-validation-for="Source" class="text-danger"></span>
-                            <small class="form-text text-muted">Alternative: Enter an external image URL</small>
-                        </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="mode" id="uploadMode" value="upload">
+                        <label class="form-check-label" for="uploadMode">
+                            <strong>Upload New Image</strong>
+                        </label>
                     </div>
                 </div>
             </div>
 
             <!-- Existing picture section -->
-            <div id="existingSection" style="display: none;">
+            <div id="existingSection" style="display: block;">
                 <div class="card mb-3">
                     <div class="card-header">
                         <h5>Select Existing Picture</h5>
@@ -88,8 +57,40 @@
             </div>
 
             <input type="hidden" asp-for="UseExistingPicture" id="useExistingPicture" value="false" />
+
+
+            <!-- Upload section -->
+            <div id="uploadSection" style="display: none;">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Upload Image File</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="UploadedFile" class="form-label"></label>
+                            <input asp-for="UploadedFile" type="file" class="form-control" accept="image/*" id="fileInput" />
+                            <span asp-validation-for="UploadedFile" class="text-danger"></span>
+                            <small class="form-text text-muted">Accepted formats: jpg, jpeg, png, gif, webp (max 20MB)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Or Enter External URL</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Source" class="form-label"></label>
+                            <input asp-for="Source" class="form-control" placeholder="https://example.com/image.jpg" />
+                            <span asp-validation-for="Source" class="text-danger"></span>
+                            <small class="form-text text-muted">Alternative: Enter an external image URL</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-            <div class="mb-3">
+            <div class="mb-3" hidden>
                 <label asp-for="Position" class="form-label"></label>
                 <input asp-for="Position" type="number" class="form-control" min="1" />
                 <span asp-validation-for="Position" class="text-danger"></span>
@@ -141,6 +142,25 @@
                 }
             });
         });
+
+        // Ensure correct section is shown on page load
+        (function() {
+            const existingRadio = document.getElementById('existingMode');
+            const uploadRadio = document.getElementById('uploadMode');
+            const uploadSection = document.getElementById('uploadSection');
+            const existingSection = document.getElementById('existingSection');
+            const useExistingInput = document.getElementById('useExistingPicture');
+
+            if (existingRadio.checked) {
+                uploadSection.style.display = 'none';
+                existingSection.style.display = 'block';
+                useExistingInput.value = 'true';
+            } else if (uploadRadio.checked) {
+                uploadSection.style.display = 'block';
+                existingSection.style.display = 'none';
+                useExistingInput.value = 'false';
+            }
+        })();
 
         // Preview uploaded file
         document.getElementById('fileInput')?.addEventListener('change', function(e) {

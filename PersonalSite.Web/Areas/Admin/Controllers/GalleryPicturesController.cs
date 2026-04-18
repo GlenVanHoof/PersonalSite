@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PersonalSite.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Hosting;
-using System.IO;
+using Microsoft.AspNetCore.Mvc;
 using PersonalSite.Core.Interfaces.Services;
+using PersonalSite.Web.Areas.Admin.Models;
+using System.IO;
 
 namespace PersonalSite.Web.Areas.Admin.Controllers;
 
@@ -16,7 +16,7 @@ public class GalleryPicturesController : Controller
     private readonly IWebHostEnvironment _webHostEnvironment;
 
     public GalleryPicturesController(
-        IGalleryPictureService galleryPictureService, 
+        IGalleryPictureService galleryPictureService,
         IPictureService pictureService,
         IWebHostEnvironment webHostEnvironment)
     {
@@ -83,7 +83,7 @@ public class GalleryPicturesController : Controller
                 // Validate file type
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
                 var fileExtension = Path.GetExtension(model.UploadedFile.FileName).ToLowerInvariant();
-                
+
                 if (!allowedExtensions.Contains(fileExtension))
                 {
                     ModelState.AddModelError("UploadedFile", "Only image files (jpg, jpeg, png, gif, webp) are allowed.");
@@ -102,7 +102,7 @@ public class GalleryPicturesController : Controller
                 // Create unique filename
                 var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
                 var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploaded-pictures");
-                
+
                 // Ensure directory exists
                 if (!Directory.Exists(uploadsFolder))
                 {
@@ -140,7 +140,6 @@ public class GalleryPicturesController : Controller
         var galleryPicture = new Core.Models.GalleryPicture
         {
             PictureId = pictureId,
-            Position = model.Position
         };
 
         await _galleryPictureService.CreateGalleryPictureAsync(galleryPicture);
@@ -159,7 +158,7 @@ public class GalleryPicturesController : Controller
 
         var picture = await _pictureService.GetPictureByIdAsync(galleryPicture.PictureId);
         var pictures = await _pictureService.GetAllPicturesAsync();
-        
+
         var viewModel = new GalleryPictureEditViewModel
         {
             Id = galleryPicture.Id,
@@ -206,7 +205,7 @@ public class GalleryPicturesController : Controller
                 // Validate file type
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
                 var fileExtension = Path.GetExtension(model.UploadedFile.FileName).ToLowerInvariant();
-                
+
                 if (!allowedExtensions.Contains(fileExtension))
                 {
                     ModelState.AddModelError("UploadedFile", "Only image files (jpg, jpeg, png, gif, webp) are allowed.");
@@ -237,7 +236,7 @@ public class GalleryPicturesController : Controller
                 // Create unique filename
                 var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
                 var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploaded-pictures");
-                
+
                 // Ensure directory exists
                 if (!Directory.Exists(uploadsFolder))
                 {
@@ -303,14 +302,14 @@ public class GalleryPicturesController : Controller
 
         // Get associated picture
         var picture = await _pictureService.GetPictureByIdAsync(galleryPicture.PictureId);
-        
+
         // Delete gallery picture first
         await _galleryPictureService.DeleteGalleryPictureAsync(id);
 
         // Check if this picture is used by other gallery pictures or projects
         var allPictures = await _pictureService.GetAllPicturesAsync();
         var allGalleryPictures = await _galleryPictureService.GetGalleryPicturesOrderedAsync();
-        
+
         var isPictureStillInUse = allGalleryPictures.Any(gp => gp.PictureId == galleryPicture.PictureId && gp.Id != id) ||
                                   (picture != null && picture.ProjectId.HasValue);
 
@@ -334,11 +333,15 @@ public class GalleryPicturesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Reorder(List<int> positions)
+    [HttpGet]
+    public async Task<IActionResult> Reorder(int pictureId, string direction, int amount = 1)
     {
-        await _galleryPictureService.ReorderGalleryPicturesAsync(positions);
-        return Json(new { success = true });
+        if (direction.ToLower() != "up" && direction.ToLower() != "down")
+        {
+            TempData["ErrorMessage"] = "Invalid reorder direction.";
+            return RedirectToAction(nameof(Index));
+        }
+        await _galleryPictureService.ReorderGalleryPicturesAsync(pictureId, direction, amount);
+        return RedirectToAction(nameof(Index));
     }
 }

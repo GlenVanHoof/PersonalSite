@@ -34,6 +34,15 @@ public class GalleryPictureRepository : IGalleryPictureRepository
         return entity == null ? null : GalleryPictureMapper.ToDomain(entity);
     }
 
+    public async Task<GalleryPicture?> GetGalleryPictureByPositionAsync(int position)
+    {
+        var entity = await _context.GalleryPictures
+            .Include(gp => gp.Picture)
+            .FirstOrDefaultAsync(gp => gp.Position == position);
+
+        return entity == null ? null : GalleryPictureMapper.ToDomain(entity);
+    }
+
     public async Task<GalleryPicture> CreateGalleryPictureAsync(GalleryPicture galleryPicture)
     {
         var entity = GalleryPictureMapper.ToEntity(galleryPicture);
@@ -64,5 +73,10 @@ public class GalleryPictureRepository : IGalleryPictureRepository
             _context.GalleryPictures.Remove(entity);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<int> GetGalleryPictureCountAsync()
+    {
+        return await _context.GalleryPictures.CountAsync();
     }
 }
