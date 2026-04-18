@@ -40,4 +40,25 @@ public class PortfolioController : Controller
 
         return View(viewModel);
     }
+
+    public async Task<IActionResult> Details(string slug)
+    {
+        var project = await _projectService.GetProjectBySlugAsync(slug);
+        if (project == null)
+        {
+            return NotFound();
+        }
+        var viewModel = new ProjectDetailViewModel
+        {
+            Id = project.Id,
+            Slug = project.Slug,
+            Title = _languageService.GetTranslation(project.Title),
+            ShortDescription = _languageService.GetTranslation(project.ShortDescription),
+            Description = _languageService.GetTranslation(project.Description),
+            ImagePath = project.ImagePath,
+            GithubUrl = project.GithubUrl,
+            Pictures = project.Pictures.Select(p => p.Source).ToList()
+        };
+        return View(viewModel);
+    }
 }
