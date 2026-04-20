@@ -10,7 +10,6 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Resources\Views\About\" />
     <Folder Include="Resources\Views\Contact\" />
-    <Folder Include="wwwroot\images\site\backgrounds\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PersonalSite.Web.Areas.Admin.Models;
 using Microsoft.AspNetCore.Hosting;
-using System.IO;
+using Microsoft.AspNetCore.Mvc;
 using PersonalSite.Core.Interfaces.Services;
+using PersonalSite.Web.Areas.Admin.Models;
+using System.IO;
 
 namespace PersonalSite.Web.Areas.Admin.Controllers;
 
@@ -16,7 +16,7 @@ public class PicturesController : Controller
     private readonly IWebHostEnvironment _webHostEnvironment;
 
     public PicturesController(
-        IPictureService pictureService, 
+        IPictureService pictureService,
         IProjectService projectService,
         IWebHostEnvironment webHostEnvironment)
     {
@@ -72,7 +72,7 @@ public class PicturesController : Controller
             // Validate file type
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
             var fileExtension = Path.GetExtension(model.UploadedFile.FileName).ToLowerInvariant();
-            
+
             if (!allowedExtensions.Contains(fileExtension))
             {
                 ModelState.AddModelError("UploadedFile", "Only image files (jpg, jpeg, png, gif, webp) are allowed.");
@@ -80,25 +80,26 @@ public class PicturesController : Controller
                 return View(model);
             }
 
-            // Validate file size (max 5MB)
-            if (model.UploadedFile.Length > 5 * 1024 * 1024)
+            // Validate file size (max 20MB)
+            if (model.UploadedFile.Length > 20 * 1024 * 1024)
             {
-                ModelState.AddModelError("UploadedFile", "File size must not exceed 5MB.");
+                ModelState.AddModelError("UploadedFile", "File size must not exceed 20MB.");
                 model.AvailableProjects = (await _projectService.GetAllProjectsAsync()).ToList();
                 return View(model);
             }
 
             // Create unique filename
-            var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+            //var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+            var FileName = model.UploadedFile.FileName;
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploaded-pictures");
-            
+
             // Ensure directory exists
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            var filePath = Path.Combine(uploadsFolder, FileName);
 
             // Save file
             using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -106,7 +107,7 @@ public class PicturesController : Controller
                 await model.UploadedFile.CopyToAsync(fileStream);
             }
 
-            imagePath = $"/images/uploaded-pictures/{uniqueFileName}";
+            imagePath = $"/images/uploaded-pictures/{FileName}";
         }
         else
         {
@@ -169,7 +170,7 @@ public class PicturesController : Controller
             // Validate file type
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
             var fileExtension = Path.GetExtension(model.UploadedFile.FileName).ToLowerInvariant();
-            
+
             if (!allowedExtensions.Contains(fileExtension))
             {
                 ModelState.AddModelError("UploadedFile", "Only image files (jpg, jpeg, png, gif, webp) are allowed.");
@@ -178,10 +179,10 @@ public class PicturesController : Controller
                 return View(model);
             }
 
-            // Validate file size (max 5MB)
-            if (model.UploadedFile.Length > 5 * 1024 * 1024)
+            // Validate file size (max 20MB)
+            if (model.UploadedFile.Length > 20 * 1024 * 1024)
             {
-                ModelState.AddModelError("UploadedFile", "File size must not exceed 5MB.");
+                ModelState.AddModelError("UploadedFile", "File size must not exceed 20MB.");
                 model.AvailableProjects = (await _projectService.GetAllProjectsAsync()).ToList();
                 model.ExistingSource = existingPicture.Source;
                 return View(model);
@@ -198,16 +199,16 @@ public class PicturesController : Controller
             }
 
             // Create unique filename
-            var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+            var fileName = model.UploadedFile.FileName;
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploaded-pictures");
-            
+
             // Ensure directory exists
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
 
             // Save file
             using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -215,7 +216,7 @@ public class PicturesController : Controller
                 await model.UploadedFile.CopyToAsync(fileStream);
             }
 
-            imagePath = $"/images/uploaded-pictures/{uniqueFileName}";
+            imagePath = $"/images/uploaded-pictures/{fileName}";
         }
         else if (!string.IsNullOrWhiteSpace(model.Source))
         {

@@ -16,12 +16,6 @@
     {
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             
-            <ol class="carousel-indicators">
-                @for (int i = 0; i < Model.Pictures.Count; i++)
-                {
-                    <li data-target="#carouselExampleIndicators" data-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
-                }                
-            </ol>
             <div class="carousel-inner">
                 @foreach (var picture in Model.Pictures)
                 {

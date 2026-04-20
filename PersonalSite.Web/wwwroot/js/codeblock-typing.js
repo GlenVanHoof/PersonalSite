@@ -2,9 +2,9 @@
 // Typing effect for all .typed spans, sequentially
 document.addEventListener("DOMContentLoaded", async function () {
     const elements = document.querySelectorAll('.typed');
-    const charDelayMin = 80;
-    const charDelayMax = 120;
-    const pauseBetween = 1500;
+    const charDelayMin = 40;
+    const charDelayMax = 90;
+    const pauseBetween = 800;
 
     // Helper to type out a single element
     function typeText(el, text) {

@@ -301,8 +301,7 @@ public class ProjectsController : Controller
             return null;
         }
 
-        // Create unique filename
-        var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+        var fileName = file.FileName;
         var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploaded-pictures");
 
         // Ensure directory exists
@@ -311,7 +310,7 @@ public class ProjectsController : Controller
             Directory.CreateDirectory(uploadsFolder);
         }
 
-        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+        var filePath = Path.Combine(uploadsFolder, fileName);
 
         // Save file
         using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -319,7 +318,7 @@ public class ProjectsController : Controller
             await file.CopyToAsync(fileStream);
         }
 
-        return $"/images/uploaded-pictures/{uniqueFileName}";
+        return $"/images/uploaded-pictures/{fileName}";
     }
 
     private async Task DeleteUploadedImageAsync(string imagePath)
