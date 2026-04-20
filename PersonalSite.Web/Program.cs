@@ -11,6 +11,11 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (builder.Environment.IsDevelopment() || builder.Environment.EnvironmentName == "Remote")
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+
 // Determine environment
 var env = builder.Environment.EnvironmentName;
 
@@ -23,6 +28,7 @@ string connectionString = env switch
     _ => builder.Configuration.GetConnectionString("DevelopmentConnection") // fallback
 } ?? throw new InvalidOperationException($"Connection string not found for environment: {env}");
 
+Console.WriteLine("Loaded connection string: " + connectionString);
 // Register DbContext
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseNpgsql(connectionString));
