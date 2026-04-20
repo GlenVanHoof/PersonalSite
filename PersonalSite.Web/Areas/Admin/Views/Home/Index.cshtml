@@ -1,8 +1,105 @@
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<h1>Dashboard</h1>
-<p>This will later contain buttons with nice icons that serve as a second navbar.</p>
-<p>For now, just enjoy this cute little quokka</p>
-<img src="~/images/admin/dashboard/quokka.png" alt="Cute quokka by Allan Frijns" class="w-25" />
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Admin Dashboard</h1>
+        <p class="lead">Welcome, @User.Identity?.Name (@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value)</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Projects</h5>
+                <p class="card-text">Manage your portfolio projects and their translations.</p>
+                <a asp-controller="Projects" asp-action="Index" class="btn btn-primary">Manage Projects</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Skills</h5>
+                <p class="card-text">Manage your technical skills and proficiency levels.</p>
+                <a asp-controller="Skills" asp-action="Index" class="btn btn-primary">Manage Skills</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Experience</h5>
+                <p class="card-text">Manage your work experience entries.</p>
+                <a asp-controller="Experiences" asp-action="Index" class="btn btn-primary">Manage Experience</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Education</h5>
+                <p class="card-text">Manage your educational background.</p>
+                <a asp-controller="Educations" asp-action="Index" class="btn btn-primary">Manage Education</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Certificates</h5>
+                <p class="card-text">Manage your professional certificates.</p>
+                <a asp-controller="Certificates" asp-action="Index" class="btn btn-primary">Manage Certificates</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Pictures</h5>
+                <p class="card-text">Manage project pictures and images.</p>
+                <a asp-controller="Pictures" asp-action="Index" class="btn btn-primary">Manage Pictures</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Gallery</h5>
+                <p class="card-text">Manage homepage gallery pictures.</p>
+                <a asp-controller="GalleryPictures" asp-action="Index" class="btn btn-primary">Manage Gallery</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Contact Forms</h5>
+                <p class="card-text">View and manage submitted contact forms.</p>
+                <a asp-controller="ContactForms" asp-action="Index" class="btn btn-primary">View Forms</a>
+            </div>
+        </div>
+    </div>
+    
+    @if (User.IsInRole("SuperAdmin"))
+    {
+        <div class="col-md-4">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Users <span class="badge bg-warning">SuperAdmin Only</span></h5>
+                    <p class="card-text">Manage admin users and permissions.</p>
+                    <a asp-controller="Users" asp-action="Index" class="btn btn-warning">Manage Users</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

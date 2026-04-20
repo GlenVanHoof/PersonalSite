@@ -6,43 +6,40 @@ namespace PersonalSite.Infrastructure.Helpers;
 
 public static class SkillMapper
 {
-    public static Skill ToModel(SkillEntity entity)
+    public static async Task<Skill> ToDomainAsync(SkillEntity entity, TranslationHelper translationHelper)
     {
-        if (entity == null) return null!;
+        var translations = await translationHelper.GetAllTranslationsAsync("Skill", entity.Id);
 
         return new Skill
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Type = Enum.Parse<SkillType>(entity.Type!),
+            Type = Enum.Parse<SkillType>(entity.Type, true),
             ScoreOutOf100 = entity.ScoreOutOf100,
-            CreatedAt = entity.CreatedAt,
-            UpdatedAt = entity.UpdatedAt
+            CreatedOn = entity.CreatedOn,
+            UpdatedOn = entity.UpdatedOn,
+            Name = translations.GetValueOrDefault("Name") ?? new Dictionary<string, string>(),
+            Description = translations.GetValueOrDefault("Description") ?? new Dictionary<string, string>()
         };
     }
 
-    public static SkillEntity ToEntity(Skill model)
+    public static SkillEntity ToEntity(Skill domain)
     {
-        if (model == null) return null!;
-
         return new SkillEntity
         {
-            Id = model.Id,
-            Name = model.Name!,
-            Type = model.Type.ToString(),
-            ScoreOutOf100 = model.ScoreOutOf100,
-            CreatedAt = model.CreatedAt,
-            UpdatedAt = model.UpdatedAt
+            Id = domain.Id,
+            Type = domain.Type.ToString().ToLower(),
+            ScoreOutOf100 = domain.ScoreOutOf100,
+            CreatedOn = domain.CreatedOn,
+            UpdatedOn = domain.UpdatedOn
         };
     }
 
-    public static IEnumerable<Skill> ToModelList(IEnumerable<SkillEntity> entities)
+    public static Dictionary<string, Dictionary<string, string>> ExtractTranslations(Skill domain)
     {
-        return entities?.Select(ToModel) ?? Enumerable.Empty<Skill>();
-    }
-
-    public static IEnumerable<SkillEntity> ToEntityList(IEnumerable<Skill> models)
-    {
-        return models?.Select(ToEntity) ?? Enumerable.Empty<SkillEntity>();
+        return new Dictionary<string, Dictionary<string, string>>
+        {
+            ["Name"] = domain.Name,
+            ["Description"] = domain.Description
+        };
     }
 }

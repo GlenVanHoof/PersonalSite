@@ -5,43 +5,40 @@ namespace PersonalSite.Infrastructure.Helpers;
 
 public static class CertificateMapper
 {
-    public static Certificate ToModel(CertificateEntity entity)
+    public static async Task<Certificate> ToDomainAsync(CertificateEntity entity, TranslationHelper translationHelper)
     {
-        if (entity == null) return null!;
+        var translations = await translationHelper.GetAllTranslationsAsync("Certificate", entity.Id);
 
         return new Certificate
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             AcquiredOn = entity.AcquiredOn,
             Organisation = entity.Organisation,
-            CreatedAt = default,
-            UpdatedAt = default
+            CreatedOn = entity.CreatedOn,
+            UpdatedOn = entity.UpdatedOn,
+            Name = translations.GetValueOrDefault("Name") ?? new Dictionary<string, string>(),
+            Description = translations.GetValueOrDefault("Description") ?? new Dictionary<string, string>()
         };
     }
 
-    public static CertificateEntity ToEntity(Certificate model)
+    public static CertificateEntity ToEntity(Certificate domain)
     {
-        if (model == null) return null!;
-
         return new CertificateEntity
         {
-            Id = model.Id,
-            Name = model.Name!,
-            Description = model.Description,
-            AcquiredOn = model.AcquiredOn,
-            Organisation = model.Organisation
+            Id = domain.Id,
+            AcquiredOn = domain.AcquiredOn,
+            Organisation = domain.Organisation,
+            CreatedOn = domain.CreatedOn,
+            UpdatedOn = domain.UpdatedOn
         };
     }
 
-    public static IEnumerable<Certificate> ToModelList(IEnumerable<CertificateEntity> entities)
+    public static Dictionary<string, Dictionary<string, string>> ExtractTranslations(Certificate domain)
     {
-        return entities?.Select(ToModel) ?? Enumerable.Empty<Certificate>();
-    }
-
-    public static IEnumerable<CertificateEntity> ToEntityList(IEnumerable<Certificate> models)
-    {
-        return models?.Select(ToEntity) ?? Enumerable.Empty<CertificateEntity>();
+        return new Dictionary<string, Dictionary<string, string>>
+        {
+            ["Name"] = domain.Name,
+            ["Description"] = domain.Description
+        };
     }
 }

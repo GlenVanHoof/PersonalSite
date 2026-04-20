@@ -1,14 +1,18 @@
 ﻿using PersonalSite.Core.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PersonalSite.Core.Models
+namespace PersonalSite.Core.Models;
+
+public class Skill
 {
-    public class Skill
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public SkillType Type { get; set; }
-        public int ScoreOutOf100 { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
+    public int Id { get; set; }
+    [Column(TypeName = "varchar(20)")]
+    public required SkillType Type { get; set; }
+    public int ScoreOutOf100 { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
+
+    // Multi-language fields
+    public Dictionary<string, string> Name { get; set; } = new();
+    public Dictionary<string, string> Description { get; set; } = new();
 }

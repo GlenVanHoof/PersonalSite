@@ -1,0 +1,86 @@
+@model PersonalSite.Core.Models.Education
+@{
+    ViewData["Title"] = "Education Details";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Education Details</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Period</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Start Date</dt>
+            <dd class="col-sm-9">@Model.StartDate.ToString("MMMM yyyy")</dd>
+            
+            <dt class="col-sm-3">End Date</dt>
+            <dd class="col-sm-9">@(Model.EndDate?.ToString("MMMM yyyy") ?? "Present")</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Translations</h5>
+    </div>
+    <div class="card-body">
+        <ul class="nav nav-tabs" role="tablist">
+            @{
+                int tabIndex = 0;
+                foreach (var langCode in Model.Institution.Keys)
+                {
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link @(tabIndex == 0 ? "active" : "")" 
+                                id="@langCode-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#@langCode-content" 
+                                type="button" 
+                                role="tab">
+                            @langCode.ToUpper()
+                        </button>
+                    </li>
+                    tabIndex++;
+                }
+            }
+        </ul>
+        
+        <div class="tab-content pt-3">
+            @{
+                tabIndex = 0;
+                foreach (var langCode in Model.Institution.Keys)
+                {
+                    <div class="tab-pane fade @(tabIndex == 0 ? "show active" : "")" 
+                         id="@langCode-content" 
+                         role="tabpanel">
+                        <dl class="row">
+                            <dt class="col-sm-3">Institution</dt>
+                            <dd class="col-sm-9">@Model.Institution.GetValueOrDefault(langCode, "N/A")</dd>
+                            
+                            <dt class="col-sm-3">Degree</dt>
+                            <dd class="col-sm-9">@Model.Degree.GetValueOrDefault(langCode, "N/A")</dd>
+                            
+                            <dt class="col-sm-3">Field of Study</dt>
+                            <dd class="col-sm-9">@(Model.FieldOfStudy?.GetValueOrDefault(langCode, "N/A") ?? "N/A")</dd>
+                            
+                            <dt class="col-sm-3">Description</dt>
+                            <dd class="col-sm-9">
+                                <div class="border p-2">
+                                    @Html.Raw((Model.Description?.GetValueOrDefault(langCode, "N/A") ?? "N/A").Replace("\n", "<br>"))
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                    tabIndex++;
+                }
+            }
+        </div>
+    </div>
+</div>

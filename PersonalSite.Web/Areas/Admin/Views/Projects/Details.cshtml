@@ -1,101 +1,144 @@
 @model PersonalSite.Core.Models.Project
+
 @{
     ViewData["Title"] = "Project Details";
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
-    var translations = ViewBag.Translations as IEnumerable<PersonalSite.Core.Models.ProjectTranslation>;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Project Details</h1>
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Project</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </div>
 </div>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<div class="card mb-4">
+<div class="card mb-3">
     <div class="card-header">
-        <h3>Project Information</h3>
+        <h5>Basic Information</h5>
     </div>
     <div class="card-body">
         <dl class="row">
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Id)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Id)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Slug)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Slug)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.GitUrl)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.GitUrl)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ImagePath)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.ImagePath)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.OrderIndex)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.OrderIndex)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedAt)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.UpdatedAt)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.UpdatedAt)</dd>
+            <dt class="col-sm-3">Slug</dt>
+            <dd class="col-sm-9">@Model.Slug</dd>
+            
+            <dt class="col-sm-3">GitHub URL</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrEmpty(Model.GithubUrl))
+                {
+                    <a href="@Model.GithubUrl" target="_blank">@Model.GithubUrl</a>
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+            </dd>
+            
+            <dt class="col-sm-3">Order Index</dt>
+            <dd class="col-sm-9">@Model.OrderIndex</dd>
+            
+            <dt class="col-sm-3">Created On</dt>
+            <dd class="col-sm-9">@Model.CreatedOn.ToString("MMMM dd, yyyy")</dd>
+            
+            <dt class="col-sm-3">Updated On</dt>
+            <dd class="col-sm-9">@Model.UpdatedOn.ToString("MMMM dd, yyyy")</dd>
         </dl>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h3>Translations</h3>
-        <a asp-action="CreateTranslation" asp-route-projectId="@Model.Id" class="btn btn-primary">Add Translation</a>
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Images</h5>
     </div>
     <div class="card-body">
-        @if (translations != null && translations.Any())
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
         {
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Language</th>
-                            <th>Title</th>
-                            <th>Short Description</th>
-                            <th>Technologies</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var translation in translations)
-                        {
-                            <tr>
-                                <td>@translation.Language</td>
-                                <td>@translation.Title</td>
-                                <td>@translation.ShortDescription</td>
-                                <td>
-                                    @if (translation.Technologies != null && translation.Technologies.Any())
-                                    {
-                                        <span>@string.Join(", ", translation.Technologies)</span>
-                                    }
-                                </td>
-                                <td>
-                                    <a asp-action="EditTranslation" asp-route-id="@translation.Id" class="btn btn-sm btn-warning">Edit</a>
-                                    <a asp-action="DeleteTranslation" asp-route-id="@translation.Id" class="btn btn-sm btn-danger">Delete</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+            <div class="mb-3">
+                <h6>Card Image</h6>
+                <div class="text-center">
+                    <img src="@Model.ImagePath" class="img-fluid rounded" style="max-height: 400px; object-fit: contain;" alt="Project card image" />
+                </div>
+            </div>
+        }
+        
+        @if (Model.Pictures.Any())
+        {
+            <hr />
+            <h6>All Project Images (@Model.Pictures.Count)</h6>
+            <div class="row g-3 mt-2">
+                @foreach (var picture in Model.Pictures)
+                {
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="@picture.Source" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Project image" />
+                            <div class="card-body p-2">
+                                @if (Model.ImagePath == picture.Source)
+                                {
+                                    <span class="badge bg-primary">Card Image</span>
+                                }
+                                <small class="text-muted d-block">Added: @picture.CreatedOn.ToString("MMM dd, yyyy")</small>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         }
         else
         {
-            <p class="text-muted">No translations available for this project.</p>
+            <p class="text-muted">No images uploaded for this project.</p>
+        }
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Translations</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Title.Any())
+        {
+            <h6 class="mb-3">Titles</h6>
+            <dl class="row">
+                @foreach (var title in Model.Title.OrderBy(t => t.Key))
+                {
+                    <dt class="col-sm-3">@title.Key.ToUpper()</dt>
+                    <dd class="col-sm-9">@(string.IsNullOrEmpty(title.Value) ? "N/A" : title.Value)</dd>
+                }
+            </dl>
+            <hr />
+        }
+        
+        @if (Model.ShortDescription.Any())
+        {
+            <h6 class="mb-3">Short Descriptions</h6>
+            <dl class="row">
+                @foreach (var desc in Model.ShortDescription.OrderBy(d => d.Key))
+                {
+                    <dt class="col-sm-3">@desc.Key.ToUpper()</dt>
+                    <dd class="col-sm-9">@(string.IsNullOrEmpty(desc.Value) ? "N/A" : desc.Value)</dd>
+                }
+            </dl>
+            <hr />
+        }
+        
+        @if (Model.Description.Any())
+        {
+            <h6 class="mb-3">Descriptions</h6>
+            <dl class="row">
+                @foreach (var desc in Model.Description.OrderBy(d => d.Key))
+                {
+                    <dt class="col-sm-3">@desc.Key.ToUpper()</dt>
+                    <dd class="col-sm-9">
+                        @if (string.IsNullOrEmpty(desc.Value))
+                        {
+                            <span>N/A</span>
+                        }
+                        else
+                        {
+                            <div style="white-space: pre-wrap;">@desc.Value</div>
+                        }
+                    </dd>
+                }
+            </dl>
         }
     </div>
 </div>

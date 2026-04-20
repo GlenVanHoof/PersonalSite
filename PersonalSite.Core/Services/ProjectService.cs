@@ -1,45 +1,57 @@
-﻿using PersonalSite.Core.Interfaces;
+﻿using PersonalSite.Core.Interfaces.Repositories;
+using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Core.Models;
 
-namespace PersonalSite.Core.Services
+namespace PersonalSite.Core.Services;
+
+public class ProjectService : IProjectService
 {
-    public class ProjectService : IProjectService
+    private readonly IProjectRepository _projectRepository;
+
+    public ProjectService(IProjectRepository projectRepository)
     {
-        private readonly IProjectRepository _projectRepository;
+        _projectRepository = projectRepository;
+    }
 
-        public ProjectService(IProjectRepository projectRepository)
-        {
-            _projectRepository = projectRepository;
-        }
+    public async Task<IEnumerable<Project>> GetAllProjectsAsync()
+    {
+        return await _projectRepository.GetAllProjectsAsync();
+    }
 
-        public async Task<IEnumerable<Project>> GetAllProjectsAsync(string? language = null)
-        {
-            return await _projectRepository.GetAllProjectsAsync(language);
-        }
+    public async Task<Project?> GetProjectByIdAsync(int id)
+    {
+        return await _projectRepository.GetProjectByIdAsync(id);
+    }
 
-        public async Task<Project?> GetProjectBySlugAsync(string slug, string? language = null)
-        {
-            return await _projectRepository.GetProjectBySlugAsync(slug, language);
-        }
+    public async Task<Project?> GetProjectBySlugAsync(string slug)
+    {
+        return await _projectRepository.GetProjectBySlugAsync(slug);
+    }
 
-        public async Task<Project?> GetProjectByIdAsync(int id)
-        {
-            return await _projectRepository.GetProjectByIdAsync(id);
-        }
+    public async Task<Project> CreateProjectAsync(Project project)
+    {
+        return await _projectRepository.CreateProjectAsync(project);
+    }
 
-        public async Task<Project> CreateProjectAsync(Project project)
-        {
-            return await _projectRepository.CreateProjectAsync(project);
-        }
+    public async Task UpdateProjectAsync(Project project)
+    {
+        await _projectRepository.UpdateProjectAsync(project);
+    }
 
-        public async Task UpdateProjectAsync(Project project)
-        {
-            await _projectRepository.UpdateProjectAsync(project);
-        }
+    public async Task DeleteProjectAsync(int id)
+    {
+        await _projectRepository.DeleteProjectAsync(id);
+    }
 
-        public async Task DeleteProjectAsync(int id)
-        {
-            await _projectRepository.DeleteProjectAsync(id);
-        }
+    // Additional service methods
+    public async Task<IEnumerable<Project>> GetProjectsOrderedAsync()
+    {
+        var projects = await _projectRepository.GetAllProjectsAsync();
+        return projects.OrderBy(p => p.OrderIndex);
+    }
+
+    public async Task<Project?> GetProjectWithPicturesAsync(int id)
+    {
+        return await _projectRepository.GetProjectByIdAsync(id);
     }
 }

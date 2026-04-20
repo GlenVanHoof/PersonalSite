@@ -1,196 +1,337 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PersonalSite.Core.Interfaces;
-using PersonalSite.Core.Models;
+using PersonalSite.Core.Interfaces.Services;
+using PersonalSite.Web.Areas.Admin.Models;
 
-namespace PersonalSite.Web.Areas.Admin.Controllers
+namespace PersonalSite.Web.Areas.Admin.Controllers;
+
+[Area("Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
+public class ProjectsController : Controller
 {
-    [Area("Admin")]
-    public class ProjectsController : Controller
+    private readonly IProjectService _projectService;
+    private readonly IPictureService _pictureService;
+    private readonly ILanguageService _languageService;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+
+    public ProjectsController(
+        IProjectService projectService,
+        IPictureService pictureService,
+        ILanguageService languageService,
+        IWebHostEnvironment webHostEnvironment)
     {
-        private readonly IProjectService _projectService;
-        private readonly IProjectTranslationService _projectTranslationService;
+        _projectService = projectService;
+        _pictureService = pictureService;
+        _languageService = languageService;
+        _webHostEnvironment = webHostEnvironment;
+    }
 
-        public ProjectsController(IProjectService projectService, IProjectTranslationService projectTranslationService)
+    public async Task<IActionResult> Index()
+    {
+        var projects = await _projectService.GetAllProjectsAsync();
+        return View(projects);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        var languages = await _languageService.GetAllLanguagesAsync();
+        var model = new ProjectEditViewModel
         {
-            _projectService = projectService;
-            _projectTranslationService = projectTranslationService;
+            Languages = languages.ToList(),
+            Titles = languages.Select(l => new TranslationInputViewModel
+            {
+                LanguageCode = l.Code,
+                LanguageName = l.Name
+            }).ToList(),
+            Descriptions = languages.Select(l => new TranslationInputViewModel
+            {
+                LanguageCode = l.Code,
+                LanguageName = l.Name
+            }).ToList(),
+            ShortDescriptions = languages.Select(l => new TranslationInputViewModel
+            {
+                LanguageCode = l.Code,
+                LanguageName = l.Name
+            }).ToList()
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(ProjectEditViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
+            return View(model);
         }
 
-        public async Task<IActionResult> Index()
+        var project = new Core.Models.Project
         {
-            var projects = await _projectService.GetAllProjectsAsync();
-            return View(projects);
+            Slug = model.Slug,
+            GithubUrl = model.GithubUrl,
+            OrderIndex = model.OrderIndex,
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow,
+            Title = model.Titles.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text),
+            ShortDescription = model.ShortDescriptions.ToDictionary(t => t.LanguageCode, t => t.Text)
+        };
+
+        var createdProject = await _projectService.CreateProjectAsync(project);
+
+        // Handle image uploads
+        if (model.UploadedImages?.Any() == true)
+        {
+            string? firstImagePath = null;
+
+            foreach (var file in model.UploadedImages)
+            {
+                var imagePath = await SaveUploadedImageAsync(file);
+                if (imagePath == null) continue;
+
+                var picture = new Core.Models.Picture
+                {
+                    Source = imagePath,
+                    ProjectId = createdProject.Id,
+                    CreatedOn = DateTime.UtcNow,
+                    UpdatedOn = DateTime.UtcNow
+                };
+
+                await _pictureService.CreatePictureAsync(picture);
+
+                // Track first image for card
+                firstImagePath ??= imagePath;
+            }
+
+            // Set first uploaded image as card image if none selected
+            if (!string.IsNullOrEmpty(firstImagePath))
+            {
+                createdProject.ImagePath = model.SelectedCardImagePath ?? firstImagePath;
+                await _projectService.UpdateProjectAsync(createdProject);
+            }
         }
 
-        public async Task<IActionResult> Details(int id)
+        TempData["SuccessMessage"] = "Project successfully created!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var project = await _projectService.GetProjectByIdAsync(id);
+        if (project == null)
+        {
+            return NotFound();
+        }
+
+        var languages = await _languageService.GetAllLanguagesAsync();
+        var model = new ProjectEditViewModel
+        {
+            Id = project.Id,
+            Slug = project.Slug,
+            GithubUrl = project.GithubUrl,
+            OrderIndex = project.OrderIndex,
+            SelectedCardImagePath = project.ImagePath,
+            ExistingPictures = project.Pictures.ToList(),
+            Languages = languages.ToList(),
+            Titles = languages.Select(l => new TranslationInputViewModel
+            {
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = project.Title.GetValueOrDefault(l.Code, string.Empty)
+            }).ToList(),
+            Descriptions = languages.Select(l => new TranslationInputViewModel
+            {
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = project.Description.GetValueOrDefault(l.Code, string.Empty)
+            }).ToList(),
+            ShortDescriptions = languages.Select(l => new TranslationInputViewModel
+            {
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = project.ShortDescription.GetValueOrDefault(l.Code, string.Empty)
+            }).ToList()
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, ProjectEditViewModel model)
+    {
+        if (id != model.Id)
+        {
+            return NotFound();
+        }
+
+        if (!ModelState.IsValid)
         {
             var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            var translations = await _projectTranslationService.GetTranslationsByProjectIdAsync(id);
-            ViewBag.Translations = translations;
-            return View(project);
+            model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
+            model.ExistingPictures = project?.Pictures.ToList() ?? new();
+            return View(model);
         }
 
-        public IActionResult Create()
+        var existingProject = await _projectService.GetProjectByIdAsync(id);
+        if (existingProject == null)
         {
-            return View();
+            return NotFound();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Project project)
+        existingProject.Slug = model.Slug;
+        existingProject.GithubUrl = model.GithubUrl;
+        existingProject.OrderIndex = model.OrderIndex;
+        existingProject.UpdatedOn = DateTime.UtcNow;
+        existingProject.Title = model.Titles.ToDictionary(t => t.LanguageCode, t => t.Text);
+        existingProject.Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text);
+        existingProject.ShortDescription = model.ShortDescriptions.ToDictionary(t => t.LanguageCode, t => t.Text);
+
+        // Handle image deletions
+        if (model.PicturesToDelete?.Any() == true)
         {
-            if (ModelState.IsValid)
+            foreach (var pictureId in model.PicturesToDelete)
             {
-                await _projectService.CreateProjectAsync(project);
-                TempData["SuccessMessage"] = "Project successfully created!";
-                return RedirectToAction(nameof(Index));
+                var picture = await _pictureService.GetPictureByIdAsync(pictureId);
+                if (picture != null)
+                {
+                    await DeleteUploadedImageAsync(picture.Source);
+                    await _pictureService.DeletePictureAsync(pictureId);
+                }
             }
-            return View(project);
         }
 
-        public async Task<IActionResult> Edit(int id)
+        // Handle new image uploads
+        if (model.UploadedImages?.Any() == true)
         {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
+            foreach (var file in model.UploadedImages)
             {
-                return NotFound();
+                var imagePath = await SaveUploadedImageAsync(file);
+                if (imagePath == null) continue;
+
+                var picture = new Core.Models.Picture
+                {
+                    Source = imagePath,
+                    ProjectId = existingProject.Id,
+                    CreatedOn = DateTime.UtcNow,
+                    UpdatedOn = DateTime.UtcNow
+                };
+
+                await _pictureService.CreatePictureAsync(picture);
             }
-            return View(project);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Project project)
-        {
-            if (id != project.Id)
-            {
-                return NotFound();
-            }
+        // Update card image
+        existingProject.ImagePath = model.SelectedCardImagePath;
 
-            if (ModelState.IsValid)
-            {
-                await _projectService.UpdateProjectAsync(project);
-                TempData["SuccessMessage"] = "Project successfully updated!";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(project);
+        await _projectService.UpdateProjectAsync(existingProject);
+
+        TempData["SuccessMessage"] = "Project successfully updated!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var project = await _projectService.GetProjectByIdAsync(id);
+        if (project == null)
+        {
+            return NotFound();
         }
 
-        public async Task<IActionResult> Delete(int id)
+        return View(project);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var project = await _projectService.GetProjectByIdAsync(id);
+        if (project == null)
         {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-            return View(project);
+            return NotFound();
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        return View(project);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var project = await _projectService.GetProjectByIdAsync(id);
+        if (project == null)
         {
-            await _projectService.DeleteProjectAsync(id);
-            TempData["SuccessMessage"] = "Project successfully deleted!";
-            return RedirectToAction(nameof(Index));
+            return NotFound();
         }
 
-        // Translation Management Actions
-        public async Task<IActionResult> CreateTranslation(int projectId)
+        // Delete all associated images
+        foreach (var picture in project.Pictures)
         {
-            var project = await _projectService.GetProjectByIdAsync(projectId);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            var translation = new ProjectTranslation { ProjectId = projectId };
-            ViewBag.Project = project;
-            return View(translation);
+            await DeleteUploadedImageAsync(picture.Source);
+            await _pictureService.DeletePictureAsync(picture.Id);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateTranslation(ProjectTranslation translation)
-        {
-            if (ModelState.IsValid)
-            {
-                await _projectTranslationService.CreateTranslationAsync(translation);
-                TempData["SuccessMessage"] = "Translation successfully created!";
-                return RedirectToAction(nameof(Details), new { id = translation.ProjectId });
-            }
+        await _projectService.DeleteProjectAsync(id);
 
-            var project = await _projectService.GetProjectByIdAsync(translation.ProjectId);
-            ViewBag.Project = project;
-            return View(translation);
+        TempData["SuccessMessage"] = "Project successfully deleted!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    // Helper methods
+    private async Task<string?> SaveUploadedImageAsync(IFormFile file)
+    {
+        // Validate file type
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+        if (!allowedExtensions.Contains(fileExtension))
+        {
+            ModelState.AddModelError("UploadedImages", "Only image files (jpg, jpeg, png, gif, webp) are allowed.");
+            return null;
         }
 
-        public async Task<IActionResult> EditTranslation(int id)
+        // Validate file size (max 20MB)
+        if (file.Length > 20 * 1024 * 1024)
         {
-            var translation = await _projectTranslationService.GetTranslationByIdAsync(id);
-            if (translation == null)
-            {
-                return NotFound();
-            }
-
-            var project = await _projectService.GetProjectByIdAsync(translation.ProjectId);
-            ViewBag.Project = project;
-            return View(translation);
+            ModelState.AddModelError("UploadedImages", "File size must not exceed 20MB.");
+            return null;
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditTranslation(int id, ProjectTranslation translation)
+        var fileName = file.FileName;
+        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploaded-pictures");
+
+        // Ensure directory exists
+        if (!Directory.Exists(uploadsFolder))
         {
-            if (id != translation.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _projectTranslationService.UpdateTranslationAsync(translation);
-                TempData["SuccessMessage"] = "Translation successfully updated!";
-                return RedirectToAction(nameof(Details), new { id = translation.ProjectId });
-            }
-
-            var project = await _projectService.GetProjectByIdAsync(translation.ProjectId);
-            ViewBag.Project = project;
-            return View(translation);
+            Directory.CreateDirectory(uploadsFolder);
         }
 
-        public async Task<IActionResult> DeleteTranslation(int id)
-        {
-            var translation = await _projectTranslationService.GetTranslationByIdAsync(id);
-            if (translation == null)
-            {
-                return NotFound();
-            }
+        var filePath = Path.Combine(uploadsFolder, fileName);
 
-            var project = await _projectService.GetProjectByIdAsync(translation.ProjectId);
-            ViewBag.Project = project;
-            return View(translation);
+        // Save file
+        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(fileStream);
         }
 
-        [HttpPost, ActionName("DeleteTranslation")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteTranslationConfirmed(int id)
-        {
-            var translation = await _projectTranslationService.GetTranslationByIdAsync(id);
-            if (translation == null)
-            {
-                return NotFound();
-            }
+        return $"/images/uploaded-pictures/{fileName}";
+    }
 
-            var projectId = translation.ProjectId;
-            await _projectTranslationService.DeleteTranslationAsync(id);
-            TempData["SuccessMessage"] = "Translation successfully deleted!";
-            return RedirectToAction(nameof(Details), new { id = projectId });
+    private async Task DeleteUploadedImageAsync(string imagePath)
+    {
+        if (string.IsNullOrEmpty(imagePath) || !imagePath.StartsWith("/images/uploaded-pictures/"))
+        {
+            return;
+        }
+
+        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, imagePath.TrimStart('/'));
+        if (System.IO.File.Exists(filePath))
+        {
+            await Task.Run(() => System.IO.File.Delete(filePath));
         }
     }
 }

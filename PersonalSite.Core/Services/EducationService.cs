@@ -1,4 +1,5 @@
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Repositories;
+using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Core.Models;
 
 namespace PersonalSite.Core.Services;
@@ -35,5 +36,11 @@ public class EducationService : IEducationService
     public async Task DeleteEducationAsync(int id)
     {
         await _educationRepository.DeleteEducationAsync(id);
+    }
+
+    public async Task<IEnumerable<Education>> GetEducationsOrderedByDateAsync()
+    {
+        var educations = await _educationRepository.GetAllEducationsAsync();
+        return educations.OrderByDescending(e => e.StartDate);
     }
 }

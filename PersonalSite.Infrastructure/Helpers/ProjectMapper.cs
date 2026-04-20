@@ -5,45 +5,63 @@ namespace PersonalSite.Infrastructure.Helpers;
 
 public static class ProjectMapper
 {
-    public static Project ToModel(ProjectEntity entity)
+    /// <summary>
+    /// Convert Entity to Domain Model (with translations)
+    /// </summary>
+    public static async Task<Project> ToDomainAsync(ProjectEntity entity, TranslationHelper translationHelper)
     {
-        if (entity == null) return null!;
+        var translations = await translationHelper.GetAllTranslationsAsync("Project", entity.Id);
 
         return new Project
         {
             Id = entity.Id,
-            Slug = entity.Slug!,
-            GitUrl = entity.GithubUrl,
+            Slug = entity.Slug,
+            GithubUrl = entity.GithubUrl,
             ImagePath = entity.ImagePath,
             OrderIndex = entity.OrderIndex,
-            CreatedAt = entity.CreatedAt,
-            UpdatedAt = entity.UpdatedAt
+            CreatedOn = entity.CreatedOn,
+            UpdatedOn = entity.UpdatedOn,
+            Title = translations.GetValueOrDefault("Title") ?? new Dictionary<string, string>(),
+            Description = translations.GetValueOrDefault("Description") ?? new Dictionary<string, string>(),
+            ShortDescription = translations.GetValueOrDefault("ShortDescription") ?? new Dictionary<string, string>(),
+            Pictures = entity.Pictures.Select(p => new Picture
+            {
+                Id = p.Id,
+                Source = p.Source,
+                ProjectId = p.ProjectId,
+                CreatedOn = p.CreatedOn,
+                UpdatedOn = p.UpdatedOn
+            }).ToList()
         };
     }
 
-    public static ProjectEntity ToEntity(Project model)
+    /// <summary>
+    /// Convert Domain Model to Entity (basic properties only, translations handled separately)
+    /// </summary>
+    public static ProjectEntity ToEntity(Project domain)
     {
-        if (model == null) return null!;
-
         return new ProjectEntity
         {
-            Id = model.Id,
-            Slug = model.Slug!,
-            GithubUrl = model.GitUrl!,
-            ImagePath = model.ImagePath!,
-            OrderIndex = model.OrderIndex,
-            CreatedAt = model.CreatedAt,
-            UpdatedAt = model.UpdatedAt
+            Id = domain.Id,
+            Slug = domain.Slug,
+            GithubUrl = domain.GithubUrl,
+            ImagePath = domain.ImagePath,
+            OrderIndex = domain.OrderIndex,
+            CreatedOn = domain.CreatedOn,
+            UpdatedOn = domain.UpdatedOn
         };
     }
 
-    public static IEnumerable<Project> ToModelList(IEnumerable<ProjectEntity> entities)
+    /// <summary>
+    /// Extract translations from domain model
+    /// </summary>
+    public static Dictionary<string, Dictionary<string, string>> ExtractTranslations(Project domain)
     {
-        return entities?.Select(ToModel) ?? Enumerable.Empty<Project>();
-    }
-
-    public static IEnumerable<ProjectEntity> ToEntityList(IEnumerable<Project> models)
-    {
-        return models?.Select(ToEntity) ?? Enumerable.Empty<ProjectEntity>();
+        return new Dictionary<string, Dictionary<string, string>>
+        {
+            ["Title"] = domain.Title,
+            ["Description"] = domain.Description,
+            ["ShortDescription"] = domain.ShortDescription
+        };
     }
 }

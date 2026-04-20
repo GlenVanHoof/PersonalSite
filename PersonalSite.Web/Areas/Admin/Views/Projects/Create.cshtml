@@ -1,50 +1,145 @@
-@model PersonalSite.Core.Models.Project
+@model PersonalSite.Web.Areas.Admin.Models.ProjectEditViewModel
 
 @{
     ViewData["Title"] = "Create Project";
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h1>Create Project</h1>
 
-<hr />
-<div class="row">
-    <div class="col-md-8">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Basic Information</h5>
+        </div>
+        <div class="card-body">
             <div class="mb-3">
                 <label asp-for="Slug" class="form-label"></label>
                 <input asp-for="Slug" class="form-control" />
                 <span asp-validation-for="Slug" class="text-danger"></span>
             </div>
-            
+
             <div class="mb-3">
-                <label asp-for="GitUrl" class="form-label"></label>
-                <input asp-for="GitUrl" class="form-control" />
-                <span asp-validation-for="GitUrl" class="text-danger"></span>
+                <label asp-for="GithubUrl" class="form-label"></label>
+                <input asp-for="GithubUrl" class="form-control" />
+                <span asp-validation-for="GithubUrl" class="text-danger"></span>
             </div>
-            
-            <div class="mb-3">
-                <label asp-for="ImagePath" class="form-label"></label>
-                <input asp-for="ImagePath" class="form-control" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
-            </div>
-            
+
             <div class="mb-3">
                 <label asp-for="OrderIndex" class="form-label"></label>
                 <input asp-for="OrderIndex" class="form-control" type="number" />
                 <span asp-validation-for="OrderIndex" class="text-danger"></span>
             </div>
-            
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Create</button>
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Images</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label asp-for="UploadedImages" class="form-label">Upload Images</label>
+                <input asp-for="UploadedImages" class="form-control" type="file" accept="image/*" multiple id="imageUpload" />
+                <small class="form-text text-muted">Max 20MB each (.jpg, .jpeg, .png, .gif, .webp)</small>
+            </div>
+            <div id="imagePreview" class="row g-2 mt-2"></div>
+        </div>
+    </div>
+
+    <!-- Translation sections for each language -->
+    @for (int i = 0; i < Model.Languages.Count; i++)
+    {
+        var language = Model.Languages[i];
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>@language.Name</h5>
+            </div>
+            <div class="card-body">
+                <input type="hidden" asp-for="Titles[i].LanguageCode" />
+                <input type="hidden" asp-for="Titles[i].LanguageName" />
+                <input type="hidden" asp-for="Descriptions[i].LanguageCode" />
+                <input type="hidden" asp-for="Descriptions[i].LanguageName" />
+                <input type="hidden" asp-for="ShortDescriptions[i].LanguageCode" />
+                <input type="hidden" asp-for="ShortDescriptions[i].LanguageName" />
+
+                <div class="mb-3">
+                    <label asp-for="Titles[i].Text" class="form-label">Title</label>
+                    <input asp-for="Titles[i].Text" class="form-control" />
+                    <span asp-validation-for="Titles[i].Text" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ShortDescriptions[i].Text" class="form-label">Short Description</label>
+                    <textarea asp-for="ShortDescriptions[i].Text" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="ShortDescriptions[i].Text" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Descriptions[i].Text" class="form-label">Description</label>
+                    <textarea asp-for="Descriptions[i].Text" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Descriptions[i].Text" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mb-3">
+        <button type="submit" class="btn btn-success">Create</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            
+            const files = e.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3';
+                    
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'card-img-top';
+                    img.style.height = '150px';
+                    img.style.objectFit = 'cover';
+                    
+                    const cardBody = document.createElement('div');
+                    cardBody.className = 'card-body p-2';
+                    
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = 'SelectedCardImagePath';
+                    radio.value = file.name;
+                    radio.className = 'form-check-input me-2';
+                    if (i === 0) radio.checked = true;
+                    
+                    const label = document.createElement('label');
+                    label.className = 'form-check-label small';
+                    label.textContent = 'Use as card';
+                    
+                    cardBody.appendChild(radio);
+                    cardBody.appendChild(label);
+                    card.appendChild(img);
+                    card.appendChild(cardBody);
+                    col.appendChild(card);
+                    preview.appendChild(col);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 }

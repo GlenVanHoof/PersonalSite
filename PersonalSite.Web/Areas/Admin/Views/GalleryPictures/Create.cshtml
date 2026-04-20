@@ -1,0 +1,75 @@
+@model GalleryPictureEditViewModel
+@{
+    ViewData["Title"] = "Add Gallery Picture";
+}
+
+<h1>Add Gallery Picture</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" asp-controller="GalleryPictures" asp-area="Admin" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Select Existing Picture</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="PictureId" class="form-label">Choose Picture</label>
+                        <select asp-for="PictureId" class="form-select" id="pictureSelect" name="PictureId">
+                            <option value="">-- Select Picture --</option>
+                            @foreach (var picture in Model.AvailablePictures)
+                            {
+                                <option value="@picture.Id" data-src="@picture.Source">
+                                    Picture #@picture.Id - @picture.Source
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="PictureId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add to Gallery
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Preview</h5>
+            </div>
+            <div class="card-body text-center">
+                <img id="imagePreview" src="" alt="Preview" class="img-fluid rounded" style="display: none; max-height: 400px;" />
+                <p id="noPreview" class="text-muted">
+                    <i class="bi bi-image fs-1 d-block mb-2"></i>
+                    Select a picture to see preview
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Preview existing picture selection
+        document.getElementById('pictureSelect')?.addEventListener('change', function(e) {
+            const selectedOption = e.target.options[e.target.selectedIndex];
+            const src = selectedOption.getAttribute('data-src');
+            if (src) {
+                document.getElementById('imagePreview').src = src;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('noPreview').style.display = 'none';
+            } else {
+                document.getElementById('imagePreview').style.display = 'none';
+                document.getElementById('noPreview').style.display = 'block';
+            }
+        });
+    </script>
+}

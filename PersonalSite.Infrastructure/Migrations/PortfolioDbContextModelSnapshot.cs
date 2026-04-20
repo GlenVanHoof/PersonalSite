@@ -30,30 +30,28 @@ namespace PersonalSite.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("AcuiredOn")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("AcquiredOn")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Organisation")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<string>("Organisation")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AcuiredOn");
+                    b.HasIndex("AcquiredOn");
 
                     b.ToTable("Certificates", (string)null);
                 });
 
-            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContactEntity", b =>
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContactFormEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,7 +59,7 @@ namespace PersonalSite.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
@@ -69,26 +67,133 @@ namespace PersonalSite.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(5000)
                         .HasColumnType("character varying(5000)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedAt");
+                    b.HasIndex("CreatedOn");
 
-                    b.ToTable("Contacts", (string)null);
+                    b.ToTable("ContactForms", (string)null);
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContentFieldEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContentItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContentItemId", "FieldName")
+                        .IsUnique();
+
+                    b.ToTable("ContentFields", (string)null);
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContentItemEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CertificateEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("EducationEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ExperienceEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ProjectEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReferenceId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SkillEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CertificateEntityId");
+
+                    b.HasIndex("EducationEntityId");
+
+                    b.HasIndex("ExperienceEntityId");
+
+                    b.HasIndex("ProjectEntityId");
+
+                    b.HasIndex("SkillEntityId");
+
+                    b.HasIndex("ContentType", "ReferenceId");
+
+                    b.ToTable("ContentItems", (string)null);
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContentTranslationEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContentFieldId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("ContentFieldId", "LanguageId")
+                        .IsUnique();
+
+                    b.ToTable("ContentTranslations", (string)null);
                 });
 
             modelBuilder.Entity("PersonalSite.Infrastructure.Models.EducationEntity", b =>
@@ -99,35 +204,16 @@ namespace PersonalSite.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Degree")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateOnly?>("EndDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("FieldOfStudy")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("Institution")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
-
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -145,30 +231,16 @@ namespace PersonalSite.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Company")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateOnly?>("EndDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
-
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -176,6 +248,108 @@ namespace PersonalSite.Infrastructure.Migrations
                     b.HasIndex("StartDate");
 
                     b.ToTable("Experiences", (string)null);
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.GalleryPictureEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PictureId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PictureId");
+
+                    b.ToTable("GalleryPictures", (string)null);
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.LanguageEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Languages", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "en",
+                            Name = "English"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "nl",
+                            Name = "Nederlands"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "fr",
+                            Name = "Français"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "de",
+                            Name = "Deutsch"
+                        });
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.PictureEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Pictures", (string)null);
                 });
 
             modelBuilder.Entity("PersonalSite.Infrastructure.Models.ProjectEntity", b =>
@@ -186,16 +360,14 @@ namespace PersonalSite.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("GithubUrl")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -207,7 +379,7 @@ namespace PersonalSite.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -220,48 +392,6 @@ namespace PersonalSite.Infrastructure.Migrations
                     b.ToTable("Projects", (string)null);
                 });
 
-            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ProjectTranslationEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("LongDescription")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ShortDescription")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.PrimitiveCollection<string>("Technologies")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjectId", "Language")
-                        .IsUnique();
-
-                    b.ToTable("ProjectTranslations", (string)null);
-                });
-
             modelBuilder.Entity("PersonalSite.Infrastructure.Models.SkillEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -270,23 +400,18 @@ namespace PersonalSite.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("ScoreOutOf100")
                         .HasColumnType("integer");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -296,20 +421,216 @@ namespace PersonalSite.Infrastructure.Migrations
                     b.ToTable("Skills", (string)null);
                 });
 
-            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ProjectTranslationEntity", b =>
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.UserEntity", b =>
                 {
-                    b.HasOne("PersonalSite.Infrastructure.Models.ProjectEntity", "Project")
-                        .WithMany("Translations")
-                        .HasForeignKey("ProjectId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("LastLoginOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValue("Admin");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedOn = new DateTime(2026, 4, 15, 14, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "superadmin@personalsite.local",
+                            FirstName = "Super",
+                            IsActive = true,
+                            LastName = "Administrator",
+                            PasswordHash = "$2a$11$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+                            Role = "SuperAdmin",
+                            UpdatedOn = new DateTime(2026, 4, 15, 14, 0, 0, 0, DateTimeKind.Utc),
+                            Username = "superadmin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedOn = new DateTime(2026, 4, 15, 14, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "admin@personalsite.local",
+                            FirstName = "Content",
+                            IsActive = true,
+                            LastName = "Administrator",
+                            PasswordHash = "$2a$11$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+                            Role = "Admin",
+                            UpdatedOn = new DateTime(2026, 4, 15, 14, 0, 0, 0, DateTimeKind.Utc),
+                            Username = "admin"
+                        });
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContentFieldEntity", b =>
+                {
+                    b.HasOne("PersonalSite.Infrastructure.Models.ContentItemEntity", "ContentItem")
+                        .WithMany("ContentFields")
+                        .HasForeignKey("ContentItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ContentItem");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContentItemEntity", b =>
+                {
+                    b.HasOne("PersonalSite.Infrastructure.Models.CertificateEntity", null)
+                        .WithMany("ContentItems")
+                        .HasForeignKey("CertificateEntityId");
+
+                    b.HasOne("PersonalSite.Infrastructure.Models.EducationEntity", null)
+                        .WithMany("ContentItems")
+                        .HasForeignKey("EducationEntityId");
+
+                    b.HasOne("PersonalSite.Infrastructure.Models.ExperienceEntity", null)
+                        .WithMany("ContentItems")
+                        .HasForeignKey("ExperienceEntityId");
+
+                    b.HasOne("PersonalSite.Infrastructure.Models.ProjectEntity", null)
+                        .WithMany("ContentItems")
+                        .HasForeignKey("ProjectEntityId");
+
+                    b.HasOne("PersonalSite.Infrastructure.Models.SkillEntity", null)
+                        .WithMany("ContentItems")
+                        .HasForeignKey("SkillEntityId");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContentTranslationEntity", b =>
+                {
+                    b.HasOne("PersonalSite.Infrastructure.Models.ContentFieldEntity", "ContentField")
+                        .WithMany("Translations")
+                        .HasForeignKey("ContentFieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersonalSite.Infrastructure.Models.LanguageEntity", "Language")
+                        .WithMany("Translations")
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ContentField");
+
+                    b.Navigation("Language");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.GalleryPictureEntity", b =>
+                {
+                    b.HasOne("PersonalSite.Infrastructure.Models.PictureEntity", "Picture")
+                        .WithMany("GalleryPictures")
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Picture");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.PictureEntity", b =>
+                {
+                    b.HasOne("PersonalSite.Infrastructure.Models.ProjectEntity", "Project")
+                        .WithMany("Pictures")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ProjectEntity", b =>
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.CertificateEntity", b =>
+                {
+                    b.Navigation("ContentItems");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContentFieldEntity", b =>
                 {
                     b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ContentItemEntity", b =>
+                {
+                    b.Navigation("ContentFields");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.EducationEntity", b =>
+                {
+                    b.Navigation("ContentItems");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ExperienceEntity", b =>
+                {
+                    b.Navigation("ContentItems");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.LanguageEntity", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.PictureEntity", b =>
+                {
+                    b.Navigation("GalleryPictures");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.ProjectEntity", b =>
+                {
+                    b.Navigation("ContentItems");
+
+                    b.Navigation("Pictures");
+                });
+
+            modelBuilder.Entity("PersonalSite.Infrastructure.Models.SkillEntity", b =>
+                {
+                    b.Navigation("ContentItems");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,27 +1,82 @@
 using Microsoft.AspNetCore.Mvc;
-using PersoonlijkeSite.Models;
-using System.Diagnostics;
+using PersonalSite.Core.Interfaces.Services;
+using PersonalSite.Web.Models;
 
-namespace PersoonlijkeSite.Controllers
+namespace PersonalSite.Web.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly IProjectService _projectService;
+    private readonly IGalleryPictureService _galleryPictureService;
+    private readonly ICurrentLanguageService _languageService;
+
+    public HomeController(
+        IProjectService projectService,
+        IGalleryPictureService galleryPictureService,
+        ICurrentLanguageService languageService)
     {
-        public IActionResult Index()
+        _projectService = projectService;
+        _galleryPictureService = galleryPictureService;
+        _languageService = languageService;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var projects = await _projectService.GetProjectsOrderedAsync();
+        var galleryPictures = await _galleryPictureService.GetGalleryPicturesOrderedAsync();
+
+        var viewModel = new HomeViewModel
         {
-            return View();
-        }
+            Projects = projects.Select(p => new ProjectDisplayViewModel
+            {
+                Id = p.Id,
+                Slug = p.Slug,
+                Title = _languageService.GetTranslation(p.Title),
+                ShortDescription = _languageService.GetTranslation(p.ShortDescription),
+                ImagePath = p.ImagePath,
+                GithubUrl = p.GithubUrl
+            }).ToList(),
+            GalleryPictures = galleryPictures.Select(gp => new GalleryPictureViewModel
+            {
+                Id = gp.Id,
+                Position = gp.Position,
+                ImageSource = gp.Picture?.Source ?? string.Empty
+            }).ToList()
+        };
 
-        public IActionResult Privacy()
+        return View(viewModel);
+    }
+
+    public async Task<IActionResult> Project(string slug)
+    {
+        var project = await _projectService.GetProjectBySlugAsync(slug);
+        
+        if (project == null)
+            return NotFound();
+
+        var viewModel = new ProjectDetailViewModel
         {
-            return View();
-        }
+            Id = project.Id,
+            Slug = project.Slug,
+            Title = _languageService.GetTranslation(project.Title),
+            Description = _languageService.GetTranslation(project.Description),
+            ShortDescription = _languageService.GetTranslation(project.ShortDescription),
+            ImagePath = project.ImagePath,
+            GithubUrl = project.GithubUrl,
+            Pictures = project.Pictures.Select(p => p.Source).ToList()
+        };
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        return View(viewModel);
+    }
 
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View();
     }
 }

@@ -1,88 +1,168 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PersonalSite.Core.Interfaces;
-using PersonalSite.Core.Models;
+using PersonalSite.Core.Interfaces.Services;
+using PersonalSite.Web.Areas.Admin.Models;
 
-namespace PersonalSite.Web.Areas.Admin.Controllers
+namespace PersonalSite.Web.Areas.Admin.Controllers;
+
+[Area("Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
+public class EducationsController : Controller
 {
-    [Area("Admin")]
-    public class EducationsController : Controller
+    private readonly IEducationService _educationService;
+    private readonly ILanguageService _languageService;
+
+    public EducationsController(IEducationService educationService, ILanguageService languageService)
     {
-        private readonly IEducationService _educationService;
+        _educationService = educationService;
+        _languageService = languageService;
+    }
 
-        public EducationsController(IEducationService educationService)
+    public async Task<IActionResult> Index()
+    {
+        var educations = await _educationService.GetEducationsOrderedByDateAsync();
+        return View(educations);
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var education = await _educationService.GetEducationByIdAsync(id);
+        if (education == null)
         {
-            _educationService = educationService;
+            return NotFound();
+        }
+        return View(education);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        var languages = await _languageService.GetAllLanguagesAsync();
+        var viewModel = new EducationEditViewModel
+        {
+            Languages = languages.ToList()
+        };
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(EducationEditViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
+            return View(model);
         }
 
-        public async Task<IActionResult> Index()
+        var education = new Core.Models.Education
         {
-            var educations = await _educationService.GetAllEducationsAsync();
-            return View(educations);
+            StartDate = model.StartDate,
+            EndDate = model.EndDate,
+            Institution = model.Institutions.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Degree = model.Degrees.ToDictionary(t => t.LanguageCode, t => t.Text),
+            FieldOfStudy = model.FieldsOfStudy.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text)
+        };
+
+        await _educationService.CreateEducationAsync(education);
+        TempData["SuccessMessage"] = "Education successfully created!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var education = await _educationService.GetEducationByIdAsync(id);
+        if (education == null)
+        {
+            return NotFound();
         }
 
-        public IActionResult Create()
+        var languages = await _languageService.GetAllLanguagesAsync();
+        var viewModel = new EducationEditViewModel
         {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Education education)
-        {
-            if (ModelState.IsValid)
+            Id = education.Id,
+            StartDate = education.StartDate,
+            EndDate = education.EndDate,
+            Languages = languages.ToList(),
+            Institutions = languages.Select(l => new TranslationInputViewModel
             {
-                await _educationService.CreateEducationAsync(education);
-                TempData["SuccessMessage"] = "Education successfully created!";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(education);
-        }
-
-        public async Task<IActionResult> Edit(int id)
-        {
-            var education = await _educationService.GetEducationByIdAsync(id);
-            if (education == null)
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = education.Institution.GetValueOrDefault(l.Code, string.Empty)
+            }).ToList(),
+            Degrees = languages.Select(l => new TranslationInputViewModel
             {
-                return NotFound();
-            }
-            return View(education);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Education education)
-        {
-            if (id != education.Id)
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = education.Degree.GetValueOrDefault(l.Code, string.Empty)
+            }).ToList(),
+            FieldsOfStudy = languages.Select(l => new TranslationInputViewModel
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = education.FieldOfStudy?.GetValueOrDefault(l.Code, string.Empty) ?? string.Empty
+            }).ToList(),
+            Descriptions = languages.Select(l => new TranslationInputViewModel
             {
-                await _educationService.UpdateEducationAsync(education);
-                TempData["SuccessMessage"] = "Education successfully updated!";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(education);
+                LanguageCode = l.Code,
+                LanguageName = l.Name,
+                Text = education.Description?.GetValueOrDefault(l.Code, string.Empty) ?? string.Empty
+            }).ToList()
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, EducationEditViewModel model)
+    {
+        if (id != model.Id)
+        {
+            return NotFound();
         }
 
-        public async Task<IActionResult> Delete(int id)
+        if (!ModelState.IsValid)
         {
-            var education = await _educationService.GetEducationByIdAsync(id);
-            if (education == null)
-            {
-                return NotFound();
-            }
-            return View(education);
+            model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
+            return View(model);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        var education = new Core.Models.Education
         {
-            await _educationService.DeleteEducationAsync(id);
-            TempData["SuccessMessage"] = "Education successfully deleted!";
-            return RedirectToAction(nameof(Index));
+            Id = model.Id,
+            StartDate = model.StartDate,
+            EndDate = model.EndDate,
+            Institution = model.Institutions.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Degree = model.Degrees.ToDictionary(t => t.LanguageCode, t => t.Text),
+            FieldOfStudy = model.FieldsOfStudy.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text)
+        };
+
+        await _educationService.UpdateEducationAsync(education);
+        TempData["SuccessMessage"] = "Education successfully updated!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var education = await _educationService.GetEducationByIdAsync(id);
+        if (education == null)
+        {
+            return NotFound();
         }
+        return View(education);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        await _educationService.DeleteEducationAsync(id);
+        TempData["SuccessMessage"] = "Education successfully deleted!";
+        return RedirectToAction(nameof(Index));
     }
 }

@@ -11,8 +11,6 @@
         <p class="text-md-center">@Localizer["Portfolio Intro"]</p>
     </div>
 
-    
-
     <div class="row g-4">
         @foreach (var project in Model.Projects)
         {
@@ -20,7 +18,7 @@
                 <div class="card h-100 shadow-sm">
                     @if (!string.IsNullOrEmpty(project.ImagePath))
                     {
-                        <img src="~/@project.ImagePath" class="card-img-top" alt="@project.Title" />
+                        <img src="@project.ImagePath" class="card-img-top" alt="@project.Title" />
                     }
                     else
                     {
@@ -29,17 +27,7 @@
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@project.Title</h5>
                         <p class="card-text">@project.ShortDescription</p>
-                        
-                        @if (project.Technologies != null && project.Technologies.Any())
-                        {
-                            <div class="mb-3">
-                                @foreach (var tech in project.Technologies)
-                                {
-                                    <span class="badge bg-primary me-1">@tech</span>
-                                }
-                            </div>
-                        }
-                        
+                                                
                         <div class="mt-auto">
                             @if (!string.IsNullOrEmpty(project.GitUrl))
                             {

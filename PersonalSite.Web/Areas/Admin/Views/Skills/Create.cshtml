@@ -1,4 +1,4 @@
-@model PersonalSite.Core.Models.Skill
+@model SkillEditViewModel
 
 @{
     ViewData["Title"] = "Create Skill";
@@ -11,36 +11,86 @@
 <div class="row">
     <div class="col-md-8">
         <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="Type" class="control-label"></label>
+                        <select asp-for="Type" asp-items="Html.GetEnumSelectList<SkillType>()" class="form-control">
+                            <option value="">-- Select Skill Type --</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="ScoreOutOf100" class="form-label"></label>
+                        <input asp-for="ScoreOutOf100" class="form-control" type="number" min="0" max="100" />
+                        <span asp-validation-for="ScoreOutOf100" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label asp-for="Type" class="form-label"></label>
-                <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<PersonalSite.Core.Enums.SkillType>()">
-                    <option value="">-- Select Type --</option>
-                </select>
-                <span asp-validation-for="Type" class="text-danger"></span>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Translations</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @for (int i = 0; i < Model.Languages.Count; i++)
+                        {
+                            var lang = Model.Languages[i];
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(i == 0 ? "active" : "")" 
+                                        id="@lang.Code-tab" 
+                                        data-bs-toggle="tab" 
+                                        data-bs-target="#@lang.Code-content" 
+                                        type="button" 
+                                        role="tab">
+                                    @lang.Name (@lang.Code.ToUpper())
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                    
+                    <div class="tab-content pt-3">
+                        @for (int i = 0; i < Model.Languages.Count; i++)
+                        {
+                            var lang = Model.Languages[i];
+                            <div class="tab-pane fade @(i == 0 ? "show active" : "")" 
+                                 id="@lang.Code-content" 
+                                 role="tabpanel">
+                                
+                                <input type="hidden" name="Names[@i].LanguageCode" value="@lang.Code" />
+                                <input type="hidden" name="Names[@i].LanguageName" value="@lang.Name" />
+                                <div class="mb-3">
+                                    <label class="form-label">Name (@lang.Name) <span class="text-danger">*</span></label>
+                                    <input type="text" name="Names[@i].Text" class="form-control" required />
+                                </div>
+                                
+                                <input type="hidden" name="Descriptions[@i].LanguageCode" value="@lang.Code" />
+                                <input type="hidden" name="Descriptions[@i].LanguageName" value="@lang.Name" />
+                                <div class="mb-3">
+                                    <label class="form-label">Description (@lang.Name)</label>
+                                    <textarea name="Descriptions[@i].Text" class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label asp-for="ScoreOutOf100" class="form-label"></label>
-                <input asp-for="ScoreOutOf100" class="form-control" type="number" min="0" max="100" />
-                <span asp-validation-for="ScoreOutOf100" class="text-danger"></span>
-            </div>
-            
+
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Create</button>
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

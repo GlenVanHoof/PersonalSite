@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Repositories;
+using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Core.Services;
 using PersonalSite.Infrastructure.Data;
 using PersonalSite.Infrastructure.Repositories;
@@ -33,6 +35,23 @@ Console.WriteLine("Loaded connection string: " + connectionString);
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+// Add HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
+// Add Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Admin/Auth/Login";
+        options.LogoutPath = "/Admin/Auth/Logout";
+        options.AccessDeniedPath = "/Admin/Auth/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+    });
+
+// Add Authorization
+builder.Services.AddAuthorization();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -58,24 +77,33 @@ builder.Services.AddControllersWithViews()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder)
     .AddDataAnnotationsLocalization();
 
+// Translation Helper (Scoped)
+builder.Services.AddScoped<PersonalSite.Infrastructure.Helpers.TranslationHelper>();
+
 // Repositories
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IProjectTranslationRepository, ProjectTranslationRepository>();
-builder.Services.AddScoped<IEducationRepository, EducationRepository>();
-builder.Services.AddScoped<ICertificateRepository, CertificateRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IExperienceRepository, ExperienceRepository>();
-builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddScoped<IEducationRepository, EducationRepository>();
+builder.Services.AddScoped<ICertificateRepository, CertificateRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
+builder.Services.AddScoped<IGalleryPictureRepository, GalleryPictureRepository>();
+builder.Services.AddScoped<IPictureRepository, PictureRepository>();
+builder.Services.AddScoped<IContactFormRepository, ContactFormRepository>();
 
 // Services
+builder.Services.AddScoped<ICurrentLanguageService, CurrentLanguageService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
-builder.Services.AddScoped<IProjectTranslationService, ProjectTranslationService>();
-builder.Services.AddScoped<IEducationService, EducationService>();
-builder.Services.AddScoped<ICertificateService, CertificateService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<IExperienceService, ExperienceService>();
-builder.Services.AddScoped<IContactService, ContactService>();
-
+builder.Services.AddScoped<IEducationService, EducationService>();
+builder.Services.AddScoped<ICertificateService, CertificateService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILanguageService, LanguageService>();
+builder.Services.AddScoped<IGalleryPictureService, GalleryPictureService>();
+builder.Services.AddScoped<IPictureService, PictureService>();
+builder.Services.AddScoped<IContactFormService, ContactFormService>();
 
 var app = builder.Build();
 
@@ -89,7 +117,6 @@ if (!app.Environment.IsDevelopment())
 
 Console.WriteLine("ENVIRONMENT = " + env);
 Console.WriteLine("CONNECTION STRING = " + connectionString);
-Console.WriteLine($"CONNECTION STRING = {connectionString}");
 
 // Only redirect HTTPS when not in Remote environment (Tailscale doesn't use HTTPS)
 if (env != "Remote")
@@ -104,6 +131,8 @@ app.UseRequestLocalization();
 
 app.UseRouting();
 
+// Add Authentication & Authorization middleware
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

@@ -1,4 +1,5 @@
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Repositories;
+using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Core.Models;
 
 namespace PersonalSite.Core.Services;
@@ -35,5 +36,11 @@ public class CertificateService : ICertificateService
     public async Task DeleteCertificateAsync(int id)
     {
         await _certificateRepository.DeleteCertificateAsync(id);
+    }
+
+    public async Task<IEnumerable<Certificate>> GetCertificatesOrderedByDateAsync()
+    {
+        var certificates = await _certificateRepository.GetAllCertificatesAsync();
+        return certificates.OrderByDescending(c => c.AcquiredOn);
     }
 }

@@ -1,4 +1,5 @@
-using PersonalSite.Core.Interfaces;
+using PersonalSite.Core.Interfaces.Repositories;
+using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Core.Models;
 
 namespace PersonalSite.Core.Services;
@@ -35,5 +36,11 @@ public class ExperienceService : IExperienceService
     public async Task DeleteExperienceAsync(int id)
     {
         await _experienceRepository.DeleteExperienceAsync(id);
+    }
+
+    public async Task<IEnumerable<Experience>> GetExperiencesOrderedByDateAsync()
+    {
+        var experiences = await _experienceRepository.GetAllExperiencesAsync();
+        return experiences.OrderByDescending(e => e.StartDate);
     }
 }

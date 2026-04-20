@@ -2,48 +2,68 @@
 
 @{
     ViewData["Title"] = "Projects";
-    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Projects</h1>
-    <a asp-action="Create" class="btn btn-primary">Create New Project</a>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Create New Project
+    </a>
 </div>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Slug)</th>
-                <th>@Html.DisplayNameFor(model => model.GitUrl)</th>
-                <th>@Html.DisplayNameFor(model => model.ImagePath)</th>
-                <th>@Html.DisplayNameFor(model => model.OrderIndex)</th>
-                <th>@Html.DisplayNameFor(model => model.CreatedAt)</th>
+                <th>Slug</th>
+                <th>Title (EN)</th>
+                <th>Order</th>
+                <th>Image</th>
+                <th>GitHub</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @if (Model?.Any() == true)
+            {
+                @foreach (var project in Model)
+                {
+                    <tr>
+                        <td>@project.Slug</td>
+                        <td>@(project.Title.GetValueOrDefault("en", "No title"))</td>
+                        <td>@project.OrderIndex</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(project.ImagePath))
+                            {
+                                <img src="@project.ImagePath" alt="@project.Slug" class="img-thumbnail" style="max-width: 50px;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">No image</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(project.GithubUrl))
+                            {
+                                <a href="@project.GithubUrl" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-github"></i>
+                                </a>
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-sm btn-info">Details</a>
+                                <a asp-action="Edit" asp-route-id="@project.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@project.Id" class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Slug)</td>
-                    <td>@Html.DisplayFor(modelItem => item.GitUrl)</td>
-                    <td>@Html.DisplayFor(modelItem => item.ImagePath)</td>
-                    <td>@Html.DisplayFor(modelItem => item.OrderIndex)</td>
-                    <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
+                    <td colspan="6" class="text-center text-muted">No projects found. Create your first project!</td>
                 </tr>
             }
         </tbody>

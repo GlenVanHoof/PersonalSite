@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Access Denied";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <div class="card shadow text-center">
+                    <div class="card-body">
+                        <h1 class="display-1 text-danger">403</h1>
+                        <h2 class="card-title">Access Denied</h2>
+                        <p class="card-text">You do not have permission to access this resource.</p>
+                        <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-primary">Go to Home</a>
+                        <a asp-area="Admin" asp-controller="Auth" asp-action="Login" class="btn btn-secondary">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

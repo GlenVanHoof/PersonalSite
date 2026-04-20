@@ -1,0 +1,12 @@
+using PersonalSite.Core.Models;
+
+namespace PersonalSite.Core.Interfaces.Repositories;
+
+public interface ICertificateRepository
+{
+    Task<IEnumerable<Certificate>> GetAllCertificatesAsync();
+    Task<Certificate?> GetCertificateByIdAsync(int id);
+    Task<Certificate> CreateCertificateAsync(Certificate certificate);
+    Task UpdateCertificateAsync(Certificate certificate);
+    Task DeleteCertificateAsync(int id);
+}

@@ -1,4 +1,4 @@
-@model PersonalSite.Core.Models.Skill
+@model PersonalSite.Web.Areas.Admin.Models.SkillEditViewModel
 
 @{
     ViewData["Title"] = "Edit Skill";
@@ -6,43 +6,91 @@
 }
 
 <h1>Edit Skill</h1>
-
 <hr />
+
 <div class="row">
     <div class="col-md-8">
         <form asp-action="Edit" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="CreatedAt" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Type" class="form-label"></label>
+                        <select asp-for="Type" asp-items="Html.GetEnumSelectList<SkillType>()" class="form-control">
+                            <option value="">-- Select Skill Type --</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="ScoreOutOf100" class="form-label"></label>
+                        <input asp-for="ScoreOutOf100" class="form-control" type="number" min="0" max="100" />
+                        <span asp-validation-for="ScoreOutOf100" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label asp-for="Type" class="form-label"></label>
-                <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<PersonalSite.Core.Enums.SkillType>()">
-                    <option value="">-- Select Type --</option>
-                </select>
-                <span asp-validation-for="Type" class="text-danger"></span>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Translations</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @for (int i = 0; i < Model.Languages.Count; i++)
+                        {
+                            var lang = Model.Languages[i];
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(i == 0 ? "active" : "")" 
+                                        id="@lang.Code-tab" 
+                                        data-bs-toggle="tab" 
+                                        data-bs-target="#@lang.Code-content" 
+                                        type="button" 
+                                        role="tab">
+                                    @lang.Name (@lang.Code.ToUpper())
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                    
+                    <div class="tab-content pt-3">
+                        @for (int i = 0; i < Model.Languages.Count; i++)
+                        {
+                            <div class="tab-pane fade @(i == 0 ? "show active" : "")" 
+                                 id="@Model.Languages[i].Code-content" 
+                                 role="tabpanel">
+                                
+                                <input type="hidden" name="Names[@i].LanguageCode" value="@Model.Names[i].LanguageCode" />
+                                <input type="hidden" name="Names[@i].LanguageName" value="@Model.Names[i].LanguageName" />
+                                <div class="mb-3">
+                                    <label class="form-label">Name (@Model.Names[i].LanguageName) <span class="text-danger">*</span></label>
+                                    <input type="text" name="Names[@i].Text" value="@Model.Names[i].Text" class="form-control" required />
+                                </div>
+                                
+                                <input type="hidden" name="Descriptions[@i].LanguageCode" value="@Model.Descriptions[i].LanguageCode" />
+                                <input type="hidden" name="Descriptions[@i].LanguageName" value="@Model.Descriptions[i].LanguageName" />
+                                <div class="mb-3">
+                                    <label class="form-label">Description (@Model.Descriptions[i].LanguageName)</label>
+                                    <textarea name="Descriptions[@i].Text" class="form-control" rows="3">@Model.Descriptions[i].Text</textarea>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
-            
+
             <div class="mb-3">
-                <label asp-for="ScoreOutOf100" class="form-label"></label>
-                <input asp-for="ScoreOutOf100" class="form-control" type="number" min="0" max="100" />
-                <span asp-validation-for="ScoreOutOf100" class="text-danger"></span>
-            </div>
-            
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

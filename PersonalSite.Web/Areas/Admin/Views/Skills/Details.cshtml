@@ -1,0 +1,82 @@
+@model PersonalSite.Core.Models.Skill
+@{
+    ViewData["Title"] = "Skill Details";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Skill Details</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Basic Information</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Type</dt>
+            <dd class="col-sm-9"><span class="badge bg-info">@Model.Type</span></dd>
+            
+            <dt class="col-sm-3">Score</dt>
+            <dd class="col-sm-9">
+                <div class="progress" style="max-width: 300px;">
+                    <div class="progress-bar" role="progressbar" style="width: @Model.ScoreOutOf100%" aria-valuenow="@Model.ScoreOutOf100" aria-valuemin="0" aria-valuemax="100">
+                        @Model.ScoreOutOf100%
+                    </div>
+                </div>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Translations</h5>
+    </div>
+    <div class="card-body">
+        <ul class="nav nav-tabs" role="tablist">
+            @{
+                int tabIndex = 0;
+                foreach (var langCode in Model.Name.Keys)
+                {
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link @(tabIndex == 0 ? "active" : "")" 
+                                id="@langCode-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#@langCode-content" 
+                                type="button" 
+                                role="tab">
+                            @langCode.ToUpper()
+                        </button>
+                    </li>
+                    tabIndex++;
+                }
+            }
+        </ul>
+        
+        <div class="tab-content pt-3">
+            @{
+                tabIndex = 0;
+                foreach (var langCode in Model.Name.Keys)
+                {
+                    <div class="tab-pane fade @(tabIndex == 0 ? "show active" : "")" 
+                         id="@langCode-content" 
+                         role="tabpanel">
+                        <dl class="row">
+                            <dt class="col-sm-3">Name</dt>
+                            <dd class="col-sm-9">@Model.Name.GetValueOrDefault(langCode, "N/A")</dd>
+                            
+                            <dt class="col-sm-3">Description</dt>
+                            <dd class="col-sm-9">@(Model.Description?.GetValueOrDefault(langCode, "N/A") ?? "N/A")</dd>
+                        </dl>
+                    </div>
+                    tabIndex++;
+                }
+            }
+        </div>
+    </div>
+</div>
