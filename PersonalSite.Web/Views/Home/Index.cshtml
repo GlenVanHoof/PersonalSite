@@ -1,10 +1,39 @@
 ﻿@inject IViewLocalizer Localizer
+@model HomeViewModel
 
 @{
     ViewData["Title"] = "Home";
 }
 
+<div class="codeblock-wrapper">
+    <partial name="CodeBlockPartial" />
+</div>
+
 <div class="text-center">
     <h1 class="display-4">@Localizer["Welkom"]</h1>
     <p class="multiline-text">@Localizer["WelkomstTekst"]</p>
+    
 </div>
+
+@if (Model.GalleryPictures.Any())
+{
+    <div id="projectGallery" class="carousel slide mt-5 mb-5" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.GalleryPictures.Count; i++)
+            {
+                var item = Model.GalleryPictures[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <img src="@item.ImageSource" class="d-block w-100" alt="Gallery image @item.Id" />
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#projectGallery" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Vorige</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#projectGallery" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Volgende</span>
+        </button>
+    </div>
+}
