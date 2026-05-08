@@ -262,6 +262,7 @@ body {
     margin-bottom: 1em;
     max-height: calc(100vh - 160px);
     overflow-y: auto;
+    max-width: 75%;
 }
 
 /* Custom scrollbar for the sticky section */
