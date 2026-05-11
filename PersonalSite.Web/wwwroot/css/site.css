@@ -256,16 +256,18 @@ body {
 
 /*===================== - About Me - =========================*/
 
-.about-picture-title {
+.about-picture-section {
     top: 140px;
-    z-index: 1040;
     margin-bottom: 1em;
     max-height: calc(100vh - 160px);
     overflow-y: auto;
+    max-width: 100%;
+}
+
+.about-picture {
     max-width: 75%;
 }
 
-/* Custom scrollbar for the sticky section */
 .about-picture-title::-webkit-scrollbar {
     width: 6px;
 }
@@ -303,6 +305,120 @@ body {
     min-width: 1ch;
 }
 
+/*===================== - Carousel - Redesigned - =========================*/
+
+.carousel-outer-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 60vh;
+    /* Adjust min-height as needed */
+    position: relative;
+    margin: 0 auto;
+}
+
+
+.carousel-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+#CustomCarousel {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+#CustomCarousel .carousel-inner {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+#CustomCarousel .carousel-control-prev,
+#CustomCarousel .carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    background: rgba(255,255,255,0.85);
+    border-radius: 50%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    border: 1px solid #e0e0e0;
+    transition: background 0.2s;
+}
+
+#CustomCarousel .carousel-control-prev {
+    left: -4rem;
+}
+
+#CustomCarousel .carousel-control-next {
+    right: -4rem;
+}
+
+#CustomCarousel .carousel-control-prev-icon,
+#CustomCarousel .carousel-control-next-icon {
+    filter: invert(1);
+    width: 32px;
+    height: 32px;
+}
+
+@media (max-width: 900px) {
+    .carousel-wrapper {
+        max-width: 98vw;
+    }
+    #CustomCarousel {
+        max-width: 98vw;
+    }
+    #CustomCarousel .carousel-control-prev {
+        left: -2.2rem;
+    }
+    #CustomCarousel .carousel-control-next {
+        right: -2.2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .carousel-outer-wrapper {
+        min-height: 40vh;
+    }
+    .carousel-wrapper {
+        max-width: 100vw;
+    }
+    #CustomCarousel {
+        max-width: 100vw;
+    }
+    #CustomCarousel .carousel-control-prev,
+    #CustomCarousel .carousel-control-next {
+        width: 2rem;
+        height: 2rem;
+    }
+    #CustomCarousel .carousel-control-prev {
+        left: -1.2rem;
+    }
+    #CustomCarousel .carousel-control-next {
+        right: -1.2rem;
+    }
+    #CustomCarousel .carousel-control-prev-icon,
+    #CustomCarousel .carousel-control-next-icon {
+        width: 20px;
+        height: 20px;
+    }
+}
+
 /*===================== - Responsive Design - =========================*/
 @media (max-width: 768px) {
     .container main {
@@ -328,7 +444,6 @@ body {
     }
 }
 
-/* Reveal .text-center when scrolled */
 body:has(.codeblock-wrapper:has(~ .text-center)) .text-center {
     opacity: 1;
     pointer-events: auto;

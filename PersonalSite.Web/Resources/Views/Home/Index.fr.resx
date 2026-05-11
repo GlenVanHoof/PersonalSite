@@ -121,11 +121,13 @@
     <value>Bienvenue</value>
   </data>
   <data name="WelkomstTekst" xml:space="preserve">
-    <value>Bienvenue sur mon portfolio. Je m’appelle Glen, développeur .NET full‑stack avec une formation en sciences pharmaceutiques et plusieurs années d’expérience dans la logistique. Une combinaison peu courante, mais qui m’a appris à analyser avec précision, à travailler de manière structurée et à garder une vue d’ensemble.
+    <value>Ce site est mon atelier numérique. C’est ici que naissent mes idées, que j’expérimente, que j’apprends et que mes projets prennent forme petit à petit. Parfois tout fonctionne du premier coup, parfois je dois revoir entièrement mon approche. Ce cheminement est précisément ce qui rend le développement si passionnant pour moi. Chaque projet présenté ici reflète une partie de ma manière de réfléchir, d’explorer et d’évoluer.
 
-Ce site est mon espace de travail numérique : j’y partage ce que je développe, ce que j’apprends et comment j’évolue dans le domaine du software. Vous y trouverez des projets, des expérimentations avec de nouvelles technologies et des idées que je découvre en cours de route. Je me concentre principalement sur C#, .NET, les API, SQL et les technologies web modernes, avec un souci constant de code propre et d’architecture claire.
+Je m’appelle Glen et je suis développeur .NET full‑stack. J’ai une formation en sciences pharmaceutiques et plusieurs années d’expérience dans la logistique. Ce n’est pas le parcours le plus évident vers le développement logiciel, mais il m’a appris à aborder les problèmes sous un angle différent. Je travaille avec précision, de façon structurée, et je garde toujours une vision globale. Cette approche m’aide à rendre les défis complexes plus clairs et plus accessibles.
 
-Merci de votre visite. N’hésitez pas à parcourir mes projets — ils reflètent le mieux ma manière de penser et de travailler.</value>
+Je me concentre surtout sur C#, .NET, le développement d’API, SQL et les technologies web modernes. Ce qui me motive avant tout, c’est de créer des solutions logiques, durables et faciles à maintenir.
+
+Merci de votre visite. Prenez le temps de découvrir mes projets et ma façon de penser et de progresser.</value>
     <comment>Welkomsttekst</comment>
   </data>
 </root>

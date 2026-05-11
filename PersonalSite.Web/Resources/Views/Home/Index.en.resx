@@ -121,11 +121,13 @@
     <value>Welcome</value>
   </data>
   <data name="WelkomstTekst" xml:space="preserve">
-    <value>Welcome to my portfolio. I’m Glen, a full‑stack .NET developer with a background in pharmaceutical sciences and several years of experience in logistics. It’s not the most common mix, but it taught me to think analytically, work in a structured way and always keep the bigger picture in mind.
+    <value>This site is my digital workshop. It is where ideas start small, where I try things out, learn from them and slowly shape new projects. Sometimes everything falls into place right away, other times I need to rethink the whole approach. That journey is exactly what makes development exciting for me. Every project here shows a bit of how I think, explore and grow.
 
-This site is my digital workspace — a place where I share what I’m building, learning and exploring as a developer. You’ll find projects, experiments with new technologies and things I pick up along the way. My main focus is C#, .NET, APIs, SQL and modern web technologies, with clean code and clear architecture as the foundation.
+I am Glen, a full‑stack .NET developer with a background in pharmaceutical sciences and several years of experience in logistics. It is not the usual path into software development, but it taught me to look at problems from unexpected angles. I work with precision, stay structured and always keep the bigger picture in mind. That mindset helps me turn complex challenges into something clear and workable.
 
-Thanks for stopping by. Feel free to browse through my projects; they say the most about how I think and work.</value>
+My main focus is C#, .NET, API development, SQL and modern web technologies. What motivates me most is building solutions that feel natural to use, are easy to maintain and are built to last.
+
+I am glad you are here. Take a look at my projects and get a sense of how I think, build and keep improving.</value>
     <comment>Welkomsttekst</comment>
   </data>
 </root>
