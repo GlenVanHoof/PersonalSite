@@ -50,7 +50,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Project(string slug)
     {
         var project = await _projectService.GetProjectBySlugAsync(slug);
-        
+
         if (project == null)
             return NotFound();
 
@@ -67,11 +67,6 @@ public class HomeController : Controller
         };
 
         return View(viewModel);
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

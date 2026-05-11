@@ -9,7 +9,7 @@
         <!-- Left Column -->
         <div class="col-md-4 mx-3">
             <div class="sticky-top about-picture-section">
-                <div class="text-center" style="margin-right: 1em">
+                <div class="text-center mb-4" style="margin-right: 1em">
                     @if (!string.IsNullOrEmpty(Model.PictureURL))
                     {
                         <img src="~/@Model.PictureURL" alt="Profile Picture" class="img-fluid rounded-circle mb-3 about-picture" />
@@ -19,8 +19,8 @@
                 </div>
                 
                 <!-- Description Section -->
-                <div class="text-center">
-                    <p class="text">
+                <div class="pd-1">
+                    <p class="text text-end">
                         @if (!string.IsNullOrEmpty(Model.Description))
                         {
                             @Model.Description
