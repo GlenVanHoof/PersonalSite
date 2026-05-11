@@ -63,57 +63,96 @@ body {
 /*===================== - Floating Navbar - =========================*/
 .floating-navbar {
     position: fixed;
-    top: 1.5rem;
+    top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    width: 95%;
-    max-width: 1400px;
+    width: 104%;
+    max-width: calc(1400px * 1.04);
+    min-width: 0;
+    margin-left: 0;
     z-index: 1030;
     transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 .floating-navbar .navbar {
-    background: var(--navbar-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 24px;
-    padding: 0.75rem 2rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 16px rgba(31, 38, 135, 0.10), 0 2px 6px rgba(0, 0, 0, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 0.3rem 1.2rem;
+    min-height: 48px;
     transition: all 0.3s ease;
+    pointer-events: auto;
 }
 
 .navbar-collapse {
-    position: relative;
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
     justify-content: center !important;
+    width: 100%;
+    position: relative;
+    flex: 1 1 auto;
 }
 
-.navbar-nav.flex-grow-1 {
-    flex-grow: 0 !important;
+.navbar-nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.2rem;
+    flex-wrap: nowrap;
+    margin: 0 auto;
+    padding: 0;
     justify-content: center;
-    gap: 1.5rem;
+    flex: 0 1 auto;
 }
 
-.navbar-nav:last-child {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+
+.right-nav {
+    margin-left: auto;
+    gap: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.right-nav .nav-link,
+.right-nav .dropdown-toggle,
+.right-nav .navbar-signin-btn {
+    font-size: 0.95rem !important;
+    padding: 0.3rem 0.8rem !important;
 }
 
 .navbar-nav .nav-link {
     position: relative;
-    font-weight: 300;
-    font-size: 2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     color: #5a6c7d !important;
-    padding: 0.5rem 1rem !important;
-    transition: color 0.3s ease;
+    padding: 0.3rem 0.7rem !important;
+    border-radius: 8px;
+    transition: color 0.3s ease, background 0.2s;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    margin-right: 1.5rem;
+    z-index: 2;
+    min-width: 60px;
 }
 
 .navbar-nav .nav-link:hover {
     color: var(--bs-primary) !important;
+    background: rgba(37, 140, 251, 0.08);
 }
 
 .navbar-nav .nav-link::after {
@@ -131,16 +170,24 @@ body {
 .navbar-nav .nav-link:hover::after {
     width: 80%;
 }
-
-.navbar-nav:last-child .nav-link {
-    font-size: 1rem;
-    text-transform: none;
-    letter-spacing: normal;
+.navbar-signin-btn {
+    padding: 0.5rem 1.5rem !important;
+    /* min-width removed for natural sizing */
+    font-size: 1.08rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    width: auto !important;
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap !important;
+    overflow: visible !important;
 }
 
-.navbar-nav:last-child .nav-link::after {
-    display: none;
-}
+
 
 /*===================== - Logo's - =========================*/
 .LinkedIn-logo {
@@ -165,13 +212,14 @@ body {
     filter: invert(45%) sepia(80%) saturate(2000%) hue-rotate(190deg) brightness(100%) contrast(100%);
 }
 
+
 /*===================== - Container & Main Content - =========================*/
 .container main {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     padding: 3rem 2rem;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
@@ -255,6 +303,7 @@ body {
 }
 
 /*===================== - About Me - =========================*/
+
 
 .about-picture-section {
     top: 140px;
