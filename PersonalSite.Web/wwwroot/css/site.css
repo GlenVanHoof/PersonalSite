@@ -234,6 +234,12 @@ body {
     margin: 0 auto;
 }
 
+.project-container {
+    width: auto;
+    max-width: 100%;
+    text-wrap: auto;
+}
+
 /*===================== - Footer - =========================*/
 .footer {
     bottom: 0;

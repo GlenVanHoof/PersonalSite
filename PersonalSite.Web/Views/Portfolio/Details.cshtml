@@ -5,10 +5,62 @@
     ViewData["Title"] = @Model.Title;
 }
 
-<div class="container">
+<div class="project-container">
     <div class="text-md-start justify-content-lg-start mb-5 w-75">
-        <h1 class="display-4 text-md-start">@Model.Title</h1>
-        <p class="text-md-start multiline-text">@Model.Description</p>
+        <h1 class="display-4 text-md-start pb-5">@Model.Title</h1>
+        <div class="row">
+            <!-- Column Left -->
+            <div class="col-md-5">
+                <div class="card">
+                    @if (Model.GithubUrl != null || Model.ProjectUrl != null)
+                    {
+                        <div class="card-header">
+                            @if (Model.GithubUrl != null)
+                            {
+
+                                <a class="btn btn-lg btn-outline-primary" href="@Model.GithubUrl">
+                                    <i class="bi bi-github"></i> Github
+                                </a>
+                            }
+                            @if (Model.ProjectUrl != null)
+                            {
+                                <a class="btn btn-lg btn-outline-primary" href="@Model.ProjectUrl">
+                                    <i class="bi bi-link-45deg"></i> @Model.Title
+                                </a>
+                            }
+                        </div>
+                    }                    
+                    @if (Model.Skills != null)
+                    {
+                        <div class="card-body">
+                            <h5 class="card-title">Skills</h5>
+                            @foreach (string skill in Model.Skills)
+                            {
+                                <span class="badge bg-primary fs-5">@skill</span>
+                            }
+                        </div>
+                    }
+                    
+                </div>
+            </div>
+
+            <!-- Column Right -->
+            <div class="col-md-7">
+                <p class="text-md-start multiline-text">@Model.Description</p>
+            </div>
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <p class="text-md-start multiline-text">@Html.Raw(Model.Description)</p>
     </div>
 
     <h1 class="display-4 text-center">Gallery</h1>
