@@ -117,15 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Welkom" xml:space="preserve">
-    <value>Willkommen</value>
+  <data name="Projects" xml:space="preserve">
+    <value>Projekte</value>
   </data>
   <data name="WelkomstTekst" xml:space="preserve">
     <value>Diese Seite ist meine digitale Werkstatt. Hier entstehen erste Ideen, hier probiere ich Dinge aus, lerne dazu und lasse Projekte Schritt für Schritt wachsen. Manchmal klappt etwas sofort, manchmal muss ich alles neu überdenken. Genau dieser Weg macht Entwicklung für mich so spannend. Jedes Projekt auf dieser Seite zeigt ein Stück meiner Denkweise, meiner Neugier und meiner Weiterentwicklung.
-
-Ich bin Glen, Full‑Stack‑.NET‑Entwickler mit einem Hintergrund in pharmazeutischen Wissenschaften und mehreren Jahren Erfahrung in der Logistik. Das ist kein typischer Einstieg in die Softwareentwicklung, aber gerade dadurch sehe ich Probleme aus einer anderen Perspektive. Ich arbeite präzise, strukturiert und verliere das große Ganze nie aus den Augen. Diese Haltung hilft mir, komplexe Herausforderungen verständlich und lösbar zu machen.
-
-Mein Schwerpunkt liegt auf C#, .NET, API‑Entwicklung, SQL und modernen Webtechnologien. Am meisten Freude habe ich daran, Lösungen zu entwickeln, die logisch wirken, gut wartbar sind und langfristig bestehen.
 
 Schön, dass Sie hier sind. Schauen Sie sich gerne meine Projekte an und entdecken Sie, wie ich denke, entwickle und mich ständig weiterentwickle.</value>
     <comment>Welkomsttekst</comment>

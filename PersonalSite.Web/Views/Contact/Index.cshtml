@@ -7,7 +7,35 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h1 class="display-4 mb-4">Neem Contact Op</h1>
-            
+            <div class="row mt-5">
+                <div class="col-md-4 text-center mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-envelope fs-1 text-primary mb-3"></i>
+                            <h5 class="card-title">Email</h5>
+                            <p class="card-text text-muted">glenvanhoof@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-geo-alt fs-1 text-primary mb-3"></i>
+                            <h5 class="card-title">Locatie</h5>
+                            <p class="card-text text-muted">Laakdal - België</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="card h-100">
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <a href="http://www.linkedin.com/in/glenvanhoof">
+                                <img class="LinkedIn-logo" src="~/images/logos/LI-Logo.png" alt="LinkedIn Logo" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             @if (TempData["SuccessMessage"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -56,36 +84,6 @@
                     </form>
                 </div>
             </div>
-
-            <!-- Contact Info Section (Optional) -->
-            <div class="row mt-5">
-                <div class="col-md-4 text-center mb-3">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <i class="bi bi-envelope fs-1 text-primary mb-3"></i>
-                            <h5 class="card-title">Email</h5>
-                            <p class="card-text text-muted">glenvanhoof@gmail.com</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 text-center mb-3">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <i class="bi bi-geo-alt fs-1 text-primary mb-3"></i>
-                            <h5 class="card-title">Locatie</h5>
-                            <p class="card-text text-muted">Laakdal - België</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 text-center mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-center">
-                            <a href="http://www.linkedin.com/in/glenvanhoof">
-                               <img class="LinkedIn-logo" src="~/images/logos/LI-Logo.png" alt="LinkedIn Logo"/>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

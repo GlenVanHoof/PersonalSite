@@ -3,11 +3,12 @@
     --bs-secondary: #6c757d;
     --bs-third: #f8f9fa;
     --bs-light: #f8f9fa;
+    --bs-middle: #5a6c7d;
     --bs-dark: #343a40;
     --gradient-light: #DDf5FB;
     --gradient-middle: #E5E9FC;
     --gradient-dark: #153166;
-    --navbar-height: 90px;
+    --navbar-height: 64px;
     --navbar-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 249, 250, 0.95) 100%);
 }
 
@@ -32,7 +33,7 @@ html, body {
 
 body {
     margin: 0;
-    padding-top: calc(var(--navbar-height) + 3rem);
+    padding-top: calc(var(--navbar-height) + 1.5rem);
     margin-bottom: 60px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.6;
@@ -85,9 +86,8 @@ body {
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 16px rgba(31, 38, 135, 0.10), 0 2px 6px rgba(0, 0, 0, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 0.3rem 1.2rem;
-    min-height: 48px;
     transition: all 0.3s ease;
     pointer-events: auto;
 }
@@ -136,7 +136,7 @@ body {
     font-size: 1.1rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: #5a6c7d !important;
+    color: var(--bs-middle) !important;
     padding: 0.3rem 0.7rem !important;
     border-radius: 8px;
     transition: color 0.3s ease, background 0.2s;
@@ -150,7 +150,7 @@ body {
     min-width: 60px;
 }
 
-.navbar-nav .nav-link:hover {
+.navbar-nav .nav-link:hover{
     color: var(--bs-primary) !important;
     background: rgba(37, 140, 251, 0.08);
 }
@@ -187,8 +187,6 @@ body {
     overflow: visible !important;
 }
 
-
-
 /*===================== - Logo's - =========================*/
 .LinkedIn-logo {
     height: 40px;
@@ -201,7 +199,7 @@ body {
 }
 
 #navbar-logo {
-    height: 60px;
+    height: 44px;
     width: auto;
     filter: invert(45%) sepia(10%) saturate(1000%) hue-rotate(170deg) brightness(90%) contrast(85%);
     transition: transform 0.3s ease, filter 0.3s ease;
@@ -303,8 +301,6 @@ body {
 }
 
 /*===================== - About Me - =========================*/
-
-
 .about-picture-section {
     top: 140px;
     margin-bottom: 1em;
@@ -334,27 +330,37 @@ body {
     background: rgba(37, 140, 251, 0.5);
 }
 
-/*===================== - Code typing container - =========================*/
+/*===================== - Welcome-message - =========================*/
 
-.codeblock {
+.welcome-wrapper{
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-bottom: 5rem;
+    align-content: center;
+    height: calc(100vh - var(--navbar-height) - 3rem);
+    width: auto;
+}
+
+#welcome-text {
     font-family: 'Fira Mono', 'Consolas', monospace;
-    background: var(--bs-light);
-    color: #222;
-    padding: 1.5em;
-    border-radius: 8px;
-    margin-bottom: 2em;
-    white-space: pre;
-    font-size: 1.5em;
+    font-size: 1.5rem;
+}
+
+.name-typed-container{
+    font-family: 'Fira Mono', 'Consolas', monospace;
+    font-size: 4rem;
+    font-weight: bolder;
+    color: var(--bs-primary);
+    margin-bottom: 1rem;
 }
 
 .typed span {
-    border-right: .1em solid #d4d4d4;
-    white-space: pre;
+    border-right: .1rem solid #d4d4d4;
     display: inline-block;
     min-width: 1ch;
 }
 
-/*===================== - Carousel - Redesigned - =========================*/
+/*===================== - Carousel=========================*/
 
 .carousel-outer-wrapper {
     display: flex;
@@ -362,11 +368,9 @@ body {
     align-items: center;
     width: 100%;
     min-height: 60vh;
-    /* Adjust min-height as needed */
     position: relative;
     margin: 0 auto;
 }
-
 
 .carousel-wrapper {
     display: flex;

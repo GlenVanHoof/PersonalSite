@@ -5,16 +5,17 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="codeblock-wrapper">
-    <partial name="CodeBlockPartial" />
-</div>
-
-<div class="text-center">
-    <h1 class="display-4">@Localizer["Welkom"]</h1>
-    <p class="multiline-text">@Localizer["WelkomstTekst"]</p>
+<div class="welcome-wrapper">
+    <div class="name-typed-container">
+        <span class="typed" data-text="> GLEN VAN HOOF"></span>
+    </div>
+    <div>
+        <p class="multiline-text" id="welcome-text">@Localizer["WelkomstTekst"]</p>
     
+    </div>
 </div>
 
+<h1 class="text-center border-bottom pb-2 mb-4">@Localizer["Projects"]</h1>
 @if (Model.GalleryPictures.Any())
 {
     <div class="carousel-outer-wrapper mt-5 mb-5">
@@ -54,3 +55,5 @@
         </div>
     </div>
 }
+
+<script src="~/js/codeblock-typing.js"></script>
