@@ -5,6 +5,7 @@ public class Project
     public int Id { get; set; }
     public required string Slug { get; set; }
     public string? GithubUrl { get; set; }
+    public string? ProjectUrl { get; set; }
     public string? ImagePath { get; set; }
     public int OrderIndex { get; set; }
     public DateTime CreatedOn { get; set; }
@@ -14,7 +15,6 @@ public class Project
     public Dictionary<string, string> Title { get; set; } = new();
     public Dictionary<string, string> Description { get; set; } = new();
     public Dictionary<string, string> ShortDescription { get; set; } = new();
-    
-    // Pictures
     public List<Picture> Pictures { get; set; } = new();
+    public List<Skill> Skills { get; set; } = new();
 }

@@ -34,7 +34,9 @@ public class HomeController : Controller
                 Title = _languageService.GetTranslation(p.Title),
                 ShortDescription = _languageService.GetTranslation(p.ShortDescription),
                 ImagePath = p.ImagePath,
-                GithubUrl = p.GithubUrl
+                GithubUrl = p.GithubUrl,
+                ProjectUrl = p.ProjectUrl,
+                Skills = p.Skills?.Select(s => _languageService.GetTranslation(s.Name)).ToList()
             }).ToList(),
             GalleryPictures = galleryPictures.Select(gp => new GalleryPictureViewModel
             {
@@ -50,7 +52,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Project(string slug)
     {
         var project = await _projectService.GetProjectBySlugAsync(slug);
-        
+
         if (project == null)
             return NotFound();
 
@@ -63,15 +65,12 @@ public class HomeController : Controller
             ShortDescription = _languageService.GetTranslation(project.ShortDescription),
             ImagePath = project.ImagePath,
             GithubUrl = project.GithubUrl,
-            Pictures = project.Pictures.Select(p => p.Source).ToList()
+            ProjectUrl = project.ProjectUrl,
+            Pictures = project.Pictures.Select(p => p.Source).ToList(),
+            Skills = project.Skills?.Select(s => _languageService.GetTranslation(s.Name)).ToList() ?? new List<string>()
         };
 
         return View(viewModel);
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

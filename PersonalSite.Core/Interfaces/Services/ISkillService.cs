@@ -12,4 +12,5 @@ public interface ISkillService
     Task UpdateSkillAsync(Skill skill);
     Task DeleteSkillAsync(int id);
     Task<IEnumerable<Skill>> GetSkillsOrderedByScoreAsync();
+    Task<Dictionary<SkillType, List<Skill>>> GetSkillsOrderedByTypeAsync();
 }

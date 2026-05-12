@@ -26,8 +26,7 @@ string connectionString = env switch
 {
     "Production" => builder.Configuration.GetConnectionString("ProductionConnection"),
     "Development" => builder.Configuration.GetConnectionString("DevelopmentConnection"),
-    "Remote" => builder.Configuration.GetConnectionString("RemoteConnection"),
-    _ => builder.Configuration.GetConnectionString("DevelopmentConnection") // fallback
+    _ => builder.Configuration.GetConnectionString("DevelopmentConnection")
 } ?? throw new InvalidOperationException($"Connection string not found for environment: {env}");
 
 Console.WriteLine("Loaded connection string: " + connectionString);

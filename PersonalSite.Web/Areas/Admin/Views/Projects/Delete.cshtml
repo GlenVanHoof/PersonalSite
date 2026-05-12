@@ -17,6 +17,50 @@
     </div>
     <div class="card-body">
         <dl class="row">
+        <dt class="col-sm-3">Project URL</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.ProjectUrl))
+            {
+                <a href="@Model.ProjectUrl" target="_blank">@Model.ProjectUrl</a>
+            }
+            else
+            {
+                <span>N/A</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Skills</dt>
+        <dd class="col-sm-9">
+            @if (Model.Skills != null && Model.Skills.Any())
+            {
+                <ul class="mb-0">
+                    @foreach (var skill in Model.Skills)
+                    {
+                        <li>@skill.Type</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>N/A</span>
+            }
+        </dd>
+        <dt class="col-sm-3">Skills</dt>
+        <dd class="col-sm-9">
+            @if (Model.Skills != null && Model.Skills.Any())
+            {
+                <ul class="mb-0">
+                    @foreach (var skill in Model.Skills)
+                    {
+                        <li>@skill.Name.GetValueOrDefault("en", skill.Name.Values.FirstOrDefault() ?? "Unknown")</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>N/A</span>
+            }
+        </dd>
             <dt class="col-sm-3">Slug</dt>
             <dd class="col-sm-9">@Model.Slug</dd>
             

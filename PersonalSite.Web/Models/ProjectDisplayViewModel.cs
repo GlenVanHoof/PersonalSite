@@ -8,4 +8,6 @@ public class ProjectDisplayViewModel
     public string ShortDescription { get; set; } = string.Empty;
     public string? ImagePath { get; set; }
     public string? GithubUrl { get; set; }
+    public string? ProjectUrl { get; set; }
+    public List<string>? Skills { get; set; }
 }

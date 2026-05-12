@@ -5,48 +5,55 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="codeblock-wrapper">
-    <partial name="CodeBlockPartial" />
-</div>
-
-<div class="text-center">
-    <h1 class="display-4">@Localizer["Welkom"]</h1>
-    <p class="multiline-text">@Localizer["WelkomstTekst"]</p>
+<div class="welcome-wrapper">
+    <div class="name-typed-container">
+        <span class="typed" data-text="> GLEN VAN HOOF"></span>
+    </div>
+    <div>
+        <p class="multiline-text" id="welcome-text">@Localizer["WelkomstTekst"]</p>
     
+    </div>
 </div>
 
+<h1 class="text-center border-bottom pb-2 mb-4">@Localizer["Projects"]</h1>
 @if (Model.GalleryPictures.Any())
 {
-    <div id="projectGallery" class="carousel slide mt-5 mb-5" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            @for (int i = 0; i < Model.GalleryPictures.Count; i++)
-            {
-                var item = Model.GalleryPictures[i];
-                string projectSlug = null!;
-                @foreach (var project in Model.Projects)
-                {
-                    if (project.ImagePath == item.ImageSource)
+    <div class="carousel-outer-wrapper mt-5 mb-5">
+        <div class="carousel-wrapper">
+            <div id="CustomCarousel" class="carousel slide w-100" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.GalleryPictures.Count; i++)
                     {
-                        projectSlug = project.Slug;
-                        break;
+                        var item = Model.GalleryPictures[i];
+                        string projectSlug = null!;
+                        @foreach (var project in Model.Projects)
+                        {
+                            if (project.ImagePath == item.ImageSource)
+                            {
+                                projectSlug = project.Slug;
+                                break;
+                            }
+                        }
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <a href="@(projectSlug == null 
+                                ? Url.Action("Index", "Portfolio") 
+                                : Url.Action("Details", "Portfolio", new { Slug = projectSlug }))">
+                                <img src="@item.ImageSource" class="d-block w-100" alt="Gallery image @item.Id" />
+                            </a>
+                        </div>
                     }
-                }
-                <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <a href="@(projectSlug == null 
-                        ? Url.Action("Index", "Portfolio") 
-                        : Url.Action("Details", "Portfolio", new { Slug = projectSlug }))">
-                        <img src="@item.ImageSource" class="d-block w-100" alt="Gallery image @item.Id" />
-                    </a>
                 </div>
-            }
+                <button class="carousel-control-prev" type="button" data-bs-target="#CustomCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Vorige</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#CustomCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Volgende</span>
+                </button>
+            </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#projectGallery" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Vorige</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#projectGallery" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Volgende</span>
-        </button>
     </div>
 }
+
+<script src="~/js/codeblock-typing.js"></script>

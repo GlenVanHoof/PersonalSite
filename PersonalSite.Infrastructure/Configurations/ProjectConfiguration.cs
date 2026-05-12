@@ -18,10 +18,13 @@ public class ProjectConfiguration : IEntityTypeConfiguration<ProjectEntity>
         
         builder.Property(e => e.GithubUrl)
             .HasMaxLength(500);
-        
+
+        builder.Property(e => e.ProjectUrl)
+            .HasMaxLength(500);
+
         builder.Property(e => e.ImagePath)
             .HasMaxLength(500);
-        
+
         builder.Property(e => e.OrderIndex)
             .IsRequired();
 
@@ -30,10 +33,14 @@ public class ProjectConfiguration : IEntityTypeConfiguration<ProjectEntity>
 
         builder.Property(e => e.UpdatedOn)
             .IsRequired();
-        
+
         builder.HasIndex(e => e.Slug)
             .IsUnique();
-        
+
         builder.HasIndex(e => e.OrderIndex);
+
+        // Configure Skills relationship (one-to-many)
+        builder.HasMany(e => e.Skills)
+            .WithMany();
     }
 }

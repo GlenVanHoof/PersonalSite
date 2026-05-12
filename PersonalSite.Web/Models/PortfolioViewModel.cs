@@ -11,6 +11,7 @@
         public int Id { get; set; }
         public string? Slug { get; set; }
         public string? GitUrl { get; set; }
+        public string? ProjectUrl { get; set; }
         public string? ImagePath { get; set; }
         public int OrderIndex { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
 using PersonalSite.Core.Interfaces.Services;
 using PersonalSite.Web.Models;
 
@@ -28,22 +29,27 @@ public class AboutController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var skills = await _skillService.GetSkillsOrderedByScoreAsync();
+        var skills = await _skillService.GetSkillsOrderedByTypeAsync();
         var educations = await _educationService.GetEducationsOrderedByDateAsync();
         var experiences = await _experienceService.GetExperiencesOrderedByDateAsync();
         var certificates = await _certificateService.GetCertificatesOrderedByDateAsync();
-
-        var viewModel = new AboutViewModel
+        Dictionary<string, List<SkillDisplayViewModel>> skillsByType = new();
+        foreach (var skillGroup in skills)
         {
-            PictureURL = "images/about/profile-picture.png",
-            Skills = skills.Select(s => new SkillDisplayViewModel
+            skillsByType.Add(skillGroup.Key.ToString(), skillGroup.Value.Select(s => new SkillDisplayViewModel
             {
                 Id = s.Id,
                 Name = _languageService.GetTranslation(s.Name),
                 Description = _languageService.GetTranslation(s.Description),
-                Type = s.Type.ToString(),
                 ScoreOutOf100 = s.ScoreOutOf100
-            }).ToList(),
+            }).ToList());
+
+        }
+
+        var viewModel = new AboutViewModel
+        {
+            PictureURL = "images/about/profile-picture.png",
+            Skills = skillsByType,
             Educations = educations.Select(e => new EducationDisplayViewModel
             {
                 Id = e.Id,

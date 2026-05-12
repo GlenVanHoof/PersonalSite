@@ -5,6 +5,7 @@ public class ProjectEntity
     public int Id { get; set; }
     public required string Slug { get; set; }
     public string? GithubUrl { get; set; }
+    public string? ProjectUrl { get; set; }
     public string? ImagePath { get; set; }
     public int OrderIndex { get; set; }
     public DateTime CreatedOn { get; set; }
@@ -12,5 +13,6 @@ public class ProjectEntity
 
     // Navigation properties
     public ICollection<PictureEntity> Pictures { get; set; } = new List<PictureEntity>();
+    public ICollection<SkillEntity> Skills { get; set; } = new List<SkillEntity>();
     public ICollection<ContentItemEntity> ContentItems { get; set; } = new List<ContentItemEntity>();
 }

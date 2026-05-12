@@ -117,16 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Welkom" xml:space="preserve">
-    <value>Welkom</value>
+  <data name="Projects" xml:space="preserve">
+    <value>Projecten</value>
     <comment>Welkomsttitel</comment>
   </data>
   <data name="WelkomstTekst" xml:space="preserve">
-    <value>Welkom op mijn portfolio. Ik ben Glen, full‑stack .NET‑developer met een achtergrond in farmaceutische wetenschappen en een stevige portie logistieke ervaring. Geen alledaagse combinatie, maar precies die mix heeft me geleerd om scherp te analyseren, gestructureerd te werken en altijd het grotere geheel mee te nemen.
+    <value>Deze site is mijn digitale werkplaats. Het is de plek waar ideeën ontstaan, waar ik experimenteer, bijleer en projecten langzaam vorm krijgen. Soms lukt iets meteen, soms moet ik het helemaal herdenken, maar precies dat proces maakt development voor mij zo boeiend. In elk project dat je hier vindt, zit een stukje van hoe ik denk, puzzel en groei.
 
-Deze site is mijn digitale werkplaats: een plek waar ik laat zien waar ik aan bouw, wat ik leer en hoe ik groei als developer. Je vindt hier projecten, experimenten met nieuwe technologieën en dingen die ik onderweg oppik. Mijn focus ligt vooral op C#, .NET, API’s, SQL en moderne webtechnologieën, met clean code en duidelijke architectuur als rode draad.
-
-Fijn dat je hier bent. Blader gerust door mijn projecten; ze vertellen het meest over hoe ik denk en werk.</value>
+Fijn dat je hier bent. Neem gerust een kijkje in mijn projecten en ontdek hoe ik denk, bouw en blijf bijleren.</value>
     <comment>Welkomsttekst</comment>
   </data>
 </root>

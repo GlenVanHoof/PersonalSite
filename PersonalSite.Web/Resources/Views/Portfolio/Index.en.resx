@@ -120,4 +120,7 @@
   <data name="Portfolio Intro" xml:space="preserve">
     <value>On this page, you’ll find the projects I’m most proud of. Each one reflects my growth as a full‑stack .NET developer and my focus on clean code, efficiency, and thoughtful architecture. I enjoy building solutions that are not only technically solid, but also clear, maintainable, and ready for the future.</value>
   </data>
+  <data name="Skills" xml:space="preserve">
+    <value>Skills applied in this project</value>
+  </data>
 </root>

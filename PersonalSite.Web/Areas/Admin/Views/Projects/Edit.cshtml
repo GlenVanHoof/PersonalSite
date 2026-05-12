@@ -1,4 +1,4 @@
-@model PersonalSite.Web.Areas.Admin.Models.ProjectEditViewModel
+@model ProjectEditViewModel
 
 @{
     ViewData["Title"] = "Edit Project";
@@ -28,9 +28,31 @@
             </div>
 
             <div class="mb-3">
+                <label asp-for="ProjectUrl" class="form-label"></label>
+                <input asp-for="ProjectUrl" class="form-control" />
+                <span asp-validation-for="ProjectUrl" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
                 <label asp-for="OrderIndex" class="form-label"></label>
                 <input asp-for="OrderIndex" class="form-control" type="number" />
                 <span asp-validation-for="OrderIndex" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SelectedSkillIds" class="form-label">Technical Skills:</label>
+                <div class="d-flex flex-wrap">
+                    @for (int i = 0; i < Model.AvailableSkills!.Count; i++)
+                    {
+                        var skill = Model.AvailableSkills[i];
+                        <div class="form-check w-50">
+                            <input class="form-check-input" type="checkbox" name="SelectedSkillIds" value="@skill.Id" id="skill_@skill.Id"
+                                @(Model.SelectedSkillIds.Contains(skill.Id) ? "checked" : "") />
+                            <label class="form-check-label" for="skill_@skill.Id">@skill.Name["en"]</label>
+                        </div>
+                    }
+                </div>
+                <span asp-validation-for="SelectedSkillIds" class="text-danger"></span>
             </div>
         </div>
     </div>
@@ -53,7 +75,7 @@
                                 <div class="card-body p-2">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="SelectedCardImagePath" value="@picture.Source" 
-                                               @(Model.SelectedCardImagePath == picture.Source ? "checked" : "") />
+                                               checked="@(Model.SelectedCardImagePath == picture.Source)" />
                                         <label class="form-check-label small">Card image</label>
                                     </div>
                                     <div class="form-check mt-1">
@@ -76,42 +98,63 @@
         </div>
     </div>
 
-    <!-- Translation sections (same as Create) -->
-    @for (int i = 0; i < Model.Languages.Count; i++)
-    {
-        var language = Model.Languages[i];
-        <div class="card mb-3">
-            <div class="card-header">
-                <h5>@language.Name</h5>
-            </div>
-            <div class="card-body">
-                <input type="hidden" asp-for="Titles[i].LanguageCode" />
-                <input type="hidden" asp-for="Titles[i].LanguageName" />
-                <input type="hidden" asp-for="Descriptions[i].LanguageCode" />
-                <input type="hidden" asp-for="Descriptions[i].LanguageName" />
-                <input type="hidden" asp-for="ShortDescriptions[i].LanguageCode" />
-                <input type="hidden" asp-for="ShortDescriptions[i].LanguageName" />
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Translations</h5>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs" role="tablist">
+                @for (int i = 0; i < Model.Languages.Count; i++)
+                {
+                    var lang = Model.Languages[i];
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link @(i == 0 ? "active" : "")"
+                                id="@lang.Code-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#@lang.Code-content"
+                                type="button"
+                                role="tab">
+                            @lang.Name (@lang.Code.ToUpper())
+                        </button>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content pt-3">
+                @for (int i = 0; i < Model.Languages.Count; i++)
+                {
+                    var lang = Model.Languages[i];
+                    <div class="tab-pane fade @(i == 0 ? "show active" : "")"
+                         id="@lang.Code-content"
+                         role="tabpanel">
+                        <input type="hidden" asp-for="Titles[i].LanguageCode" />
+                        <input type="hidden" asp-for="Titles[i].LanguageName" />
+                        <input type="hidden" asp-for="Descriptions[i].LanguageCode" />
+                        <input type="hidden" asp-for="Descriptions[i].LanguageName" />
+                        <input type="hidden" asp-for="ShortDescriptions[i].LanguageCode" />
+                        <input type="hidden" asp-for="ShortDescriptions[i].LanguageName" />
 
-                <div class="mb-3">
-                    <label asp-for="Titles[i].Text" class="form-label">Title</label>
-                    <input asp-for="Titles[i].Text" class="form-control" />
-                    <span asp-validation-for="Titles[i].Text" class="text-danger"></span>
-                </div>
+                        <div class="mb-3">
+                            <label asp-for="Titles[i].Text" class="form-label">Title (@lang.Name)</label>
+                            <input asp-for="Titles[i].Text" class="form-control" />
+                            <span asp-validation-for="Titles[i].Text" class="text-danger"></span>
+                        </div>
 
-                <div class="mb-3">
-                    <label asp-for="ShortDescriptions[i].Text" class="form-label">Short Description</label>
-                    <textarea asp-for="ShortDescriptions[i].Text" class="form-control" rows="2"></textarea>
-                    <span asp-validation-for="ShortDescriptions[i].Text" class="text-danger"></span>
-                </div>
+                        <div class="mb-3">
+                            <label asp-for="ShortDescriptions[i].Text" class="form-label">Short Description (@lang.Name)</label>
+                            <textarea asp-for="ShortDescriptions[i].Text" class="form-control" rows="2"></textarea>
+                            <span asp-validation-for="ShortDescriptions[i].Text" class="text-danger"></span>
+                        </div>
 
-                <div class="mb-3">
-                    <label asp-for="Descriptions[i].Text" class="form-label">Description</label>
-                    <textarea asp-for="Descriptions[i].Text" class="form-control" rows="5"></textarea>
-                    <span asp-validation-for="Descriptions[i].Text" class="text-danger"></span>
-                </div>
+                        <div class="mb-3">
+                            <label asp-for="Descriptions[i].Text" class="form-label">Description (@lang.Name)</label>
+                            <textarea asp-for="Descriptions[i].Text" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Descriptions[i].Text" class="text-danger"></span>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
-    }
+    </div>
 
     <div class="mb-3">
         <button type="submit" class="btn btn-warning">Update</button>

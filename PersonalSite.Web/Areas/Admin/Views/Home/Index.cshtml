@@ -1,11 +1,13 @@
 @{
     ViewData["Title"] = "Admin Dashboard";
+    string? userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+    string? badgeColor = userRole == "SuperAdmin" ? "warning" : "primary";
 }
 
 <div class="row">
     <div class="col-12">
         <h1 class="mb-4">Admin Dashboard</h1>
-        <p class="lead">Welcome, @User.Identity?.Name (@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value)</p>
+        <p class="lead">Welcome, @User.Identity?.Name <span class="badge bg-@badgeColor">@userRole</span></p>
     </div>
 </div>
 
@@ -74,7 +76,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Gallery</h5>
-                <p class="card-text">Manage homepage gallery pictures.</p>
+                <p class="card-text">View and manage homepage gallery pictures.</p>
                 <a asp-controller="GalleryPictures" asp-action="Index" class="btn btn-primary">Manage Gallery</a>
             </div>
         </div>
@@ -95,7 +97,7 @@
         <div class="col-md-4">
             <div class="card border-warning">
                 <div class="card-body">
-                    <h5 class="card-title">Users <span class="badge bg-warning">SuperAdmin Only</span></h5>
+                    <h5 class="card-title">Users </h5>
                     <p class="card-text">Manage admin users and permissions.</p>
                     <a asp-controller="Users" asp-action="Index" class="btn btn-warning">Manage Users</a>
                 </div>

@@ -49,4 +49,16 @@ public class SkillService : ISkillService
         var skills = await _skillRepository.GetAllSkillsAsync();
         return skills.OrderByDescending(s => s.ScoreOutOf100);
     }
+
+    public async Task<Dictionary<SkillType, List<Skill>>> GetSkillsOrderedByTypeAsync()
+    {
+        var grouped = (await GetSkillsOrderedByScoreAsync())
+            .GroupBy(s => s.Type)
+            .OrderBy(g => (int)g.Key) // Sort by SkillType-enum order
+            .ToDictionary(
+                g => g.Key,
+                g => g.OrderByDescending(s => s.ScoreOutOf100).ToList()
+            );
+        return grouped;
+    }
 }

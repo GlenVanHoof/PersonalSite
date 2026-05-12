@@ -3,11 +3,12 @@
     --bs-secondary: #6c757d;
     --bs-third: #f8f9fa;
     --bs-light: #f8f9fa;
+    --bs-middle: #5a6c7d;
     --bs-dark: #343a40;
     --gradient-light: #DDf5FB;
     --gradient-middle: #E5E9FC;
     --gradient-dark: #153166;
-    --navbar-height: 90px;
+    --navbar-height: 64px;
     --navbar-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 249, 250, 0.95) 100%);
 }
 
@@ -32,7 +33,7 @@ html, body {
 
 body {
     margin: 0;
-    padding-top: calc(var(--navbar-height) + 3rem);
+    padding-top: calc(var(--navbar-height) + 1.5rem);
     margin-bottom: 60px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.6;
@@ -63,57 +64,95 @@ body {
 /*===================== - Floating Navbar - =========================*/
 .floating-navbar {
     position: fixed;
-    top: 1.5rem;
+    top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    width: 95%;
-    max-width: 1400px;
+    width: 104%;
+    max-width: calc(1400px * 1.04);
+    min-width: 0;
+    margin-left: 0;
     z-index: 1030;
     transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 .floating-navbar .navbar {
-    background: var(--navbar-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 24px;
-    padding: 0.75rem 2rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 16px rgba(31, 38, 135, 0.10), 0 2px 6px rgba(0, 0, 0, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    padding: 0.3rem 1.2rem;
     transition: all 0.3s ease;
+    pointer-events: auto;
 }
 
 .navbar-collapse {
-    position: relative;
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
     justify-content: center !important;
+    width: 100%;
+    position: relative;
+    flex: 1 1 auto;
 }
 
-.navbar-nav.flex-grow-1 {
-    flex-grow: 0 !important;
+.navbar-nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.2rem;
+    flex-wrap: nowrap;
+    margin: 0 auto;
+    padding: 0;
     justify-content: center;
-    gap: 1.5rem;
+    flex: 0 1 auto;
 }
 
-.navbar-nav:last-child {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+
+.right-nav {
+    margin-left: auto;
+    gap: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.right-nav .nav-link,
+.right-nav .dropdown-toggle,
+.right-nav .navbar-signin-btn {
+    font-size: 0.95rem !important;
+    padding: 0.3rem 0.8rem !important;
 }
 
 .navbar-nav .nav-link {
     position: relative;
-    font-weight: 300;
-    font-size: 2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #5a6c7d !important;
-    padding: 0.5rem 1rem !important;
-    transition: color 0.3s ease;
+    letter-spacing: 0.04em;
+    color: var(--bs-middle) !important;
+    padding: 0.3rem 0.7rem !important;
+    border-radius: 8px;
+    transition: color 0.3s ease, background 0.2s;
 }
 
-.navbar-nav .nav-link:hover {
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    margin-right: 1.5rem;
+    z-index: 2;
+    min-width: 60px;
+}
+
+.navbar-nav .nav-link:hover{
     color: var(--bs-primary) !important;
+    background: rgba(37, 140, 251, 0.08);
 }
 
 .navbar-nav .nav-link::after {
@@ -131,15 +170,21 @@ body {
 .navbar-nav .nav-link:hover::after {
     width: 80%;
 }
-
-.navbar-nav:last-child .nav-link {
-    font-size: 1rem;
-    text-transform: none;
-    letter-spacing: normal;
-}
-
-.navbar-nav:last-child .nav-link::after {
-    display: none;
+.navbar-signin-btn {
+    padding: 0.5rem 1.5rem !important;
+    /* min-width removed for natural sizing */
+    font-size: 1.08rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    width: auto !important;
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap !important;
+    overflow: visible !important;
 }
 
 /*===================== - Logo's - =========================*/
@@ -154,7 +199,7 @@ body {
 }
 
 #navbar-logo {
-    height: 60px;
+    height: 44px;
     width: auto;
     filter: invert(45%) sepia(10%) saturate(1000%) hue-rotate(170deg) brightness(90%) contrast(85%);
     transition: transform 0.3s ease, filter 0.3s ease;
@@ -165,13 +210,14 @@ body {
     filter: invert(45%) sepia(80%) saturate(2000%) hue-rotate(190deg) brightness(100%) contrast(100%);
 }
 
+
 /*===================== - Container & Main Content - =========================*/
 .container main {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     padding: 3rem 2rem;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
@@ -186,6 +232,12 @@ body {
     color: #555;
     max-width: 800px;
     margin: 0 auto;
+}
+
+.project-container {
+    width: auto;
+    max-width: 100%;
+    text-wrap: auto;
 }
 
 /*===================== - Footer - =========================*/
@@ -255,16 +307,18 @@ body {
 }
 
 /*===================== - About Me - =========================*/
-
-.about-picture-title {
+.about-picture-section {
     top: 140px;
-    z-index: 1040;
     margin-bottom: 1em;
     max-height: calc(100vh - 160px);
     overflow-y: auto;
+    max-width: 100%;
 }
 
-/* Custom scrollbar for the sticky section */
+.about-picture {
+    max-width: 75%;
+}
+
 .about-picture-title::-webkit-scrollbar {
     width: 6px;
 }
@@ -282,24 +336,146 @@ body {
     background: rgba(37, 140, 251, 0.5);
 }
 
-/*===================== - Code typing container - =========================*/
+/*===================== - Welcome-message - =========================*/
 
-.codeblock {
+.welcome-wrapper{
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-bottom: 5rem;
+    align-content: center;
+    height: calc(100vh - var(--navbar-height) - 3rem);
+    width: auto;
+}
+
+#welcome-text {
     font-family: 'Fira Mono', 'Consolas', monospace;
-    background: var(--bs-light);
-    color: #222;
-    padding: 1.5em;
-    border-radius: 8px;
-    margin-bottom: 2em;
-    white-space: pre;
-    font-size: 1.5em;
+    font-size: 1.5rem;
+}
+
+.name-typed-container{
+    font-family: 'Fira Mono', 'Consolas', monospace;
+    font-size: 4rem;
+    font-weight: bolder;
+    color: var(--bs-primary);
+    margin-bottom: 1rem;
 }
 
 .typed span {
-    border-right: .1em solid #d4d4d4;
-    white-space: pre;
+    border-right: .1rem solid #d4d4d4;
     display: inline-block;
     min-width: 1ch;
+}
+
+/*===================== - Carousel=========================*/
+
+.carousel-outer-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 60vh;
+    position: relative;
+    margin: 0 auto;
+}
+
+.carousel-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+#CustomCarousel {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+#CustomCarousel .carousel-inner {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+#CustomCarousel .carousel-control-prev,
+#CustomCarousel .carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    background: rgba(255,255,255,0.85);
+    border-radius: 50%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    border: 1px solid #e0e0e0;
+    transition: background 0.2s;
+}
+
+#CustomCarousel .carousel-control-prev {
+    left: -4rem;
+}
+
+#CustomCarousel .carousel-control-next {
+    right: -4rem;
+}
+
+#CustomCarousel .carousel-control-prev-icon,
+#CustomCarousel .carousel-control-next-icon {
+    filter: invert(1);
+    width: 32px;
+    height: 32px;
+}
+
+@media (max-width: 900px) {
+    .carousel-wrapper {
+        max-width: 98vw;
+    }
+    #CustomCarousel {
+        max-width: 98vw;
+    }
+    #CustomCarousel .carousel-control-prev {
+        left: -2.2rem;
+    }
+    #CustomCarousel .carousel-control-next {
+        right: -2.2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .carousel-outer-wrapper {
+        min-height: 40vh;
+    }
+    .carousel-wrapper {
+        max-width: 100vw;
+    }
+    #CustomCarousel {
+        max-width: 100vw;
+    }
+    #CustomCarousel .carousel-control-prev,
+    #CustomCarousel .carousel-control-next {
+        width: 2rem;
+        height: 2rem;
+    }
+    #CustomCarousel .carousel-control-prev {
+        left: -1.2rem;
+    }
+    #CustomCarousel .carousel-control-next {
+        right: -1.2rem;
+    }
+    #CustomCarousel .carousel-control-prev-icon,
+    #CustomCarousel .carousel-control-next-icon {
+        width: 20px;
+        height: 20px;
+    }
 }
 
 /*===================== - Responsive Design - =========================*/
@@ -327,7 +503,6 @@ body {
     }
 }
 
-/* Reveal .text-center when scrolled */
 body:has(.codeblock-wrapper:has(~ .text-center)) .text-center {
     opacity: 1;
     pointer-events: auto;

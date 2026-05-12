@@ -12,11 +12,12 @@ public static class ProjectMapper
     {
         var translations = await translationHelper.GetAllTranslationsAsync("Project", entity.Id);
 
-        return new Project
+        var project = new Project
         {
             Id = entity.Id,
             Slug = entity.Slug,
             GithubUrl = entity.GithubUrl,
+            ProjectUrl = entity.ProjectUrl,
             ImagePath = entity.ImagePath,
             OrderIndex = entity.OrderIndex,
             CreatedOn = entity.CreatedOn,
@@ -33,6 +34,16 @@ public static class ProjectMapper
                 UpdatedOn = p.UpdatedOn
             }).ToList()
         };
+
+        // Map Skills
+        project.Skills = new List<Skill>();
+        foreach (var skillEntity in entity.Skills)
+        {
+            var skill = await SkillMapper.ToDomainAsync(skillEntity, translationHelper);
+            project.Skills.Add(skill);
+        }
+
+        return project;
     }
 
     /// <summary>
@@ -40,16 +51,23 @@ public static class ProjectMapper
     /// </summary>
     public static ProjectEntity ToEntity(Project domain)
     {
-        return new ProjectEntity
+        var entity = new ProjectEntity
         {
             Id = domain.Id,
             Slug = domain.Slug,
             GithubUrl = domain.GithubUrl,
+            ProjectUrl = domain.ProjectUrl,
             ImagePath = domain.ImagePath,
             OrderIndex = domain.OrderIndex,
             CreatedOn = domain.CreatedOn,
             UpdatedOn = domain.UpdatedOn
         };
+
+        // Skills are intentionally not mapped here; the repository is responsible
+        // for attaching existing skills via properly tracked EF entities.
+        entity.Skills = new List<SkillEntity>();
+
+        return entity;
     }
 
     /// <summary>
