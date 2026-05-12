@@ -12,9 +12,21 @@
             <!-- Column Left -->
             <div class="col-md-4">
                 <div class="card">
+                    @if (Model.Skills != null)
+                    {
+                        <div class="card-body">
+                            <h5 class="card-title">@Localizer["Skills"]</h5>
+                            <ul class="list-group list-group-flush">
+                                @foreach (string skill in Model.Skills)
+                                {
+                                    <li class="list-group-item">@skill</li>
+                                }
+                            </ul>
+                        </div>
+                    }
                     @if (Model.GithubUrl != null || Model.ProjectUrl != null)
                     {
-                        <div class="card-header">
+                        <div class="card-footer">
                             @if (Model.GithubUrl != null)
                             {
 
@@ -30,18 +42,6 @@
                             }
                         </div>
                     }                    
-                    @if (Model.Skills != null)
-                    {
-                        <div class="card-body">
-                            <h5 class="card-title">Skills used</h5>
-                            <ul>
-                                @foreach (string skill in Model.Skills)
-                                {
-                                    <li>@skill</li>
-                                }
-                            </ul>
-                        </div>
-                    }
                 </div>
             </div>
 

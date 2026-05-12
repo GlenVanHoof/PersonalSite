@@ -117,10 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Portfolio Intro" xml:space="preserve">
-    <value>Op deze pagina vind je de projecten waar ik het meest trots op ben. Elk project weerspiegelt mijn groei als full‑stack .NET developer en mijn focus op clean code, efficiëntie en doordachte architectuur. Ik werk graag aan oplossingen die niet alleen technisch sterk zijn, maar ook helder, onderhoudbaar en toekomstgericht.</value>
-  </data>
   <data name="Skills" xml:space="preserve">
-    <value>Vaardigheden die in dit project werden gebruikt</value>
+    <value>Vaardigheden toegepast in dit project</value>
   </data>
 </root>
