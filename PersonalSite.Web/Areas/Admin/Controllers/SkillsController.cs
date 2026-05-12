@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalSite.Core.Interfaces.Services;
+using PersonalSite.Core.Enums;
 using PersonalSite.Web.Areas.Admin.Models;
 
 namespace PersonalSite.Web.Areas.Admin.Controllers;
@@ -18,9 +19,19 @@ public class SkillsController : Controller
         _languageService = languageService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(SkillType? type)
     {
-        var skills = await _skillService.GetSkillsOrderedByScoreAsync();
+        IEnumerable<Core.Models.Skill> skills;
+        if (type.HasValue)
+        {
+            skills = await _skillService.GetSkillsByTypeAsync(type.Value);
+        }
+        else
+        {
+            skills = await _skillService.GetSkillsOrderedByScoreAsync();
+        }
+        ViewData["SelectedType"] = type;
+        ViewData["SkillTypes"] = System.Enum.GetValues(typeof(SkillType));
         return View(skills);
     }
 

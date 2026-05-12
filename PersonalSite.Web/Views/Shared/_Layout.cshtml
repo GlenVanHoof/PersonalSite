@@ -58,7 +58,7 @@
                                     <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
                                     <button type="submit" class="dropdown-item">🇳🇱 Nederlands</button>
                                 </form>
-                                </li>
+                            </li>
                             <li>
                                 <form asp-controller="Language" asp-action="SetLanguage" method="post" class="px-3 py-1">
                                     <input type="hidden" name="culture" value="fr" />
@@ -75,11 +75,30 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item ms-2">
-                        <a class="btn btn-outline-secondary navbar-signin-btn" asp-area="Admin" asp-controller="Auth" asp-action="Login">
-                            <i class="bi bi-box-arrow-in-right"></i> Sign In
-                        </a>
-                    </li>
+                    @if (User.Identity != null! && User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-outline-primary navbar-admin-btn" asp-area="Admin" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-speedometer2"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <form asp-area="Admin" asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-danger navbar-logout-btn">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-outline-secondary navbar-signin-btn" asp-area="Admin" asp-controller="Auth" asp-action="Login">
+                                <i class="bi bi-box-arrow-in-right"></i> Sign In
+                            </a>
+                        </li>
+                    }
                 </div>
                 <!-- Toggler for mobile -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

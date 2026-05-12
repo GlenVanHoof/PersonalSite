@@ -10,56 +10,38 @@
     </a>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Preview</th>
-                <th>Source</th>
-                <th>Project</th>
-                <th>Created</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model?.Any() == true)
+<div>
+    @if (Model?.Any() == true)
+    {
+        <div class="row row-cols-1 row-cols-sm-2 g-3">
+            @foreach (var picture in Model)
             {
-                @foreach (var picture in Model)
-                {
-                    <tr>
-                        <td>
-                            <img src="@picture.Source" alt="Picture" class="img-thumbnail" style="max-width: 80px; max-height: 80px;" />
-                        </td>
-                        <td>
-                            <small>@picture.Source</small>
-                        </td>
-                        <td>
-                            @if (picture.ProjectId.HasValue)
-                            {
-                                <span class="badge bg-primary">Project #@picture.ProjectId</span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">None</span>
-                            }
-                        </td>
-                        <td>@picture.CreatedOn.ToString("yyyy-MM-dd")</td>
-                        <td>
-                            <div class="btn-group" role="group">
+                <div class="col">
+                    <div class="card">
+                        <img src="@picture.Source" class="card-img-top" alt="Picture @picture.Id">
+                        <div class="card-body">
+                            <h5 class="card-title">ID: @picture.Id - Project: @picture.ProjectId</h5>
+                            <div class="card-text">
+                                <p>CreatedOn: @picture.CreatedOn</p>
+                                <p>UpdatedOn: @picture.UpdatedOn</p>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-center">
+                            <div class="btn-group " role="group">
                                 <a asp-action="Details" asp-route-id="@picture.Id" class="btn btn-sm btn-info">Details</a>
                                 <a asp-action="Edit" asp-route-id="@picture.Id" class="btn btn-sm btn-warning">Edit</a>
                                 <a asp-action="Delete" asp-route-id="@picture.Id" class="btn btn-sm btn-danger">Delete</a>
                             </div>
-                        </td>
-                    </tr>
-                }
+                        </div>
+                    </div>
+                </div>
             }
-            else
-            {
-                <tr>
-                    <td colspan="5" class="text-center text-muted">No pictures found.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        </div>
+    }
+    else
+    {
+        <p>No pictures found</p>
+    }
+</div>
+
 </div>

@@ -123,51 +123,46 @@
         <h5>Translations</h5>
     </div>
     <div class="card-body">
-        @if (Model.Title.Any())
-        {
-            <h6 class="mb-3">Titles</h6>
-            <dl class="row">
-                @foreach (var title in Model.Title.OrderBy(t => t.Key))
-                {
-                    <dt class="col-sm-3">@title.Key.ToUpper()</dt>
-                    <dd class="col-sm-9">@(string.IsNullOrEmpty(title.Value) ? "N/A" : title.Value)</dd>
-                }
-            </dl>
-            <hr />
+        @{
+            var languages = Model.Title.Keys.Union(Model.ShortDescription.Keys).Union(Model.Description.Keys).Distinct().OrderBy(x => x).ToList();
         }
-        
-        @if (Model.ShortDescription.Any())
-        {
-            <h6 class="mb-3">Short Descriptions</h6>
-            <dl class="row">
-                @foreach (var desc in Model.ShortDescription.OrderBy(d => d.Key))
-                {
-                    <dt class="col-sm-3">@desc.Key.ToUpper()</dt>
-                    <dd class="col-sm-9">@(string.IsNullOrEmpty(desc.Value) ? "N/A" : desc.Value)</dd>
-                }
-            </dl>
-            <hr />
-        }
-        
-        @if (Model.Description.Any())
-        {
-            <h6 class="mb-3">Descriptions</h6>
-            <dl class="row">
-                @foreach (var desc in Model.Description.OrderBy(d => d.Key))
-                {
-                    <dt class="col-sm-3">@desc.Key.ToUpper()</dt>
-                    <dd class="col-sm-9">
-                        @if (string.IsNullOrEmpty(desc.Value))
-                        {
-                            <span>N/A</span>
-                        }
-                        else
-                        {
-                            <div style="white-space: pre-wrap;">@desc.Value</div>
-                        }
-                    </dd>
-                }
-            </dl>
-        }
+        <ul class="nav nav-tabs" role="tablist">
+            @for (int i = 0; i < languages.Count; i++)
+            {
+                var lang = languages[i];
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(i == 0 ? "active" : "")"
+                            id="@lang-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#@lang-content"
+                            type="button"
+                            role="tab">
+                        @lang.ToUpper()
+                    </button>
+                </li>
+            }
+        </ul>
+        <div class="tab-content pt-3">
+            @for (int i = 0; i < languages.Count; i++)
+            {
+                var lang = languages[i];
+                <div class="tab-pane fade @(i == 0 ? "show active" : "")"
+                     id="@lang-content"
+                     role="tabpanel">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <div>@(Model.Title.TryGetValue(lang, out var t) ? (string.IsNullOrEmpty(t) ? "N/A" : t) : "N/A")</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Short Description</label>
+                        <div>@(Model.ShortDescription.TryGetValue(lang, out var sd) ? (string.IsNullOrEmpty(sd) ? "N/A" : sd) : "N/A")</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <div style="white-space: pre-wrap;">@(Model.Description.TryGetValue(lang, out var d) ? (string.IsNullOrEmpty(d) ? "N/A" : d) : "N/A")</div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 </div>

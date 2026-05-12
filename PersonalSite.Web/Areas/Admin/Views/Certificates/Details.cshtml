@@ -27,23 +27,51 @@
     </div>
 </div>
 
-<div class="card">
+<div class="card mb-3">
     <div class="card-header">
         <h5>Translations</h5>
     </div>
     <div class="card-body">
-        <dl class="row">
-            @foreach (var name in Model.Name)
+        @{
+            var languages = Model.Name.Keys.Union(Model.Description.Keys).Distinct().OrderBy(x => x).ToList();
+        }
+        <ul class="nav nav-tabs" role="tablist">
+            @for (int i = 0; i < languages.Count; i++)
             {
-                <dt class="col-sm-3">Name (@name.Key.ToUpper())</dt>
-                <dd class="col-sm-9">@name.Value</dd>
+                var lang = languages[i];
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(i == 0 ? "active" : "")"
+                            id="@lang-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#@lang-content"
+                            type="button"
+                            role="tab">
+                        @lang.ToUpper()
+                    </button>
+                </li>
             }
-            
-            @foreach (var desc in Model.Description)
+        </ul>
+        <div class="tab-content pt-3">
+            @for (int i = 0; i < languages.Count; i++)
             {
-                <dt class="col-sm-3">Description (@desc.Key.ToUpper())</dt>
-                <dd class="col-sm-9">@(string.IsNullOrEmpty(desc.Value) ? "N/A" : desc.Value)</dd>
+                var lang = languages[i];
+                <div class="tab-pane fade @(i == 0 ? "show active" : "")"
+                     id="@lang-content"
+                     role="tabpanel">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <div>@(Model.Name.TryGetValue(lang, out var n) ? (string.IsNullOrEmpty(n) ? "N/A" : n) : "N/A")</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <div style="white-space: pre-wrap;">@(Model.Description.TryGetValue(lang, out var d) ? (string.IsNullOrEmpty(d) ? "N/A" : d) : "N/A")</div>
+                    </div>
+                </div>
             }
-        </dl>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/translations-tabs.js"></script>
+}
