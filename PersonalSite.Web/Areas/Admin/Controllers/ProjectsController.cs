@@ -12,17 +12,20 @@ public class ProjectsController : Controller
     private readonly IProjectService _projectService;
     private readonly IPictureService _pictureService;
     private readonly ILanguageService _languageService;
+    private readonly ISkillService _skillService;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
     public ProjectsController(
         IProjectService projectService,
         IPictureService pictureService,
         ILanguageService languageService,
+        ISkillService skillService,
         IWebHostEnvironment webHostEnvironment)
     {
         _projectService = projectService;
         _pictureService = pictureService;
         _languageService = languageService;
+        _skillService = skillService;
         _webHostEnvironment = webHostEnvironment;
     }
 
@@ -36,6 +39,7 @@ public class ProjectsController : Controller
     public async Task<IActionResult> Create()
     {
         var languages = await _languageService.GetAllLanguagesAsync();
+        var skills = (await _skillService.GetAllSkillsAsync()).Where(s => s.Type == Core.Enums.SkillType.Technical).ToList();
         var model = new ProjectEditViewModel
         {
             Languages = languages.ToList(),
@@ -53,7 +57,8 @@ public class ProjectsController : Controller
             {
                 LanguageCode = l.Code,
                 LanguageName = l.Name
-            }).ToList()
+            }).ToList(),
+            AvailableSkills = skills
         };
         return View(model);
     }
@@ -65,19 +70,25 @@ public class ProjectsController : Controller
         if (!ModelState.IsValid)
         {
             model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
+            model.AvailableSkills = (await _skillService.GetAllSkillsAsync()).ToList();
             return View(model);
         }
+
+        var selectedSkills = (await _skillService.GetAllSkillsAsync())
+            .Where(s => model.SelectedSkillIds.Contains(s.Id)).ToList();
 
         var project = new Core.Models.Project
         {
             Slug = model.Slug,
             GithubUrl = model.GithubUrl,
+            ProjectUrl = model.ProjectUrl,
             OrderIndex = model.OrderIndex,
             CreatedOn = DateTime.UtcNow,
             UpdatedOn = DateTime.UtcNow,
             Title = model.Titles.ToDictionary(t => t.LanguageCode, t => t.Text),
             Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text),
-            ShortDescription = model.ShortDescriptions.ToDictionary(t => t.LanguageCode, t => t.Text)
+            ShortDescription = model.ShortDescriptions.ToDictionary(t => t.LanguageCode, t => t.Text),
+            Skills = selectedSkills
         };
 
         var createdProject = await _projectService.CreateProjectAsync(project);
@@ -128,11 +139,13 @@ public class ProjectsController : Controller
         }
 
         var languages = await _languageService.GetAllLanguagesAsync();
+        var skills = (await _skillService.GetAllSkillsAsync()).Where(s => s.Type == Core.Enums.SkillType.Technical).ToList();
         var model = new ProjectEditViewModel
         {
             Id = project.Id,
             Slug = project.Slug,
             GithubUrl = project.GithubUrl,
+            ProjectUrl = project.ProjectUrl,
             OrderIndex = project.OrderIndex,
             SelectedCardImagePath = project.ImagePath,
             ExistingPictures = project.Pictures.ToList(),
@@ -154,7 +167,9 @@ public class ProjectsController : Controller
                 LanguageCode = l.Code,
                 LanguageName = l.Name,
                 Text = project.ShortDescription.GetValueOrDefault(l.Code, string.Empty)
-            }).ToList()
+            }).ToList(),
+            AvailableSkills = skills,
+            SelectedSkillIds = project.Skills.Select(s => s.Id).ToList()
         };
 
         return View(model);
@@ -174,6 +189,7 @@ public class ProjectsController : Controller
             var project = await _projectService.GetProjectByIdAsync(id);
             model.Languages = (await _languageService.GetAllLanguagesAsync()).ToList();
             model.ExistingPictures = project?.Pictures.ToList() ?? new();
+            model.AvailableSkills = (await _skillService.GetAllSkillsAsync()).Where(s => s.Type == Core.Enums.SkillType.Technical).ToList();
             return View(model);
         }
 
@@ -185,11 +201,17 @@ public class ProjectsController : Controller
 
         existingProject.Slug = model.Slug;
         existingProject.GithubUrl = model.GithubUrl;
+        existingProject.ProjectUrl = model.ProjectUrl;
         existingProject.OrderIndex = model.OrderIndex;
         existingProject.UpdatedOn = DateTime.UtcNow;
         existingProject.Title = model.Titles.ToDictionary(t => t.LanguageCode, t => t.Text);
         existingProject.Description = model.Descriptions.ToDictionary(t => t.LanguageCode, t => t.Text);
         existingProject.ShortDescription = model.ShortDescriptions.ToDictionary(t => t.LanguageCode, t => t.Text);
+        var allSkills = await _skillService.GetAllSkillsAsync();
+        existingProject.Skills = allSkills
+            .Where(skill => model.SelectedSkillIds.Contains(skill.Id))
+            .ToList();
+
 
         // Handle image deletions
         if (model.PicturesToDelete?.Any() == true)

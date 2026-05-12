@@ -21,6 +21,7 @@ public class ProjectRepository : IProjectRepository
     {
         var entities = await _context.Projects
             .Include(p => p.Pictures)
+            .Include(p => p.Skills)
             .OrderBy(p => p.OrderIndex)
             .ToListAsync();
 
@@ -37,6 +38,7 @@ public class ProjectRepository : IProjectRepository
     {
         var entity = await _context.Projects
             .Include(p => p.Pictures)
+            .Include(p => p.Skills)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         return entity == null ? null : await ProjectMapper.ToDomainAsync(entity, _translationHelper);
@@ -46,6 +48,7 @@ public class ProjectRepository : IProjectRepository
     {
         var entity = await _context.Projects
             .Include(p => p.Pictures)
+            .Include(p => p.Skills)
             .FirstOrDefaultAsync(p => p.Slug == slug);
 
         return entity == null ? null : await ProjectMapper.ToDomainAsync(entity, _translationHelper);
@@ -58,6 +61,18 @@ public class ProjectRepository : IProjectRepository
         _context.Projects.Add(entity);
         await _context.SaveChangesAsync();
 
+        // Attach existing skills via tracked entities
+        if (project.Skills?.Any() == true)
+        {
+            var skillIds = project.Skills.Select(s => s.Id).ToList();
+            var trackedSkills = await _context.Skills
+                .Where(s => skillIds.Contains(s.Id))
+                .ToListAsync();
+            foreach (var skill in trackedSkills)
+                entity.Skills.Add(skill);
+            await _context.SaveChangesAsync();
+        }
+
         // Save translations
         var translations = ProjectMapper.ExtractTranslations(project);
         await _translationHelper.SaveAllTranslationsAsync("Project", entity.Id, translations);
@@ -67,17 +82,32 @@ public class ProjectRepository : IProjectRepository
 
     public async Task UpdateProjectAsync(Project project)
     {
-        var entity = await _context.Projects.FindAsync(project.Id);
+        var entity = await _context.Projects
+            .Include(p => p.Skills)
+            .FirstOrDefaultAsync(p => p.Id == project.Id);
         if (entity == null)
             throw new KeyNotFoundException($"Project with ID {project.Id} not found.");
 
         // Update basic properties
         entity.Slug = project.Slug;
         entity.GithubUrl = project.GithubUrl;
+        entity.ProjectUrl = project.ProjectUrl;
         entity.ImagePath = project.ImagePath;
         entity.OrderIndex = project.OrderIndex;
+        entity.UpdatedOn = project.UpdatedOn;
 
-        _context.Projects.Update(entity);
+        // Update skills: clear and re-attach tracked entities
+        entity.Skills.Clear();
+        if (project.Skills?.Any() == true)
+        {
+            var skillIds = project.Skills.Select(s => s.Id).ToList();
+            var trackedSkills = await _context.Skills
+                .Where(s => skillIds.Contains(s.Id))
+                .ToListAsync();
+            foreach (var skill in trackedSkills)
+                entity.Skills.Add(skill);
+        }
+
         await _context.SaveChangesAsync();
 
         // Update translations

@@ -20,7 +20,7 @@
         <dl class="row">
             <dt class="col-sm-3">Slug</dt>
             <dd class="col-sm-9">@Model.Slug</dd>
-            
+
             <dt class="col-sm-3">GitHub URL</dt>
             <dd class="col-sm-9">
                 @if (!string.IsNullOrEmpty(Model.GithubUrl))
@@ -32,13 +32,42 @@
                     <span>N/A</span>
                 }
             </dd>
-            
+
+            <dt class="col-sm-3">Project URL</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrEmpty(Model.ProjectUrl))
+                {
+                    <a href="@Model.ProjectUrl" target="_blank">@Model.ProjectUrl</a>
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+            </dd>
+
             <dt class="col-sm-3">Order Index</dt>
             <dd class="col-sm-9">@Model.OrderIndex</dd>
-            
+
+            <dt class="col-sm-3">Skills</dt>
+            <dd class="col-sm-9">
+                @if (Model.Skills != null && Model.Skills.Any())
+                {
+                    <ul class="mb-0">
+                        @foreach (var skill in Model.Skills)
+                        {
+                            <li>@skill.Name.GetValueOrDefault("en", skill.Name.Values.FirstOrDefault() ?? "Unknown")</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+            </dd>
+
             <dt class="col-sm-3">Created On</dt>
             <dd class="col-sm-9">@Model.CreatedOn.ToString("MMMM dd, yyyy")</dd>
-            
+
             <dt class="col-sm-3">Updated On</dt>
             <dd class="col-sm-9">@Model.UpdatedOn.ToString("MMMM dd, yyyy")</dd>
         </dl>

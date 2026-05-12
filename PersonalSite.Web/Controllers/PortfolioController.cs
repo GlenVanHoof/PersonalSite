@@ -29,12 +29,13 @@ public class PortfolioController : Controller
                 Id = p.Id,
                 Slug = p.Slug,
                 GitUrl = p.GithubUrl,
+                ProjectUrl = p.ProjectUrl,
                 ImagePath = p.ImagePath,
                 OrderIndex = p.OrderIndex,
                 Title = _languageService.GetTranslation(p.Title),
                 ShortDescription = _languageService.GetTranslation(p.ShortDescription),
                 LongDescription = _languageService.GetTranslation(p.Description),
-                Technologies = null // TODO: Add technologies field if needed
+                Technologies = p.Skills.Select(s => _languageService.GetTranslation(s.Name)).ToList()
             }).ToList()
         };
 
@@ -57,7 +58,10 @@ public class PortfolioController : Controller
             Description = _languageService.GetTranslation(project.Description),
             ImagePath = project.ImagePath,
             GithubUrl = project.GithubUrl,
+            ProjectUrl = project.ProjectUrl,
+            Skills = project.Skills.Select(s => _languageService.GetTranslation(s.Name)).ToList(),
             Pictures = project.Pictures.Select(p => p.Source).ToList()
+
         };
         return View(viewModel);
     }

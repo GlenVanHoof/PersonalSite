@@ -1,4 +1,4 @@
-@model PersonalSite.Web.Areas.Admin.Models.ProjectEditViewModel
+@model ProjectEditViewModel
 
 @{
     ViewData["Title"] = "Edit Project";
@@ -28,9 +28,29 @@
             </div>
 
             <div class="mb-3">
+                <label asp-for="ProjectUrl" class="form-label"></label>
+                <input asp-for="ProjectUrl" class="form-control" />
+                <span asp-validation-for="ProjectUrl" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
                 <label asp-for="OrderIndex" class="form-label"></label>
                 <input asp-for="OrderIndex" class="form-control" type="number" />
                 <span asp-validation-for="OrderIndex" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SelectedSkillIds" class="form-label">Technical Skills:</label>
+                @for (int i = 0; i < Model.AvailableSkills!.Count; i++)
+                {
+                    var skill = Model.AvailableSkills[i];
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="SelectedSkillIds" value="@skill.Id" id="skill_@skill.Id"
+                               @(Model.SelectedSkillIds.Contains(skill.Id) ? "checked" : "") />
+                        <label class="form-check-label" for="skill_@skill.Id">@skill.Name["en"]</label>
+                    </div>
+                }
+                <span asp-validation-for="SelectedSkillIds" class="text-danger"></span>
             </div>
         </div>
     </div>
@@ -53,7 +73,7 @@
                                 <div class="card-body p-2">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="SelectedCardImagePath" value="@picture.Source" 
-                                               @(Model.SelectedCardImagePath == picture.Source ? "checked" : "") />
+                                               checked="@(Model.SelectedCardImagePath == picture.Source)" />
                                         <label class="form-check-label small">Card image</label>
                                     </div>
                                     <div class="form-check mt-1">

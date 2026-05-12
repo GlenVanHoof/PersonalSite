@@ -11,5 +11,5 @@ public class ProjectDetailViewModel
     public string? GithubUrl { get; set; }
     public string? ProjectUrl { get; set; }
     public List<string> Pictures { get; set; } = new();
-    public List<string> Skills { get; set; } = new();
+    public List<string>? Skills { get; set; }
 }

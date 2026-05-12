@@ -37,4 +37,14 @@ public class ProjectEditViewModel
 
     // Helper for view
     public List<Language> Languages { get; set; } = new();
+    [StringLength(500)]
+    [Display(Name = "Project URL")]
+    public string? ProjectUrl { get; set; }
+
+    // For skills selection
+    [Display(Name = "Skills")]
+    public List<int> SelectedSkillIds { get; set; } = new();
+
+    // For populating available skills in the view
+    public List<Skill>? AvailableSkills { get; set; }
 }
