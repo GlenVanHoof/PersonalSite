@@ -1,3 +1,5 @@
+#PORTFOLIO SITE
+
 This project is a multilingual portfolio website built to present myself and my work in a professional way. The application includes a public section with an about page, portfolio overview and contact form, as well as a secure admin area where I manage all content: projects, skills, users, experience, translations and more.
 
 For multilingual support, I combine resource files for static UI text with a database‑driven translation system for dynamic content such as project descriptions. This allows me to manage and expand all content flexibly without modifying code. All data is stored in PostgreSQL and managed through a clean, self‑built interface.
