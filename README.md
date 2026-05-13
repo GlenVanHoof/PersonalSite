@@ -1,4 +1,4 @@
-#PORTFOLIO SITE
+# PORTFOLIO SITE
 
 This project is a multilingual portfolio website built to present myself and my work in a professional way. The application includes a public section with an about page, portfolio overview and contact form, as well as a secure admin area where I manage all content: projects, skills, users, experience, translations and more.
 
