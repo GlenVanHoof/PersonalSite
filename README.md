@@ -7,3 +7,5 @@ For multilingual support, I combine resource files for static UI text with a dat
 The website is developed with ASP.NET MVC, Bootstrap and Entity Framework — technologies I deliberately chose to deepen my experience with structured, maintainable full‑stack development. The architecture is designed with scalability, clean separation of concerns and long‑term maintainability in mind.
 
 The project is still evolving. Future updates include a dark mode, a fully mobile‑friendly layout and additional admin features. This portfolio grows alongside my skills and serves as a professional platform to showcase my technical journey.
+
+[Site link](https://www.glenvh.dev/)
