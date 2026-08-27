@@ -26,7 +26,14 @@ string connectionString = env switch
 
 // Register DbContext
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        npgsqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 3,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorCodesToAdd: null);
+        npgsqlOptions.CommandTimeout(30);
+    }));
 
 // Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
